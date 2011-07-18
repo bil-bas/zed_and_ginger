@@ -2,7 +2,7 @@ class GameObject
   extend Forwardable
   include Helper
   
-  def_delegators :@scene, :window
+  def_delegators :@scene, :window, :frame_time
   def_delegators :@sprite, :x
   
   attr_reader :scene, :z  

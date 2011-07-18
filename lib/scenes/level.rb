@@ -2,18 +2,22 @@ require_relative '../objects/player'
 require_relative '../map'
 
 class Level < Scene 
+  attr_reader :frame_time
+  
   def setup
     @dynamic_objects = [] # Objects that need #update
     
     @map = Map.new 100, 15
     
     @camera = window.default_view
-    @camera.zoom_by 4
+    @camera.zoom_by 8
     @camera.center = @camera.size / 2
     
-    @player = Player.new(self, Vector2[24, 80])    
+    @player = Player.new(self, Vector2[24, 40])    
       
     @half_size = @camera.rect.size / 2
+    
+    @last_frame_started_at = Time.now.to_f
       
     init_fps
   end
@@ -29,7 +33,11 @@ class Level < Scene
   
   def register   
     always do
-      start_at = Time.now
+      now = Time.now.to_f
+      @frame_time = [now - @last_frame_started_at, 0.1].min
+      @last_frame_started_at = now
+      
+      start_at = now
          
       # Move the camera to the player position, but don't let the user see over the edge of the map. 
       @camera.x = [[@player.x, @half_size.w].max, @map.to_rect.width - @half_size.w].min
