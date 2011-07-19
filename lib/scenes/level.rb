@@ -41,8 +41,8 @@ class Level < Scene
   end
   
   def create_background
-    img = Image.new Vector2[window.size.width, @wall_map.to_rect.height * ZOOM] / 2
-    250.times { img[rand(img.size.width), rand(img.size.height)] = Color.new(*([55 + rand(200)] * 3)) }
+    img = Image.new window.size / 2
+    400.times { img[rand(img.size.width), rand(img.size.height)] = Color.new(*([55 + rand(200)] * 3)) }
 
     @background = sprite img
     

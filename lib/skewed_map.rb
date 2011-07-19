@@ -1,4 +1,4 @@
-%w[pipes_floor slow_floor standard_floor].each do |file_name|
+%w[glass_floor pipes_floor slow_floor standard_floor].each do |file_name|
   require_relative "tiles/#{file_name}"
 end
 
@@ -23,6 +23,8 @@ class SkewedMap
         tile_class, object_class = case char
           when '.' # Std floor.
             [StandardFloor, nil]
+          when '_'
+            [GlassFloor, nil]
           when 's' # Slow.
             [SlowFloor, nil]
           when '=' # Lower edge.
@@ -30,7 +32,7 @@ class SkewedMap
           when '^' # Springboard.
             [StandardFloor, Spring]
           else
-           raise "unknown wall tile: '#{char}'"
+           raise "Unknown floor tile: '#{char}'"
         end
 
         tile = tile_class.new [x, y], @position
