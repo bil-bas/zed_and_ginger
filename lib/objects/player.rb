@@ -49,9 +49,9 @@ class Player < DynamicObject
   end
   
   def update
-    if holding? :w
+    if holding? :w or holding? :up
       self.y = [@rect.y, y - 1].max
-    elsif holding? :s
+    elsif holding? :s or holding? :down
       self.y = [@rect.y + @rect.height, y + 1].min
     end
 
