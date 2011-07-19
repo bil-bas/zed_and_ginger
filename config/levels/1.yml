@@ -23,7 +23,7 @@ floor: |
 #    o porthole
 #
 #  Floor key:
-#    . BasicFloor
+#    . StandardFloor
 #    s SlowFloor
 #    = PipesFloor
-#    ^ Spring
+#    ^ Std + Spring

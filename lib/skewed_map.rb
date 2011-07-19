@@ -1,3 +1,11 @@
+%w[pipes_floor slow_floor standard_floor].each do |file_name|
+  require_relative "tiles/#{file_name}"
+end
+
+%w[spring].each do |file_name|
+  require_relative "objects/#{file_name}"
+end
+
 class SkewedMap
   include Helper
   
@@ -14,13 +22,13 @@ class SkewedMap
       row.each_char.with_index do |char, x|
         tile_class, object_class = case char
           when '.' # Std floor.
-            [BasicFloor, nil]
+            [StandardFloor, nil]
           when 's' # Slow.
             [SlowFloor, nil]
           when '=' # Lower edge.
             [PipesFloor, nil]
-          when '^' # Spring.
-            [BasicFloor, Spring]
+          when '^' # Springboard.
+            [StandardFloor, Spring]
           else
            raise "unknown wall tile: '#{char}'"
         end
@@ -66,60 +74,5 @@ class SkewedMap
   # Draws all tiles (only) visible in the window.
   def draw_on(window)
     each_visible(window.view) {|tile| tile.draw_on window }
-  end
-end
-
-class SkewedTile
-  extend Forwardable
-
-  HEIGHT = 6
-  WIDTH = 8
-  SIZE = Vector2[WIDTH, HEIGHT]
-  SKEW = WIDTH * 0.25
-  
-  include Helper
-
-  def_delegator :@sprite, :position
-  
-  attr_reader :objects
-  
-  @@sprites = {}
-  
-  def initialize(sprite_position, grid_position, offset)
-    @sprite = sprite image_path("floor_tiles.png")
-    @sprite.sheet_size = [4, 1]
-    @sprite.sheet_pos = sprite_position
-    @sprite.position = grid_position.to_vector2 * SIZE
-    @sprite.position += offset
-    @sprite.x += grid_position[1] * 3 # So they line up diagonally.
-    @objects = []
-  end
-  
-  def draw_on(window)
-    window.draw @sprite
-  end
-end
-
-class FloorTile < SkewedTile
-  def speed; 1.0; end
-end
-
-class BasicFloor < FloorTile
-  def initialize(grid_position, offset)
-    super([0, 0], grid_position, offset)
-  end
-end
-
-class SlowFloor < FloorTile
-  def speed; 0.25; end
-
-  def initialize(grid_position, offset)
-    super([1, 0], grid_position, offset)
-  end
-end
-
-class PipesFloor < FloorTile
-  def initialize(grid_position, offset)
-    super([3, 0], grid_position, offset)
   end
 end

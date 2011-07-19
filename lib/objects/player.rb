@@ -26,7 +26,7 @@ class Player < DynamicObject
   end
 
   def speed
-    if z == 0
+    if z == 0 and @tile
       FULL_SPEED * scene.floor_map.tile_at_coordinate(position).speed
     else
       FULL_SPEED
@@ -56,6 +56,9 @@ class Player < DynamicObject
     end
 
     self.position += [speed * frame_time, 0]
+
+    @tile = scene.floor_map.tile_at_coordinate(position)
+    #@tile.touched_by(self) if @tile
     
     super
   end

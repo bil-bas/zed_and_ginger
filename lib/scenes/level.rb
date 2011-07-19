@@ -1,7 +1,7 @@
 require_relative '../objects/player'
 require_relative '../map'
 require_relative '../skewed_map'
-require_relative '../objects/spring'
+
 
 class Level < Scene 
   attr_reader :frame_time, :floor_map, :player
