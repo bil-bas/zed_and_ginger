@@ -22,7 +22,7 @@ def font_path(resource); media_path('fonts', resource); end
 
 FONT_NAME = font_path("pixelated.ttf")
 
-Ray.game "Zed and Ginger (W/S/SPACE or UP/DOWN/SPACE)", size: [768, 480] do
+Ray.game "Zed and Ginger (WASD or ARROWS to move; SPACE to jump)", size: [768, 480] do
   register do
     on :quit, &method(:exit!)
     on :key_press, key(:escape), &method(:exit!)

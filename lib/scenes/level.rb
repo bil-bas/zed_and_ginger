@@ -63,8 +63,8 @@ class Level < Scene
       
       start_at = now
          
-      # Move the camera to the player position.
-      @camera.x = @player.x + @camera.rect.width * 0.1
+      # Move the camera to the player position (left side, plus an amount asked for from the player).
+      @camera.x = @player.x + (@camera.rect.width / 2) - (@camera.rect.width * @player.screen_offset_x)
       
       # Checking for collision on the screen is significantly slower than just rendering everything.
       clip_rect = @camera.rect
