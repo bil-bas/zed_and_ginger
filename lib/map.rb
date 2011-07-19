@@ -29,14 +29,17 @@ class Map
     end      
   end
   
-  def tile_at_position(x, y)
+  def tile_at_coordinate(coordinate)
+    coordinate = coordinate.to_vector2.dup
+    coordinate -= @position
     tile_size = Tile::WIDTH.to_f
-    tile_at_grid((x / tile_size).to_i, (y / tile_size).to_i)
+    tile_at_grid(Vector2[(coordinate.x / tile_size).to_i, (coordinate.y / tile_size).to_i])
   end
   
-  def tile_at_grid(x, y)
-    if x.between?(0, @grid_width - 1) and y.between?(0, @grid_height - 1)
-      @tiles[y][x]
+  def tile_at_grid(grid_position)
+    grid_position = grid_position.to_vector2
+    if grid_position.x.between?(0, @grid_width - 1) and grid_position.y.between?(0, @grid_height - 1)
+      @tiles[grid_position.y][grid_position.x]
     else
       nil
     end
@@ -50,7 +53,7 @@ class Map
     x_range = ((top_left.x - tile_size) / tile_size).floor..((top_left.x + view.size.width) / tile_size).ceil
     y_range.each do |y|
       x_range.each do |x|       
-        tile = tile_at_grid(x, y)
+        tile = tile_at_grid([x, y])
         yield tile if tile
       end
     end

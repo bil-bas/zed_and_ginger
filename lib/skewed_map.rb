@@ -28,14 +28,18 @@ class SkewedMap
     end
   end
   
-  def tile_at_position(x, y)
+  def tile_at_coordinate(coordinate)
+    coordinate = coordinate.to_vector2.dup
+    coordinate -= @position
     tile_width, tile_height = SkewedTile::WIDTH.to_f, SkewedTile::HEIGHT.to_f
-    tile_at_grid((x / tile_width).to_i, (y / tile_height).to_i)
+    horizontal_offset = - coordinate.y / 2 # Caused by the skew
+    tile_at_grid(Vector2[((coordinate.x + horizontal_offset) / tile_width).to_i, (coordinate.y / tile_height).to_i])
   end
   
-  def tile_at_grid(x, y)
-    if x.between?(0, @grid_width - 1) and y.between?(0, @grid_height - 1)
-      @tiles[y][x]
+  def tile_at_grid(grid_position)
+    grid_position = grid_position.to_vector2
+    if grid_position.x.between?(0, @grid_width - 1) and grid_position.y.between?(0, @grid_height - 1)
+      @tiles[grid_position.y][grid_position.x]
     else
       nil
     end
@@ -49,7 +53,7 @@ class SkewedMap
     x_range = ((top_left.x - tile_width * @grid_height) / tile_width).floor..((top_left.x + view.size.width) / tile_width).ceil
     y_range.each do |y|
       x_range.each do |x|       
-        tile = tile_at_grid(x, y)
+        tile = tile_at_grid([x, y])
         yield tile if tile
       end
     end
