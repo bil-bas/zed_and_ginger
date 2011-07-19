@@ -8,6 +8,7 @@ class Player < DynamicObject
   MIN_SPEED = 0
   MAX_SPEED = 64
 
+  def shadow_shape; Vector2[1.2, 0.6]; end
   def casts_shadow?; true; end
 
   def to_rect; Rect.new(@sprite.x - 5, @sprite.y - 3, 10, 6) end
