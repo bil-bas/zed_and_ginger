@@ -5,25 +5,29 @@ class SkewedMap
   
   def to_rect; Rect.new(*@position, @grid_width * SkewedTile::WIDTH, @grid_height * SkewedTile::HEIGHT); end
 
-  def initialize(data, position = [0, 0])
+  def initialize(scene, data, position = [0, 0])
     @position = position.to_vector2
     @grid_width, @grid_height = data.first.length, data.size
     @tiles = Array.new(@grid_height) { Array.new(@grid_width) }
 
     data.each_with_index do |row, y|
       row.each_char.with_index do |char, x|
-        tile_klass = case char
-                       when '.' # Std floor.
-                         BasicFloor
-                       when 's' # Slow
-                         SlowFloor
-                       when '=' # Lower edge
-                         PipesFloor
-                       else
-                         raise "unknown wall tile: '#{char}'"
-                     end
+        tile_class, object_class = case char
+          when '.' # Std floor.
+            [BasicFloor, nil]
+          when 's' # Slow.
+            [SlowFloor, nil]
+          when '=' # Lower edge.
+            [PipesFloor, nil]
+          when '^' # Spring.
+            [BasicFloor, Spring]
+          else
+           raise "unknown wall tile: '#{char}'"
+        end
 
-        @tiles[y][x] = tile_klass.new [x, y], @position
+        tile = tile_class.new [x, y], @position
+        @tiles[y][x] = tile
+        object_class.new(scene, tile.position + Vector2[SkewedTile::WIDTH / 2, SkewedTile::HEIGHT / 2]) if object_class
       end
     end
   end
@@ -66,12 +70,16 @@ class SkewedMap
 end
 
 class SkewedTile
+  extend Forwardable
+
   HEIGHT = 6
   WIDTH = 8
   SIZE = Vector2[WIDTH, HEIGHT]
   SKEW = WIDTH * 0.25
   
   include Helper
+
+  def_delegator :@sprite, :position
   
   attr_reader :objects
   

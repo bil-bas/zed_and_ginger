@@ -4,7 +4,11 @@ class Player < DynamicObject
   ANIMATION_DURATION = 1
 
   FULL_SPEED = 64
-  
+
+  def casts_shadow?; true; end
+
+  def to_rect; Rect.new(@sprite.x - 5, @sprite.y - 3, 10, 6) end
+
   def initialize(scene, position)
     sprite = sprite image_path("player.png"), at: position    
     sprite.sheet_size = [4, 2]
@@ -40,7 +44,7 @@ class Player < DynamicObject
     super(scene)
     
     on :key_press, key(:space) do
-      @velocity_z = 2 unless z > 0
+      @velocity_z = 1.5 unless z > 0
     end
   end
   

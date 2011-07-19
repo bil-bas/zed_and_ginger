@@ -9,7 +9,8 @@ class GameObject
 
   SHADOW_RADIUS = 64
   SHADOW_WIDTH = SHADOW_RADIUS * 2
-  
+
+  def casts_shadow?; false; end
   def width; @sprite.sprite_width; end
   def pos; Vector2[x, y]; end
   alias_method :position, :pos 
@@ -71,7 +72,7 @@ class GameObject
   
   def to_rect
     width = @sprite.sprite_width
-    Rect.new(x - width / 2, y - width / 2, width, width)
+    Rect.new(x - @sprite.origin.x, y - @sprite.origin.y, width, width)
   end
   
   def draw_on(win)
@@ -79,6 +80,10 @@ class GameObject
   end
   
   def draw_shadow_on(win)
-    win.draw @shadow
+    win.draw @shadow if casts_shadow?
+  end
+
+  def collide?(other)
+    to_rect.collide? other
   end
 end

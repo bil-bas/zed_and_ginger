@@ -1,9 +1,10 @@
 require_relative '../objects/player'
 require_relative '../map'
 require_relative '../skewed_map'
+require_relative '../objects/spring'
 
 class Level < Scene 
-  attr_reader :frame_time, :floor_map
+  attr_reader :frame_time, :floor_map, :player
   
   ZOOM = 8
   WALL_MAP_ROWS = 3
@@ -16,7 +17,7 @@ class Level < Scene
 
     level_data = YAML::load_file(File.expand_path(File.join(__FILE__, "../../../config/levels/1.yml")))
     @wall_map = Map.new level_data['wall'].split("\n")
-    @floor_map = SkewedMap.new level_data['floor'].split("\n"), [0, @wall_map.to_rect.height]
+    @floor_map = SkewedMap.new self, level_data['floor'].split("\n"), [0, @wall_map.to_rect.height]
     
     @camera = window.default_view
     @camera.zoom_by ZOOM

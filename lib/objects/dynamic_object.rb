@@ -2,6 +2,8 @@ require_relative "game_object"
 
 class DynamicObject < GameObject
   GRAVITY = 8
+
+  attr_accessor :velocity_z
   
   def initialize(scene, sprite, position) 
     @velocity_z = 0
