@@ -1,0 +1,10 @@
+GEM
+  remote: http://gemcutter.org/
+  specs:
+    ray (0.1.1)
+
+PLATFORMS
+  x86-mingw32
+
+DEPENDENCIES
+  ray (~> 0.1.1)
