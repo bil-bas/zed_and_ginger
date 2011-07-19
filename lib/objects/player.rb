@@ -1,26 +1,38 @@
 require_relative "dynamic_object"
 
 class Player < DynamicObject
-  def speed; 64; end
-  
   ANIMATION_DURATION = 1
+
+  FULL_SPEED = 64
   
   def initialize(scene, position)
     sprite = sprite image_path("player.png"), at: position    
     sprite.sheet_size = [4, 2]
-    sprite.origin = [sprite.sprite_width / 2, sprite.sprite_height - 4]
-     
+    sprite.origin = [sprite.sprite_width / 2, sprite.sprite_height]
+
     super(scene, sprite, position)
+
+    floor_rect = scene.floor_map.to_rect
+    @rect = Rect.new(floor_rect.x + floor_rect.width * 0.1,
+                     floor_rect.y + FloorTile::HEIGHT * 0.5,
+                     floor_rect.width * 0.4,
+                     floor_rect.height - FloorTile::HEIGHT * 2)
        
-    walk_animation([1, 0], 0)                         
+    walk_animation
+  end
+
+  def speed
+    if z == 0
+      FULL_SPEED * scene.floor_map.tile_at_coordinate(position).speed
+    else
+      FULL_SPEED
+    end
   end
   
-  def walk_animation(translation, sheet_row)
+  def walk_animation
     @animations.clear
     @animations << sprite_animation(from: [0, 0], to: [3, 0],
                                     duration: ANIMATION_DURATION / 2.0).start(@sprite)
-    @animations << translation(of: translation.to_vector2 * speed, duration: ANIMATION_DURATION).start(self)
-    
     @animations.each(&:loop!)          
   end
   
@@ -33,15 +45,13 @@ class Player < DynamicObject
   end
   
   def update
-    unless animated?
-      #walk_animation([1, 0], 0)
-      #if holding? :down
-      #  if holding? :left
-      #    direction = 
-      #  elsif holding? :right
-      #    direction = 
-      #end
+    if holding? :w
+      self.y = [@rect.y, y - 1].max
+    elsif holding? :s
+      self.y = [@rect.y + @rect.height, y + 1].min
     end
+
+    self.position += [speed * frame_time, 0]
     
     super
   end

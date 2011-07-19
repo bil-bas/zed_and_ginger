@@ -11,7 +11,7 @@ class DynamicObject < GameObject
   end
   
   def update
-      if @velocity_z != 0 or z > 0
+    if @velocity_z != 0 or z > 0
       @velocity_z -= GRAVITY * frame_time
       self.z += @velocity_z
       
@@ -19,8 +19,11 @@ class DynamicObject < GameObject
         self.z = 0
         @velocity_z = 0
       end
+
+      shadow_scale = 0.06 * ((40 - z) / 40.0)
+      @shadow.scale = [shadow_scale, shadow_scale]
     end
-    
+
     @animations.each(&:update)
   end
   

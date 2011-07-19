@@ -3,7 +3,7 @@ require_relative '../map'
 require_relative '../skewed_map'
 
 class Level < Scene 
-  attr_reader :frame_time
+  attr_reader :frame_time, :floor_map
   
   ZOOM = 8
   WALL_MAP_ROWS = 3
@@ -29,19 +29,12 @@ class Level < Scene
     
     create_background 
 
-    # Player's score and time remaining
+    # Player's score, time remaining and progress through the level.
     text_color = Color.new(125, 125, 255)
-    @score = text "0000000", at: [64, 0], font: FONT_NAME, size: FONT_SIZE, color: text_color
-    @score_shadow = text "0000000", at: [66, 2], font: FONT_NAME, size: FONT_SIZE, color: Color.black
-    @timer = text "0'00\"00", at: [490, 0], font: FONT_NAME, size: FONT_SIZE, color: text_color
-    @timer_shadow = text "0'00\"00", at: [492, 2], font: FONT_NAME, size: FONT_SIZE, color: Color.black
-    
-    @progress_back = Polygon.rectangle([0, window.size.height - 16, window.size.width, 16])
-    @progress_back.outline = Color.black
-    @progress_back.outlined = true
-    @progress = Polygon.rectangle([0, window.size.height - 16, window.size.width, 16])
-    @progress.color = Color.new(50, 50, 200)
-    
+    @score = ShadowText.new "0000000", at: [64, 0], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @timer = Timer.new 20, at: [490, 0], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @progress = ProgressBar.new(Rect.new(0, window.size.height - 16, window.size.width, 16))
+
     @last_frame_started_at = Time.now.to_f
       
     init_fps
@@ -81,11 +74,13 @@ class Level < Scene
       @dynamic_objects.each(&:update)
       
       @visible_objects = @dynamic_objects.sort_by(&:z_order)
+
+      @timer.reduce frame_time
           
       @used_time += (Time.now - start_at).to_f
       recalculate_fps
       
-      @progress.scale_x = (@player.position.x.to_f / @wall_map.to_rect.width)
+      @progress.progress = (@player.position.x.to_f / @wall_map.to_rect.width)
 
       window.title = "Pos: (#{@player.x.round}, #{@player.y.round}), FPS: #{@fps.round} [#{@potential_fps.round}]"
     end
@@ -107,12 +102,9 @@ class Level < Scene
         @visible_objects.each {|obj| obj.draw_on win }  
       end
 
-      win.draw @timer_shadow
-      win.draw @timer
-      win.draw @score_shadow
-      win.draw @score
-      win.draw @progress_back
-      win.draw @progress
+      @timer.draw_on win
+      @score.draw_on win
+      @progress.draw_on win
       
       @used_time += (Time.now - start_at).to_f
     end

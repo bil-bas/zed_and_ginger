@@ -5,7 +5,10 @@ class GameObject
   def_delegators :@scene, :window, :frame_time
   def_delegators :@sprite, :x
   
-  attr_reader :scene, :z  
+  attr_reader :scene, :z
+
+  SHADOW_RADIUS = 64
+  SHADOW_WIDTH = SHADOW_RADIUS * 2
   
   def width; @sprite.sprite_width; end
   def pos; Vector2[x, y]; end
@@ -47,14 +50,14 @@ class GameObject
 
   def create_shadow(position)
     unless defined? @@shadow
-      img = Image.new [32, 32]
+      img = Image.new [SHADOW_WIDTH, SHADOW_WIDTH]
       center = img.size / 2
       img.map_with_pos! do |color, x, y|
-        Color.new(0, 0, 0, 120 - Vector2[x, y].distance(center) * 10)
+        Color.new(0, 0, 0, (1 - (Vector2[x, y].distance(center) / SHADOW_RADIUS) ** 2) * 150)
       end
-      @@shadow = sprite img     
-      @@shadow.origin = [16, 16]
-      @@shadow.scale = [0.5, 0.5]      
+      @@shadow = sprite img
+      @@shadow.origin = center
+      @@shadow.scale = [0.06, 0.06]
     end
     
     @shadow = @@shadow.dup

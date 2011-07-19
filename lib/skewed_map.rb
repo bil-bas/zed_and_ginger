@@ -92,19 +92,25 @@ class SkewedTile
   end
 end
 
-class BasicFloor < SkewedTile
+class FloorTile < SkewedTile
+  def speed; 1.0; end
+end
+
+class BasicFloor < FloorTile
   def initialize(grid_position, offset)
     super([0, 0], grid_position, offset)
   end
 end
 
-class SlowFloor < SkewedTile
+class SlowFloor < FloorTile
+  def speed; 0.25; end
+
   def initialize(grid_position, offset)
     super([1, 0], grid_position, offset)
   end
 end
 
-class PipesFloor < SkewedTile
+class PipesFloor < FloorTile
   def initialize(grid_position, offset)
     super([3, 0], grid_position, offset)
   end
