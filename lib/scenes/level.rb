@@ -82,7 +82,9 @@ class Level < Scene
       
       @progress.progress = (@player.position.x.to_f / @wall_map.to_rect.width)
 
-      window.title = "Pos: (#{@player.x.round}, #{@player.y.round}), FPS: #{@fps.round} [#{@potential_fps.round}]"
+      if DEVELOPMENT_MODE
+        window.title = "Pos: (#{@player.x.round}, #{@player.y.round}), FPS: #{@fps.round} [#{@potential_fps.round}]"
+      end
     end
     
     render do |win| 
