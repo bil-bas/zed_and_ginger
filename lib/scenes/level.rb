@@ -9,22 +9,28 @@ class Level < Scene
   
   def setup
     @dynamic_objects = [] # Objects that need #update
-    
-    @wall_map = Map.new [100, 3]
-    @floor_map = SkewedMap.new [100, 6], [0, @wall_map.to_rect.height]
+
+    level_data = File.readlines(File.expand_path(File.join(__FILE__, "../../../config/levels/1.dat")))
+    level_data.map! {|s| s.chomp }
+    @wall_map = Map.new level_data[0, 3]
+    @floor_map = SkewedMap.new level_data[3, 6], [0, @wall_map.to_rect.height]
     
     @camera = window.default_view
     @camera.zoom_by ZOOM
     @camera.center = @camera.size / 2
     
-    @player = Player.new(self, Vector2[24, 40])    
+    @player = Player.new(self, Vector2[64, 40])
       
     @half_size = @camera.rect.size / 2
     
     create_background 
-    
-    @score = text "0000000", at: [64, 0], font: font_path("pixelated.ttf"), size: 48 # Player's score.
-    @timer = text "0'00\"00", at: [400, 0], font: font_path("pixelated.ttf"), size: 48 # Time remaining for the level.
+
+    # Player's score and time remaining
+    text_color = Color.new(125, 125, 255)
+    @score = text "0000000", at: [64, -4], font: font_path("pixelated.ttf"), size: 48, color: text_color
+    @score_shadow = text "0000000", at: [66, -2], font: font_path("pixelated.ttf"), size: 48, color: Color.black
+    @timer = text "0'00\"00", at: [460, -4], font: font_path("pixelated.ttf"), size: 48, color: text_color
+    @timer_shadow = text "0'00\"00", at: [462, -2], font: font_path("pixelated.ttf"), size: 48, color: Color.black
     
     @progress_back = Polygon.rectangle([0, window.size.height - 16, window.size.width, 16])
     @progress_back.outline = Color.black
@@ -96,8 +102,10 @@ class Level < Scene
         @visible_objects.each {|obj| obj.draw_shadow_on win }      
         @visible_objects.each {|obj| obj.draw_on win }  
       end
-      
+
+      win.draw @timer_shadow
       win.draw @timer
+      win.draw @score_shadow
       win.draw @score
       win.draw @progress_back
       win.draw @progress

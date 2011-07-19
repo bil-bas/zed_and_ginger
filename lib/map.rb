@@ -5,13 +5,26 @@ class Map
   
   def to_rect; Rect.new(*@position, @grid_width * Tile::WIDTH, @grid_height * Tile::WIDTH); end
 
-  def initialize(grid_size, position = [0, 0])
+  def initialize(data, position = [0, 0])
     @position = position.to_vector2
-    @grid_width, @grid_height = *grid_size
+    @grid_width, @grid_height = data.first.length, data.size
     @tiles = Array.new(@grid_height) { Array.new(@grid_width) }
-    @grid_height.times do |y|
-      @grid_width.times do |x|
-         @tiles[y][x] = Tile.new [x, y], position
+    data.each_with_index do |row, y|
+      row.each_char.with_index do |char, x|
+        sprite_pos = case char
+                       when '-' # Std wall.
+                         [0, 0]
+                       when 'x' # Tech panel
+                         [1, 0]
+                       when 'o' # Round window
+                         [2, 0]
+                       when '#' # Square window
+                         [3, 0]
+                       else
+                         raise "unknown wall tile: '#{char}'"
+                     end
+
+        @tiles[y][x] = Tile.new sprite_pos, [x, y], @position
       end
     end      
   end
@@ -41,22 +54,11 @@ class Map
         yield tile if tile
       end
     end
-  end 
-  
-  # List of all objects visible in the view.
-  def visible_objects(view)
-    objects = []
-    each_visible(view) {|tile| objects += tile.objects }
-    objects
   end
   
   # Draws all tiles (only) visible in the window.
   def draw_on(window)
     each_visible(window.view) {|tile| tile.draw_on window }
-  end
-  
-  def add_object(object)
-    tile_at_position(object.x, object.y).add_object(object)
   end
 end
 
@@ -66,21 +68,12 @@ class Tile
   
   include Helper
   
-  attr_reader :objects
-  
-  @@sprites = {}
-  
-  def initialize(grid_position, offset)
+  def initialize(sprite_pos, grid_position, offset)
     @sprite = sprite image_path("wall_tiles.png")
     @sprite.sheet_size = [4, 1]
-    @sprite.sheet_pos = [rand(4), 0]
+    @sprite.sheet_pos = sprite_pos
     @sprite.position = grid_position.to_vector2 * SIZE
     @sprite.position += offset
-    @objects = []
-  end
-  
-  def add_object(object)
-    @objects << object
   end
   
   def draw_on(window)
