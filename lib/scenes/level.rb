@@ -14,10 +14,9 @@ class Level < Scene
   def setup
     @dynamic_objects = [] # Objects that need #update
 
-    level_data = File.readlines(File.expand_path(File.join(__FILE__, "../../../config/levels/1.dat")))
-    level_data.map! {|s| s.chomp }
-    @wall_map = Map.new level_data[0, WALL_MAP_ROWS]
-    @floor_map = SkewedMap.new level_data[WALL_MAP_ROWS, FLOOR_MAP_ROWS], [0, @wall_map.to_rect.height]
+    level_data = YAML::load_file(File.expand_path(File.join(__FILE__, "../../../config/levels/1.yml")))
+    @wall_map = Map.new level_data['wall'].split("\n")
+    @floor_map = SkewedMap.new level_data['floor'].split("\n"), [0, @wall_map.to_rect.height]
     
     @camera = window.default_view
     @camera.zoom_by ZOOM
@@ -32,7 +31,7 @@ class Level < Scene
     # Player's score, time remaining and progress through the level.
     text_color = Color.new(125, 125, 255)
     @score = ShadowText.new "0000000", at: [64, 0], font: FONT_NAME, size: FONT_SIZE, color: text_color
-    @timer = Timer.new 20, at: [490, 0], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @timer = Timer.new level_data['time_limit'], at: [490, 0], font: FONT_NAME, size: FONT_SIZE, color: text_color
     @progress = ProgressBar.new(Rect.new(0, window.size.height - 16, window.size.width, 16))
 
     @last_frame_started_at = Time.now.to_f
@@ -63,8 +62,8 @@ class Level < Scene
       
       start_at = now
          
-      # Move the camera to the player position, but don't let the user see over the edge of the map. 
-      @camera.x = [[@player.x, @half_size.w].max, @floor_map.to_rect.width - @half_size.w].min
+      # Move the camera to the player position.
+      @camera.x = @player.x + @camera.rect.width * 0.1
       
       # Checking for collision on the screen is significantly slower than just rendering everything.
       clip_rect = @camera.rect

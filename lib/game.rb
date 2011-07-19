@@ -1,6 +1,7 @@
 DEVELOPMENT_MODE = ARGV.include? "--dev"
 
 require 'ray'
+require 'yaml'
 require 'pry' if DEVELOPMENT_MODE
 
 include Ray
