@@ -6,14 +6,18 @@ class Level < Scene
   attr_reader :frame_time
   
   ZOOM = 8
+  WALL_MAP_ROWS = 3
+  FLOOR_MAP_ROWS = 6
+
+  FONT_SIZE = 32
   
   def setup
     @dynamic_objects = [] # Objects that need #update
 
     level_data = File.readlines(File.expand_path(File.join(__FILE__, "../../../config/levels/1.dat")))
     level_data.map! {|s| s.chomp }
-    @wall_map = Map.new level_data[0, 3]
-    @floor_map = SkewedMap.new level_data[3, 6], [0, @wall_map.to_rect.height]
+    @wall_map = Map.new level_data[0, WALL_MAP_ROWS]
+    @floor_map = SkewedMap.new level_data[WALL_MAP_ROWS, FLOOR_MAP_ROWS], [0, @wall_map.to_rect.height]
     
     @camera = window.default_view
     @camera.zoom_by ZOOM
@@ -27,10 +31,10 @@ class Level < Scene
 
     # Player's score and time remaining
     text_color = Color.new(125, 125, 255)
-    @score = text "0000000", at: [64, -4], font: font_path("pixelated.ttf"), size: 48, color: text_color
-    @score_shadow = text "0000000", at: [66, -2], font: font_path("pixelated.ttf"), size: 48, color: Color.black
-    @timer = text "0'00\"00", at: [460, -4], font: font_path("pixelated.ttf"), size: 48, color: text_color
-    @timer_shadow = text "0'00\"00", at: [462, -2], font: font_path("pixelated.ttf"), size: 48, color: Color.black
+    @score = text "0000000", at: [64, 0], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @score_shadow = text "0000000", at: [66, 2], font: FONT_NAME, size: FONT_SIZE, color: Color.black
+    @timer = text "0'00\"00", at: [490, 0], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @timer_shadow = text "0'00\"00", at: [492, 2], font: FONT_NAME, size: FONT_SIZE, color: Color.black
     
     @progress_back = Polygon.rectangle([0, window.size.height - 16, window.size.width, 16])
     @progress_back.outline = Color.black
@@ -81,7 +85,7 @@ class Level < Scene
       @used_time += (Time.now - start_at).to_f
       recalculate_fps
       
-      @progress.scale_x = (@player.position.x.to_f / @wall_map.to_rect.width) 
+      @progress.scale_x = (@player.position.x.to_f / @wall_map.to_rect.width)
 
       window.title = "Pos: (#{@player.x.round}, #{@player.y.round}), FPS: #{@fps.round} [#{@potential_fps.round}]"
     end

@@ -6,17 +6,15 @@ require 'forwardable'
 
 require_relative 'scenes/level'
 
-def image_path(resource)
-  File.expand_path File.join(File.dirname(__FILE__), '../media/images', resource)
+def media_path(type, resource)
+ File.expand_path File.join(File.dirname(__FILE__), "../media/#{type}", resource)
 end
 
-def sound_path(resource)
-  File.expand_path File.join(File.dirname(__FILE__), '../media/sounds', resource)
-end
+def image_path(resource); media_path('images', resource); end
+def sound_path(resource); media_path('sounds', resource); end
+def font_path(resource); media_path('fonts', resource); end
 
-def font_path(resource)
-  File.expand_path File.join(File.dirname(__FILE__), '../media/fonts', resource)
-end
+FONT_NAME = font_path("pixelated.ttf")
 
 Ray.game "Zed and Ginger", size: [768, 480] do
   register do
