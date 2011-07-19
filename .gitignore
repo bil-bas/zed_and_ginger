@@ -1,0 +1,7 @@
+/.yardoc
+/.idea
+/doc
+/pkg
+/README.html
+/*.log
+/*.exe

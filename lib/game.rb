@@ -1,4 +1,6 @@
 require 'ray'
+require 'pry' if ARGV.include? "--dev"
+
 include Ray
 require 'forwardable'
 
