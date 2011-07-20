@@ -32,6 +32,7 @@ class Level < Scene
     # Player's score, time remaining and progress through the level.
     text_color = Color.new(190, 190, 255)
     score_height = window.size.height - 60
+    @score_background = Polygon.rectangle([0, window.size.height - 48, window.size.width, 48], Color.new(80, 80, 80))
     @score = ShadowText.new "0000000", at: [100, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
     @timer = Timer.new level_data['time_limit'], at: [490, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
     @progress = ProgressBar.new(Rect.new(0, window.size.height - 16, window.size.width, 16))
@@ -105,6 +106,7 @@ class Level < Scene
         @visible_objects.each {|obj| obj.draw_on win }  
       end
 
+      win.draw @score_background
       @timer.draw_on win
       @score.draw_on win
       @progress.draw_on win

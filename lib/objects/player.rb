@@ -25,7 +25,7 @@ class Player < DynamicObject
     @rect = Rect.new(floor_rect.x + floor_rect.width * 0.1,
                      floor_rect.y + FloorTile::HEIGHT * 0.5,
                      floor_rect.width * 0.4,
-                     floor_rect.height - FloorTile::HEIGHT * 2)
+                     floor_rect.height - FloorTile::HEIGHT)
     @velocity = Vector2[0, 0]
 
     walk_animation
@@ -66,7 +66,6 @@ class Player < DynamicObject
     else
       0
     end
-
 
     if z == 0
       if holding? :a or holding? :left
