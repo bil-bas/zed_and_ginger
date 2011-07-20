@@ -1,5 +1,3 @@
-DEVELOPMENT_MODE = ARGV.include? "--dev"
-
 require 'yaml'
 require 'forwardable'
 require 'pry' if DEVELOPMENT_MODE
