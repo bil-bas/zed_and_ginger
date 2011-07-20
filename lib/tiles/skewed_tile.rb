@@ -1,11 +1,44 @@
+module Ray
+  class Matrix
+    class << self
+      def skew_x(skew)
+        new [
+            1, skew, 0, 0,
+            0, 1,    0, 0,
+            0, 0,    1, 0,
+            0, 0,    0, 1,
+        ]
+      end
+
+      def skew_y(skew)
+        new [
+            1,    0, 0, 0,
+            skew, 1, 0, 0,
+            0,    0, 1, 0,
+            0,    0, 0, 1,
+        ]
+      end
+    end
+  end
+
+  class Drawable
+    def skew_x(skew)
+      self.matrix = matrix.multiply_by! Matrix.skew_x(skew)
+    end
+
+    def skew_y(skew)
+      self.matrix = matrix.multiply_by! Matrix.skew_y(skew)
+    end
+  end
+end
+
 class SkewedTile
   extend Forwardable
 
   HEIGHT = 6
   WIDTH = 8
   SIZE = Vector2[WIDTH, HEIGHT]
-  SKEW = WIDTH * 0.25
-  
+
   include Helper
 
   def_delegator :@sprite, :position
@@ -21,7 +54,8 @@ class SkewedTile
     @sprite.sheet_pos = sprite_position
     @sprite.position = grid_position * SIZE
     @sprite.position += offset
-    @sprite.x += grid_position.y * 3 # So they line up diagonally.
+    @sprite.x += grid_position.y * HEIGHT / 2 # So they line up diagonally.
+    @sprite.skew_x(0.5)
     @objects = []
   end
   
