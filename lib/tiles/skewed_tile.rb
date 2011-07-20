@@ -15,12 +15,13 @@ class SkewedTile
   @@sprites = {}
   
   def initialize(sprite_position, grid_position, offset)
+    grid_position = grid_position.to_vector2
     @sprite = sprite image_path("floor_tiles.png")
-    @sprite.sheet_size = [4, 1]
+    @sprite.sheet_size = [8, 1]
     @sprite.sheet_pos = sprite_position
-    @sprite.position = grid_position.to_vector2 * SIZE
+    @sprite.position = grid_position * SIZE
     @sprite.position += offset
-    @sprite.x += grid_position[1] * 3 # So they line up diagonally.
+    @sprite.x += grid_position.y * 3 # So they line up diagonally.
     @objects = []
   end
   
