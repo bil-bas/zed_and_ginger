@@ -20,6 +20,8 @@ def image_path(resource); media_path('images', resource); end
 def sound_path(resource); media_path('sounds', resource); end
 def font_path(resource); media_path('fonts', resource); end
 
+def shader_path(resource); File.expand_path File.join(File.dirname(__FILE__), "../lib/shaders", resource); end
+
 FONT_NAME = font_path("pixelated.ttf")
 
 Ray.game "Zed and Ginger (WASD or ARROWS to move; SPACE to jump)", size: [768, 480] do
