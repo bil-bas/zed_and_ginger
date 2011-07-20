@@ -1,4 +1,8 @@
 class ShadowText
+  extend Forwardable
+
+  def_delegators :@main, :color, :color=
+
   def initialize(string, options = {})
     options = {
         shadow_offset: [2, 2],

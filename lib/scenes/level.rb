@@ -4,7 +4,7 @@ require_relative '../skewed_map'
 
 
 class Level < Scene 
-  attr_reader :frame_time, :floor_map, :player
+  attr_reader :frame_time, :floor_map, :player, :timer
   
   ZOOM = 8
   WALL_MAP_ROWS = 3
@@ -78,8 +78,6 @@ class Level < Scene
       @dynamic_objects.each(&:update)
       
       @visible_objects = @dynamic_objects.sort_by(&:z_order)
-
-      @timer.reduce frame_time
           
       @used_time += (Time.now - start_at).to_f
       recalculate_fps
@@ -101,8 +99,6 @@ class Level < Scene
       win.with_view @camera do
         @wall_map.draw_on(win)
         @floor_map.draw_on(win)
-        
-        clip_rect = @camera.rect
         
         @visible_objects.each {|obj| obj.draw_shadow_on win }      
         @visible_objects.each {|obj| obj.draw_on win }  

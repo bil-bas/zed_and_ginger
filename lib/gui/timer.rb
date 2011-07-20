@@ -1,5 +1,7 @@
 class Timer
-  def complete?; @time_remaining == 0; end
+  COMPLETED_COLOR = Color.red
+
+  def out_of_time?; @time_remaining == 0; end
 
   def initialize(time_remaining, options = {})
     @time_remaining = time_remaining.to_f
@@ -9,6 +11,9 @@ class Timer
 
   def reduce(elapsed)
     @time_remaining = [@time_remaining - elapsed, 0.0].max
+    if out_of_time?
+      @text.color = COMPLETED_COLOR
+    end
     recalculate
   end
 
