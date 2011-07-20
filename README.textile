@@ -1,9 +1,15 @@
 h1. Zed and Ginger
 
-A cat runs! 
-  See the cat run!
-Why does the cat run?
-  To get to the end, of course.
+<pre>
+    A cat runs!
+    See the cat run!
+    Why does the cat run?
+    ...To get to the end, of course.
+</pre>
+
+A single-player game of a cat running along a corridor in a space station just for the joy of it. Based on the classic arcade/8-/16-bit game, Metro-Cross.
+
+Created using the Ruby and the Ray gem.
 
 License: GPL v3
 Author: Bil Bas (http://spooner.github.com) (bil dot bagpuss {at} gmail.com)
