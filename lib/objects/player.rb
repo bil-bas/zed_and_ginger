@@ -37,6 +37,7 @@ class Player < DynamicObject
   def casts_shadow?; true; end
 
   def to_rect; Rect.new(@sprite.x - 5, @sprite.y - 3, 10, 6) end
+  def riding?; !!@riding_on; end
 
   def initialize(scene, position)
     sprite = sprite image_path("player.png"), at: position    
@@ -53,6 +54,7 @@ class Player < DynamicObject
     @velocity = Vector2[0, 0]
 
     @sprite.scale *= 0.75
+    @riding_on = nil
 
     create_animations
   end
@@ -64,7 +66,7 @@ class Player < DynamicObject
 
   def effective_velocity
     velocity = @velocity.dup
-    velocity *= @tile.speed if z == 0 and @tile
+    velocity *= @tile.speed if z == 0 and @tile and not riding?
 
     velocity
   end
@@ -91,27 +93,47 @@ class Player < DynamicObject
       anim.start(@sprite)
     end
   end
+
+  def ride(object)
+    @riding_on = object
+  end
+
+  def stop_riding
+    if riding?
+      @riding_on.dropped
+      @riding_on = nil
+    end
+  end
   
   def register(scene)
     super(scene)
     
     on :key_press, key(:space) do
-      @velocity_z = JUMP_SPEED unless z > 0
+      self.velocity_z = JUMP_SPEED unless z > 0
     end
   end
 
   def dance
     @player_animations[:dancing].update
   end
+
+  def velocity_z=(vely)
+    stop_riding if z != 0
+    super(vely)
+  end
   
   def update
     if @tile.is_a? FinishFloor
+      stop_riding
+
       super
+
       if z > 0
         @sprite.sheet_pos = JUMP_DOWN_SPRITE
       else
         dance
       end
+
       return
     end
 
@@ -138,7 +160,10 @@ class Player < DynamicObject
 
     @tile = scene.floor_map.tile_at_coordinate(position)
 
-    if z == 0
+    if riding?
+      @riding_on.position = [position.x, position.y - 0.00001]
+      @player_animations[:surfing].update
+    elsif z == 0
       # Sitting, running or walking.
       vel = effective_velocity.length
       if vel == 0

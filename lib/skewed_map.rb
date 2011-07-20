@@ -2,7 +2,7 @@
   require_relative "tiles/#{file_name}"
 end
 
-%w[barrel spring].each do |file_name|
+%w[barrel board spring].each do |file_name|
   require_relative "objects/#{file_name}"
 end
 
@@ -31,8 +31,10 @@ class SkewedMap
             [FinishFloor, nil]
           when '^' # Springboard.
             [StandardFloor, Spring]
-          when 'b'
+          when 'b' # Rolling barrel.
             [StandardFloor, Barrel]
+          when 'B' # Surf-board.
+            [StandardFloor, Board]
           else
            raise "Unknown floor tile: '#{char}'"
         end
