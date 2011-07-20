@@ -1,0 +1,65 @@
+h1. Zed and Ginger
+
+A cat runs! 
+  See the cat run!
+Why does the cat run?
+  To get to the end, of course.
+
+License: GPL v3
+Author: Bil Bas (http://spooner.github.com) (bil dot bagpuss {at} gmail.com)
+
+h2. How to run the game
+
+* Windows: <pre>zed_and_ginger.exe</pre>.
+* OS X: <pre>zed_and_ginger.app</pre>
+* Linux: <pre>ruby bin/zed_and_ginger.rbw</pre> (see below under _compatibility_ for requirements).
+
+h2. Compatibility
+
+Runs in a 768x480 window.
+
+* Windows: Native executable (.exe) available.
+* OS X: Native executable (.app) available.
+* Linux: Can run from Ruby source + libraries + Ruby gems 
+  * Install Ruby 1.9.2
+  * Install Ruby gem dependencies <pre>bundle install</pre> (may need to <pre>sudo gem install bundler</pre> beforehand).
+  * <pre>ruby bin/alpha_channel.rbw</pre>
+
+
+h2. Where to get a copy of the game from
+
+* Project: http://github.com/Spooner/zed_and_ginger
+* Downloads (including Windows exe): http://github.com/Spooner/zed_and_ginger/downloads
+* Repository: git://github.com/Spooner/zed_and_ginger.git
+
+
+h2. Tools used
+
+* Ruby 1.9.2
+* Developed using JetBrains RubyMine IDE
+* Sounds created with sfxr and converted to Ogg Vorbis format with Audacity.
+* Windows executable created with the Ocra gem.
+
+
+h2. External assets
+
+* Ray gem (libraries) [Included in executable versions].
+* pixelated.ttf (font by Affinity and Epsilon - benepsilon {at} gmail.com) [INCLUDED]
+
+
+h2. License
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Full text of the license is provided in COPYING.txt
