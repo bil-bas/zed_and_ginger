@@ -7,8 +7,8 @@ class Player < DynamicObject
   DECELERATION = -40
   MIN_SPEED = 0
   MAX_SPEED = 64
-  VERTICAL_SPEED = 16
-  MIN_RUN_VELOCITY = 70 # Above this, run animation; below walk.
+  VERTICAL_SPEED = 25
+  MIN_RUN_VELOCITY = 100 # Above this, run animation; below walk.
   JUMP_SPEED = 1.5 # Z-speed of jumping.
 
   FOUR_FRAME_ANIMATION_DURATION = 1
@@ -140,7 +140,7 @@ class Player < DynamicObject
 
     if z == 0
       # Sitting, running or walking.
-      vel = effective_velocity.x
+      vel = effective_velocity.length
       if vel == 0
         @player_animations[:sitting].update
       elsif vel >= MIN_RUN_VELOCITY
