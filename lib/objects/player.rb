@@ -1,7 +1,7 @@
 require_relative "dynamic_object"
 
 class Player < DynamicObject
-  ANIMATION_DURATION = 1
+  ANIMATION_DURATION = 0.4
 
   ACCELERATION = 40
   DECELERATION = -40
@@ -16,7 +16,7 @@ class Player < DynamicObject
 
   def initialize(scene, position)
     sprite = sprite image_path("player.png"), at: position    
-    sprite.sheet_size = [4, 2]
+    sprite.sheet_size = [4, 4]
     sprite.origin = [sprite.sprite_width / 2, sprite.sprite_height]
 
     super(scene, sprite, position)
@@ -46,7 +46,7 @@ class Player < DynamicObject
   def walk_animation
     @animations.clear
     @animations << sprite_animation(from: [0, 0], to: [3, 0],
-                                    duration: ANIMATION_DURATION / 2.0).start(@sprite)
+                                    duration: ANIMATION_DURATION).start(@sprite)
     @animations.each(&:loop!)          
   end
   
