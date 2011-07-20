@@ -18,6 +18,10 @@ class Spring < DynamicObject
     @activated ? super : -1000
   end
 
+  def collide?(other)
+    super(other) and other.z == 0
+  end
+
   def update
     player = scene.player
 
