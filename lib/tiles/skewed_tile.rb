@@ -1,37 +1,3 @@
-module Ray
-  class Matrix
-    class << self
-      def skew_x(skew)
-        new [
-            1, skew, 0, 0,
-            0, 1,    0, 0,
-            0, 0,    1, 0,
-            0, 0,    0, 1,
-        ]
-      end
-
-      def skew_y(skew)
-        new [
-            1,    0, 0, 0,
-            skew, 1, 0, 0,
-            0,    0, 1, 0,
-            0,    0, 0, 1,
-        ]
-      end
-    end
-  end
-
-  class Drawable
-    def skew_x(skew)
-      self.matrix = matrix.multiply_by! Matrix.skew_x(skew)
-    end
-
-    def skew_y(skew)
-      self.matrix = matrix.multiply_by! Matrix.skew_y(skew)
-    end
-  end
-end
-
 class SkewedTile
   extend Forwardable
 

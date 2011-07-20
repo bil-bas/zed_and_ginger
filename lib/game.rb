@@ -1,16 +1,15 @@
 DEVELOPMENT_MODE = ARGV.include? "--dev"
 
-require 'ray'
 require 'yaml'
+require 'forwardable'
 require 'pry' if DEVELOPMENT_MODE
 
-include Ray
-require 'forwardable'
+require_relative "ray_ext"
 
 require_relative 'scenes/level'
-require_relative 'gui/shadow_text'
-require_relative 'gui/progress_bar'
-require_relative 'gui/timer'
+%w[progress_bar shadow_text timer].each do |filename|
+  require_relative "gui/#{filename}"
+end
 
 def media_path(type, resource)
  File.expand_path File.join(File.dirname(__FILE__), "../media/#{type}", resource)
