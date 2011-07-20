@@ -30,9 +30,10 @@ class Level < Scene
     create_background 
 
     # Player's score, time remaining and progress through the level.
-    text_color = Color.new(125, 125, 255)
-    @score = ShadowText.new "0000000", at: [64, 0], font: FONT_NAME, size: FONT_SIZE, color: text_color
-    @timer = Timer.new level_data['time_limit'], at: [490, 0], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    text_color = Color.new(190, 190, 255)
+    score_height = window.size.height - 60
+    @score = ShadowText.new "0000000", at: [100, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @timer = Timer.new level_data['time_limit'], at: [490, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
     @progress = ProgressBar.new(Rect.new(0, window.size.height - 16, window.size.width, 16))
 
     @last_frame_started_at = Time.now.to_f
