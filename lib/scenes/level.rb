@@ -38,7 +38,9 @@ class Level < Scene
     @progress = ProgressBar.new(Rect.new(0, window.size.height - 16, window.size.width, 16))
 
     @last_frame_started_at = Time.now.to_f
-      
+
+    window.hide_cursor
+
     init_fps
   end
   
