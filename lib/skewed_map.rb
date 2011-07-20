@@ -1,4 +1,4 @@
-%w[glass_floor slow_floor standard_floor].each do |file_name|
+%w[finish_floor glass_floor slow_floor standard_floor].each do |file_name|
   require_relative "tiles/#{file_name}"
 end
 
@@ -27,6 +27,8 @@ class SkewedMap
             [GlassFloor, nil]
           when 's' # Slow.
             [SlowFloor, nil]
+          when 'f' # Finish line.
+            [FinishFloor, nil]
           when '^' # Springboard.
             [StandardFloor, Spring]
           when 'b'

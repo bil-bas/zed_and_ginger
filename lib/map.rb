@@ -12,14 +12,11 @@ class Map
     data.each_with_index do |row, y|
       row.each_char.with_index do |char, x|
         sprite_pos = case char
-                       when '-' # Std wall.
-                         [0, 0]
-                       when 'x' # Tech panel
-                         [1, 0]
-                       when 'o' # Round window
-                         [2, 0]
-                       when '#' # Square window
-                         [3, 0]
+                       when '-' then [0, 0] # Std wall.
+                       when 'x' then [1, 0] # Tech panel
+                       when 'o' then [2, 0] # Round window
+                       when '#' then [3, 0] # Square window
+                       when 'f' then [4, 0] # Finish line
                        else
                          raise "unknown wall tile: '#{char}'"
                      end
@@ -73,7 +70,7 @@ class Tile
   
   def initialize(sprite_pos, grid_position, offset)
     @sprite = sprite image_path("wall_tiles.png")
-    @sprite.sheet_size = [4, 1]
+    @sprite.sheet_size = [8, 1]
     @sprite.sheet_pos = sprite_pos
     @sprite.position = grid_position.to_vector2 * SIZE
     @sprite.position += offset

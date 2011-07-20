@@ -52,6 +52,8 @@ class Player < DynamicObject
                      floor_rect.height - FloorTile::HEIGHT)
     @velocity = Vector2[0, 0]
 
+    @sprite.scale *= 0.75
+
     create_animations
   end
 
@@ -97,8 +99,23 @@ class Player < DynamicObject
       @velocity_z = JUMP_SPEED unless z > 0
     end
   end
+
+  def dance
+    @player_animations[:dancing].update
+  end
   
   def update
+    if @tile.is_a? FinishFloor
+      super
+      if z > 0
+        @sprite.sheet_pos = JUMP_DOWN_SPRITE
+      else
+        dance
+      end
+      return
+    end
+
+    # Move up and down.
     @velocity.y = if holding? :w or holding? :up
       -VERTICAL_SPEED
     elsif holding? :s or holding? :down
@@ -107,28 +124,26 @@ class Player < DynamicObject
       0
     end
 
-    if z == 0
-      if holding? :a or holding? :left
-        @velocity.x += DECELERATION * frame_time
-        @velocity.x = [@velocity.x, MIN_SPEED].max
-      elsif holding? :d or holding? :right
-        @velocity.x += ACCELERATION * frame_time
-        @velocity.x = [@velocity.x, MAX_SPEED].min
-      end
+    # Accelerate and decelerate.
+    if holding? :a or holding? :left
+      @velocity.x += DECELERATION * frame_time
+      @velocity.x = [@velocity.x, MIN_SPEED].max
+    elsif holding? :d or holding? :right
+      @velocity.x += ACCELERATION * frame_time
+      @velocity.x = [@velocity.x, MAX_SPEED].min
     end
 
     self.position += effective_velocity * frame_time
     self.y = [[position.y, @rect.y].max, @rect.y + @rect.height].min
 
     @tile = scene.floor_map.tile_at_coordinate(position)
-    #@tile.touched_by(self) if @tile
 
     if z == 0
       # Sitting, running or walking.
       vel = effective_velocity.x
       if vel == 0
         @player_animations[:sitting].update
-      elsif vel > MIN_RUN_VELOCITY
+      elsif vel >= MIN_RUN_VELOCITY
         @player_animations[:running].duration = (80 - vel) / 20.0
         @player_animations[:running].update
       else
