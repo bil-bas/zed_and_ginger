@@ -8,6 +8,30 @@ class Player < DynamicObject
   MIN_SPEED = 0
   MAX_SPEED = 64
   VERTICAL_SPEED = 16
+  MIN_RUN_VELOCITY = 70 # Above this, run animation; below walk.
+  JUMP_SPEED = 1.5 # Z-speed of jumping.
+
+  FOUR_FRAME_ANIMATION_DURATION = 1
+
+  # 8 frames of walking.
+  WALKING_ANIMATION = [[0, 0], [7, 0]]
+
+  # 8 frames of running.
+  RUNNING_ANIMATION = [[0, 1], [7, 1]]
+
+  # 1 frame sitting.
+  SITTING_ANIMATION = [[0, 2], [3, 2]]
+
+  # 3 frames jumping.
+  JUMP_UP_SPRITE = [4, 2]
+  JUMP_ACROSS_SPRITE = [5, 2]
+  JUMP_DOWN_SPRITE = [6, 2]
+
+  # 4 frames dancing.
+  DANCING_ANIMATION = [[0, 3], [3, 3]]
+
+  # 4 frames surfing.
+  SURFING_ANIMATION = [[0, 4], [3, 4]]
 
   def shadow_shape; Vector2[1.2, 0.6]; end
   def casts_shadow?; true; end
@@ -28,7 +52,7 @@ class Player < DynamicObject
                      floor_rect.height - FloorTile::HEIGHT)
     @velocity = Vector2[0, 0]
 
-    walk_animation
+    create_animations
   end
 
   def screen_offset_x
@@ -43,18 +67,34 @@ class Player < DynamicObject
     velocity
   end
   
-  def walk_animation
-    @animations.clear
-    @animations << sprite_animation(from: [0, 0], to: [7, 0],
-                                    duration: ANIMATION_DURATION).start(@sprite)
-    @animations.each(&:loop!)          
+  def create_animations
+    @player_animations = {}
+
+    [
+        [:sitting, SITTING_ANIMATION, FOUR_FRAME_ANIMATION_DURATION],
+        [:walking, WALKING_ANIMATION, 1], # Duration based on current speed.
+        [:running, RUNNING_ANIMATION, 1], # Duration based on current speed.
+        [:dancing, DANCING_ANIMATION, FOUR_FRAME_ANIMATION_DURATION],
+        [:surfing, SURFING_ANIMATION, FOUR_FRAME_ANIMATION_DURATION],
+    ].each do |name, frames, duration|
+
+
+      @player_animations[name] = sprite_animation(from: frames[0],
+                                                  to: frames[1],
+                                                  duration: duration)
+    end
+
+    @player_animations.each_value do |anim|
+      anim.loop!
+      anim.start(@sprite)
+    end
   end
   
   def register(scene)
     super(scene)
     
     on :key_press, key(:space) do
-      @velocity_z = 1.5 unless z > 0
+      @velocity_z = JUMP_SPEED unless z > 0
     end
   end
   
@@ -82,6 +122,29 @@ class Player < DynamicObject
 
     @tile = scene.floor_map.tile_at_coordinate(position)
     #@tile.touched_by(self) if @tile
+
+    if z == 0
+      # Sitting, running or walking.
+      vel = effective_velocity.x
+      if vel == 0
+        @player_animations[:sitting].update
+      elsif vel > MIN_RUN_VELOCITY
+        @player_animations[:running].duration = (80 - vel) / 20.0
+        @player_animations[:running].update
+      else
+        @player_animations[:walking].duration = (80 - vel) / 20.0
+        @player_animations[:walking].update
+      end
+    else
+      # Jumping up, down or across (last at apex of jump).
+      if @velocity_z > 0.4
+        @sprite.sheet_pos = JUMP_UP_SPRITE
+      elsif @velocity_z < -0.4
+        @sprite.sheet_pos = JUMP_DOWN_SPRITE
+      else
+        @sprite.sheet_pos = JUMP_ACROSS_SPRITE
+      end
+    end
     
     super
   end

@@ -1,7 +1,7 @@
 require_relative "dynamic_object"
 
 class Spring < DynamicObject
-  JUMP_SPEED = 3
+  JUMP_SPEED = 2.8
 
   def to_rect; Rect.new(@sprite.x - 2, @sprite.y - 1, 4, 2) end
 
