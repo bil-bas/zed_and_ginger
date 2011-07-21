@@ -69,6 +69,7 @@ class Player < DynamicObject
     @initial_x = position.x
     sprite = sprite image_path("player.png"), at: position    
     sprite.sheet_size = [8, 5]
+    sprite.sheet_pos = SITTING_ANIMATION.first
     sprite.origin = [sprite.sprite_width * 0.75, sprite.sprite_height]
 
     super(scene, sprite, position)

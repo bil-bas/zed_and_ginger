@@ -64,6 +64,14 @@ class Level < Scene
     init_fps
 
     load_high_scores
+
+    # Setup a few things, so we can show a countdown before playing.
+    @progress.progress = 0
+    @visible_objects = [@player]
+    move_camera
+
+    # TODO: Disabled this, because it was working erratically.
+    #run_scene :ready_set_go, self
   end
 
   def load_high_scores
@@ -133,34 +141,35 @@ class Level < Scene
       pop_scene
     end
 
+    on :focus_loss do
+      # TODO: Disabled this, because it was working erratically.
+      #push_scene :pause, self
+    end
+
     always do
       now = Time.now.to_f
       @frame_time = [now - @last_frame_started_at, 0.1].min
       @last_frame_started_at = now
-      
+
       start_at = now
-         
-      # Move the cameras to the player position (left side, plus an amount asked for from the player).
-      @wall_camera.x = @floor_camera.x =
-          @player.x + (@wall_camera.rect.width / 2) - (@wall_camera.rect.width * @player.screen_offset_x)
-      
+
+      move_camera
+
       # Checking for collision on the screen is significantly slower than just rendering everything.
       @visible_dynamic_objects = @dynamic_objects
-      
+
       # Update visible dynamic objects and stop them moving off the map. Others will just sleep off the side of the map.
       min_x = @player.x - @floor_camera.rect.width * 0.75
       max_x = @player.x + @floor_camera.rect.width
       @visible_objects = @dynamic_objects.select {|o| o.x >= min_x and o.x <= max_x }
       @visible_objects.sort_by!(&:z_order)
       @visible_objects.each(&:update)
-          
-      @used_time += (Time.now - start_at).to_f
-      recalculate_fps
-
 
       @progress.progress = (@player.position.x.to_f - @initial_player_x) / @distance_to_run
-
       @score.string = "%07d" % player.score
+
+      @used_time += (Time.now - start_at).to_f
+      recalculate_fps
 
       if DEVELOPMENT_MODE
         window.title = "Pos: (#{@player.x.round}, #{@player.y.round}), FPS: #{@fps.round} [#{@potential_fps.round}]"
@@ -197,6 +206,12 @@ class Level < Scene
       
       @used_time += (Time.now - start_at).to_f
     end
+  end
+
+  def move_camera
+    # Move the cameras to the player position (left side, plus an amount asked for from the player).
+    @wall_camera.x = @floor_camera.x =
+        @player.x + (@wall_camera.rect.width / 2) - (@wall_camera.rect.width * @player.screen_offset_x)
   end
   
   def init_fps
