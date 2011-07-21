@@ -46,6 +46,7 @@ class Player < DynamicObject
   KNOCKED_OUT_SPRITE = DEAD_SPRITE
 
   attr_accessor :speed_modifier
+  attr_writer :score
 
   def shadow_shape; Vector2[1.2, 0.6]; end
   def casts_shadow?; @state != :squashed; end
@@ -84,6 +85,7 @@ class Player < DynamicObject
     @state = :ok
     @speed_modifier = 1.0
     @score = 0
+    @timer_paused_until = 0
 
     create_animations
   end
@@ -182,6 +184,10 @@ class Player < DynamicObject
     @effect_time_remaining = nil
     @state = :finished
   end
+
+  def pause_timer duration
+    @timer_paused_until = Time.now.to_f + duration
+  end
   
   def update
     if @tile.is_a? FinishFloor
@@ -219,7 +225,9 @@ class Player < DynamicObject
 
       @tile = scene.floor_map.tile_at_coordinate(position)
 
-      scene.timer.reduce frame_time
+      if Time.now.to_f >= @timer_paused_until
+        scene.timer.reduce frame_time
+      end
     end
     
     super

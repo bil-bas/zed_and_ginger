@@ -2,7 +2,7 @@
   require_relative "tiles/#{file_name}"
 end
 
-%w[barrel board spring].each do |file_name|
+%w[barrel board rat spring].each do |file_name|
   require_relative "objects/#{file_name}"
 end
 
@@ -21,6 +21,7 @@ class FloorMap < Map
       when '^' then [StandardFloor, Spring]
       when 'b' then [StandardFloor, Barrel]
       when 'B' then [StandardFloor, Board]
+      when 'r' then [StandardFloor, Rat]
       else
        raise "Unknown floor tile: '#{char}'"
     end
