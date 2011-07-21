@@ -1,12 +1,15 @@
 class PickLevel < Scene
+  BACKGROUND_COLOR = Color.new(0, 100, 50)
+
   def setup
     @levels = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")]
     @levels.map! {|file| File.basename(file).to_i }.sort
 
-    @items = []
-    @items << ShadowText.new("Pick a level", at: [40, 10], font: FONT_NAME, size: 64, shadow_offset: [4, 4])
+    @heading = ShadowText.new("Pick a level", at: [40, 10], font: FONT_NAME, size: 64, shadow_offset: [4, 4])
+
+    @level_buttons = []
     @levels.each_with_index do |level, i|
-      @items << ShadowText.new(level.to_s, at: [60 + i * 60, 110], font: FONT_NAME, size: 32)
+      @level_buttons << Text.new(level.to_s, at: [60 + i * 60, 110], font: FONT_NAME, size: 32)
     end
 
     @cat = sprite image_path("player.png"), at: [100, 200]
@@ -17,14 +20,26 @@ class PickLevel < Scene
     @cat_animation.loop!
     @cat_animation.start(@cat)
     @cat.scale = [16, 16]
-
-    window.hide_cursor
   end
 
   def register
+    # Allow key 1, 2, 3 to start level.
     on :text_entered do |char|
       if char.to_i > 0
         push_scene :level, char.to_i
+      end
+    end
+
+    window.icon = image image_path("window_icon.png")
+
+    # Allow mouse click on numeral to start level.
+    on :mouse_press do |button, pos|
+      if button == :left
+        @level_buttons.each_with_index do |button, i|
+          if button.to_rect.contain? pos
+            push_scene :level, @levels[i]
+          end
+        end
       end
     end
 
@@ -33,8 +48,10 @@ class PickLevel < Scene
     end
 
     render do |win|
-      win.clear Color.new(0, 100, 50)
-      @items.each {|item| item.draw_on win }
+      win.clear BACKGROUND_COLOR
+
+      @heading.draw_on win
+      @level_buttons.each {|item| win.draw item }
 
       win.draw @cat
     end
