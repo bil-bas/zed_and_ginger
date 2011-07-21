@@ -32,7 +32,6 @@ class Spring < DynamicObject
 
     if player.ok? and not @activated and collide? player
       @sprite.sheet_pos = [1, 0]
-      # Todo: Boing sound.
       player.z += 0.000001 # Just so we only collide with ONE spring.
       player.velocity_z = JUMP_Z_SPEED
       @bounce_sound.play
