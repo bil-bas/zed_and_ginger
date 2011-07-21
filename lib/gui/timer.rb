@@ -1,5 +1,6 @@
 class Timer
-  COMPLETED_COLOR = Color.red
+  OUT_OF_TIME_COLOR = Color.red
+  FINISHED_COLOR = Color.new(100, 100, 255)
 
   def out_of_time?; @time_remaining == 0; end
 
@@ -9,10 +10,14 @@ class Timer
     recalculate
   end
 
-  def reduce(elapsed)
+  def reduce(elapsed, options = {})
+    options = {
+        finished: false, # Means the player has finished, so reducing time to 0 is OK.
+    }.merge! options
+
     @time_remaining = [@time_remaining - elapsed, 0.0].max
     if out_of_time?
-      @text.color = COMPLETED_COLOR
+      @text.color = options[:finished] ? FINISHED_COLOR : OUT_OF_TIME_COLOR
     end
     recalculate
   end

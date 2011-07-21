@@ -17,6 +17,9 @@ class Player < DynamicObject
 
   FOUR_FRAME_ANIMATION_DURATION = 1
 
+  SCORE_PER_100_MS = 100
+  SCORE_PER_TILE = 10
+
   # 8 frames of walking.
   WALKING_ANIMATION = [[0, 0], [7, 0]]
 
@@ -51,6 +54,7 @@ class Player < DynamicObject
   def squashed?; @state == :squashed; end
   def dead?; @state == :dead; end
   def finished?; @state == :finished; end
+  def score; ((x - @initial_x).div(8) * SCORE_PER_TILE) + @score; end
 
   def x=(value)
     super(value)
@@ -59,6 +63,7 @@ class Player < DynamicObject
   end
 
   def initialize(scene, position)
+    @initial_x = position.x
     sprite = sprite image_path("player.png"), at: position    
     sprite.sheet_size = [8, 5]
     sprite.origin = [sprite.sprite_width * 0.75, sprite.sprite_height]
@@ -76,6 +81,7 @@ class Player < DynamicObject
     @riding_on = nil
     @state = :ok
     @speed_modifier = 1.0
+    @score = 0
 
     create_animations
   end
@@ -185,6 +191,11 @@ class Player < DynamicObject
         dance
       end
 
+      unless scene.timer.out_of_time?
+        scene.timer.reduce 0.1, finished: true
+        @score += SCORE_PER_100_MS
+      end
+
     elsif scene.timer.out_of_time?
       die unless dead?
 
@@ -263,6 +274,7 @@ class Player < DynamicObject
     end
 
     self.position += effective_velocity * frame_time
+
     self.y = [[position.y, @rect.y].max, @rect.y + @rect.height].min
   end
 end
