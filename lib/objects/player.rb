@@ -186,6 +186,8 @@ class Player < DynamicObject
     @sprite.sheet_pos = DEAD_SPRITE
 
     @sounds[:died].play
+
+    scene.game_over(score)
   end
 
   def finish
@@ -206,7 +208,12 @@ class Player < DynamicObject
         dance
       end
 
-      unless scene.timer.out_of_time?
+      if scene.timer.out_of_time?
+        unless @state == :finished
+          scene.game_over(score)
+          @state == :finished
+        end
+      elsesss
         scene.timer.decrease 0.1, finished: true
         @score += SCORE_PER_100_MS
       end

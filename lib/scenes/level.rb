@@ -11,11 +11,19 @@ class Level < Scene
   FLOOR_MAP_ROWS = 6
 
   FONT_SIZE = 32
-  
+
+  HIGH_SCORE_FILE = File.join(ROOT_PATH, 'high_scores.dat')
+  FIELD_LEVELS = 'levels'
+  FIELD_HIGH_SCORER = 'high-scorer'
+  FIELD_HIGH_SCORE = 'high-score'
+
+  # Hardcoded for now.
+  def level_number; 1; end
+
   def setup
     @dynamic_objects = [] # Objects that need #update
 
-    level_data = YAML::load_file(File.expand_path(File.join(__FILE__, "../../../config/levels/1.yml")))
+    level_data = YAML::load_file(File.expand_path(File.join(__FILE__, "../../../config/levels/#{level_number}.yml")))
     @wall_map = WallMap.new self, level_data['wall'].split("\n")
     @floor_map = FloorMap.new self, level_data['floor'].split("\n")
 
@@ -38,8 +46,9 @@ class Level < Scene
     text_color = Color.new(190, 190, 255)
     score_height = window.size.height - 60
     @score_background = Polygon.rectangle([0, window.size.height - 48, window.size.width, 48], Color.new(80, 80, 80))
-    @score = ShadowText.new "0000000", at: [100, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
-    @timer = Timer.new level_data['time_limit'], at: [490, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @score = ShadowText.new "XXXXXXX", at: [40, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @high_score = ShadowText.new "XXXXXXX", at: [250, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @timer = Timer.new level_data['time_limit'], at: [580, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
     @progress = ProgressBar.new(Rect.new(0, window.size.height - 16, window.size.width, 16))
 
     @last_frame_started_at = Time.now.to_f
@@ -47,6 +56,50 @@ class Level < Scene
     window.hide_cursor
 
     init_fps
+
+    load_high_scores
+  end
+
+  def load_high_scores
+    @high_score_data = if File.exists? HIGH_SCORE_FILE
+      YAML::load_file(HIGH_SCORE_FILE)
+    else
+      {
+          FIELD_LEVELS => {}
+      }
+    end
+
+    @high_score_data[FIELD_LEVELS][level_number] ||= {
+        FIELD_HIGH_SCORE => 0,
+        FIELD_HIGH_SCORER => 'NOP',
+    }
+
+    update_high_score
+  end
+
+  def update_high_score
+    @high_score.string = "%07d" % [high_score]
+  end
+
+  def game_over(score)
+    if score > high_score
+      @high_score_data[FIELD_LEVELS][level_number] = {
+          FIELD_HIGH_SCORE => score,
+          FIELD_HIGH_SCORER => 'NOP'
+      }
+
+      update_high_score
+
+      File.open(HIGH_SCORE_FILE, "w") {|f| f.puts @high_score_data.to_yaml }
+    end
+  end
+
+  def high_score
+    @high_score_data[FIELD_LEVELS][level_number][FIELD_HIGH_SCORE] || 0
+  end
+
+  def high_scorer
+    @high_score_data[FIELD_LEVELS][level_number][FIELD_HIGH_SCORER] || 0
   end
   
   def create_background
@@ -122,6 +175,7 @@ class Level < Scene
       win.draw @score_background
       @timer.draw_on win
       @score.draw_on win
+      @high_score.draw_on win
       @progress.draw_on win
       
       @used_time += (Time.now - start_at).to_f
