@@ -10,7 +10,7 @@ class Level < Scene
   WALL_MAP_ROWS = 3
   FLOOR_MAP_ROWS = 6
 
-  FONT_SIZE = 32
+  FONT_SIZE = 30
 
   HIGH_SCORE_FILE = File.join(ROOT_PATH, 'high_scores.dat')
   FIELD_LEVELS = 'levels'
@@ -45,11 +45,12 @@ class Level < Scene
 
     # Player's score, time remaining and progress through the level.
     text_color = Color.new(190, 190, 255)
-    score_height = window.size.height - 60
+    score_height = window.size.height - 58
     @score_background = Polygon.rectangle([0, window.size.height - 48, window.size.width, 48], Color.new(80, 80, 80))
-    @score = ShadowText.new "XXXXXXX", at: [40, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
-    @high_score = ShadowText.new "XXXXXXX", at: [250, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
-    @timer = Timer.new level_data['time_limit'], at: [580, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @level_text = ShadowText.new "L %02d" % level_number, at: [30, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @high_score = ShadowText.new "XXXXXXX", at: [160, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @score = ShadowText.new "XXXXXXX", at: [390, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @timer = Timer.new level_data['time_limit'], at: [610, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
     @progress = ProgressBar.new(Rect.new(0, window.size.height - 16, window.size.width, 16))
 
     @last_frame_started_at = Time.now.to_f
@@ -118,7 +119,11 @@ class Level < Scene
     @dynamic_objects << object
   end
   
-  def register   
+  def register
+    on :key_press, key(:escape) do
+      pop_scene
+    end
+
     always do
       now = Time.now.to_f
       @frame_time = [now - @last_frame_started_at, 0.1].min
@@ -174,6 +179,7 @@ class Level < Scene
       end
 
       win.draw @score_background
+      @level_text.draw_on win
       @timer.draw_on win
       @score.draw_on win
       @high_score.draw_on win

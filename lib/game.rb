@@ -28,7 +28,6 @@ SCENE_CLASSES = [Level, PickLevel]
 Ray.game "Zed and Ginger (WASD or ARROWS to move; SPACE to jump)", size: [768, 480] do
   register do
     on :quit, &method(:exit!)
-    on :key_press, key(:escape), &method(:exit!)
   end
 
   SCENE_CLASSES.each {|s| s.bind(self) }
