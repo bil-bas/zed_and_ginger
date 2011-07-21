@@ -10,7 +10,7 @@ class Timer
     recalculate
   end
 
-  def reduce(elapsed, options = {})
+  def decrease(elapsed, options = {})
     options = {
         finished: false, # Means the player has finished, so reducing time to 0 is OK.
     }.merge! options
@@ -20,6 +20,10 @@ class Timer
       @text.color = options[:finished] ? FINISHED_COLOR : OUT_OF_TIME_COLOR
     end
     recalculate
+  end
+
+  def increase(time)
+    @time_remaining += time
   end
 
   def draw_on(win)

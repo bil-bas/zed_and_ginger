@@ -5,7 +5,7 @@ class Rat < DynamicObject
   CHASED_SPRITE = [1, 0]
   SQUASHED_SPRITE = [2, 0]
 
-  SQUASHED_TIMER_PAUSE = 1
+  SQUASHED_EXTRA_TIME = 1 # Extra 1 second when you squash/eat the mouse.
   TOUCHED_SCORE = 100
   RUN_SPEED = -40
 
@@ -42,7 +42,7 @@ class Rat < DynamicObject
     if player.ok? and collide? player and @state == :ok
       if player.velocity_z < 0
         @sprite.sheet_pos = SQUASHED_SPRITE
-        player.pause_timer SQUASHED_TIMER_PAUSE
+        scene.timer.increase SQUASHED_EXTRA_TIME
         @state = :squashed
         @sprite.y += 2
         @sounds[:squashed].play

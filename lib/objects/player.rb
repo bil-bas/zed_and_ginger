@@ -85,7 +85,6 @@ class Player < DynamicObject
     @state = :ok
     @speed_modifier = 1.0
     @score = 0
-    @timer_paused_until = 0
 
     @sounds = {}
     [:died, :jump, :squashed].each do |sound|
@@ -196,10 +195,6 @@ class Player < DynamicObject
     @effect_time_remaining = nil
     @state = :finished
   end
-
-  def pause_timer duration
-    @timer_paused_until = Time.now.to_f + duration
-  end
   
   def update
     if @tile.is_a? FinishFloor
@@ -212,7 +207,7 @@ class Player < DynamicObject
       end
 
       unless scene.timer.out_of_time?
-        scene.timer.reduce 0.1, finished: true
+        scene.timer.decrease 0.1, finished: true
         @score += SCORE_PER_100_MS
       end
 
@@ -237,9 +232,7 @@ class Player < DynamicObject
 
       @tile = scene.floor_map.tile_at_coordinate(position)
 
-      if Time.now.to_f >= @timer_paused_until
-        scene.timer.reduce frame_time
-      end
+      scene.timer.decrease frame_time
     end
     
     super
