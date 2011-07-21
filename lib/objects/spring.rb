@@ -12,6 +12,10 @@ class Spring < DynamicObject
     sprite.origin = Vector2[sprite.sprite_width, sprite.sprite_height] / 2 + [-1, 0.5]
 
     @activated = false
+
+    @bounce_sound = sound sound_path "spring_bounce.ogg"
+    @bounce_sound.volume = 30
+
     super(scene, sprite, position)
   end
 
@@ -31,6 +35,7 @@ class Spring < DynamicObject
       # Todo: Boing sound.
       player.z += 0.000001 # Just so we only collide with ONE spring.
       player.velocity_z = JUMP_Z_SPEED
+      @bounce_sound.play
       player.speed_modifier = JUMP_SPEED_MODIFIER
       @activated = true
     end

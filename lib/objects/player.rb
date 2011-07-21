@@ -87,6 +87,12 @@ class Player < DynamicObject
     @score = 0
     @timer_paused_until = 0
 
+    @sounds = {}
+    [:died, :jump, :squashed].each do |sound|
+      @sounds[sound] = sound sound_path "player_#{sound}.ogg"
+    end
+    @sounds.each_value {|s| s.volume = 30 }
+
     create_animations
   end
 
@@ -106,6 +112,7 @@ class Player < DynamicObject
     self.velocity_z = 0
     @effect_time_remaining = 2
     self.y += SQUASH_OFFSET_Y
+    @sounds[:squashed].play
   end
 
   def unsquash
@@ -156,7 +163,10 @@ class Player < DynamicObject
     super(scene)
     
     on :key_press, key(:space) do
-      self.velocity_z = JUMP_SPEED if z == 0 and ok?
+      if z == 0 and ok?
+        @sounds[:jump].play
+        self.velocity_z = JUMP_SPEED
+      end
     end
   end
 
@@ -175,6 +185,8 @@ class Player < DynamicObject
     @state = :dead
     @effect_time_remaining = nil
     @sprite.sheet_pos = DEAD_SPRITE
+
+    @sounds[:died].play
   end
 
   def finish

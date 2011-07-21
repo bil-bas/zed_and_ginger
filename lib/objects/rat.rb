@@ -2,7 +2,7 @@ require_relative "dynamic_object"
 
 class Rat < DynamicObject
   OK_SPRITE = [0, 0]
-  RUNNING_SPRITE = [1, 0]
+  CHASED_SPRITE = [1, 0]
   SQUASHED_SPRITE = [2, 0]
 
   SQUASHED_TIMER_PAUSE = 1
@@ -24,7 +24,13 @@ class Rat < DynamicObject
 
     super(scene, sprite, position)
 
-    @shadow.scale *= [0.3, 0.3]
+    @sounds = {}
+    [:chased, :squashed].each do |sound|
+      @sounds[sound] = sound sound_path "rat_#{sound}.ogg"
+    end
+    @sounds.each_value {|s| s.volume = 30 }
+
+    @shadow.scale *= [0.4, 0.2]
   end
 
   def collide?(other)
@@ -38,15 +44,17 @@ class Rat < DynamicObject
         @sprite.sheet_pos = SQUASHED_SPRITE
         player.pause_timer SQUASHED_TIMER_PAUSE
         @state = :squashed
-        @sprite.origin.y -= 3
+        @sprite.y += 2
+        @sounds[:squashed].play
       else
-        @sprite.sheet_pos = RUNNING_SPRITE
+        @sprite.sheet_pos = CHASED_SPRITE
         player.score += TOUCHED_SCORE
-        @state = :running
+        @state = :chased
+        @sounds[:chased].play
         @speed = RUN_SPEED
       end
     end
 
-    self.x += @speed * frame_time if @state == :running
+    self.x += @speed * frame_time if @state == :chased
   end
 end
