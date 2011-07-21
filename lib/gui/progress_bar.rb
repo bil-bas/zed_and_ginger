@@ -8,9 +8,8 @@ class ProgressBar
     @progress.color = Color.new(50, 50, 200)
   end
 
-  def progress=(progress)
-    @progress.scale_x = progress
-  end
+  def progress; @progress.scale_x; end
+  def progress=(progress); @progress.scale_x = progress; end
 
   def draw_on(window)
     window.draw @background

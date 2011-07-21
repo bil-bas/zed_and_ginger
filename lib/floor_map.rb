@@ -11,6 +11,11 @@ class FloorMap < Map
     super(FloorTile.size, scene, data, position)
   end
 
+  def finish_line_x
+    finish_tile = @tiles[0].find {|t| t.is_a? FinishFloor }
+    finish_tile.x
+  end
+
   def create_tile(char, grid_position)
     # Create the tile and, optionally, also create an object on that tile.
     tile_class, object_class = case char

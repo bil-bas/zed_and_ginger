@@ -40,7 +40,9 @@ class Level < Scene
     @floor_camera.y -= @wall_map.to_rect.height
     
     @player = Player.new(self, Vector2[FloorTile.width * 5.5, FloorTile.height * 2.5])
-      
+    @initial_player_x = player.x
+    @distance_to_run = @floor_map.finish_line_x - @initial_player_x
+
     @half_size = @wall_camera.rect.size / 2
     
     create_background 
@@ -154,8 +156,9 @@ class Level < Scene
           
       @used_time += (Time.now - start_at).to_f
       recalculate_fps
-      
-      @progress.progress = (@player.position.x.to_f / @wall_map.to_rect.width)
+
+
+      @progress.progress = (@player.position.x.to_f - @initial_player_x) / @distance_to_run
 
       @score.string = "%07d" % player.score
 
