@@ -1,7 +1,8 @@
 require_relative "dynamic_object"
 
 class Spring < DynamicObject
-  JUMP_SPEED = 2.8
+  JUMP_Z_SPEED = 2
+  JUMP_SPEED_MODIFIER = 1.3
 
   def to_rect; Rect.new(*(@position - [2, 2]), 4, 4) end
 
@@ -29,7 +30,8 @@ class Spring < DynamicObject
       @sprite.sheet_pos = [1, 0]
       # Todo: Boing sound.
       player.z += 0.000001 # Just so we only collide with ONE spring.
-      player.velocity_z = JUMP_SPEED
+      player.velocity_z = JUMP_Z_SPEED
+      player.speed_modifier = JUMP_SPEED_MODIFIER
       @activated = true
     end
 

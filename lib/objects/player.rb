@@ -45,6 +45,8 @@ class Player < DynamicObject
   SQUASHED_SPRITE = [1, 4]
   KNOCKED_OUT_SPRITE = DEAD_SPRITE
 
+  attr_accessor :speed_modifier
+
   def shadow_shape; Vector2[1.2, 0.6]; end
   def casts_shadow?; @state != :squashed; end
   def z_order; (@state == :squashed) ? 0 : super; end
