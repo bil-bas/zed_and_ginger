@@ -10,6 +10,8 @@ class EnterName < Scene
 
     @entry = text BLANK_CHAR * MAX_CHARS, at: [250, 60], font: FONT_NAME, size: 90
     @entry_background = Polygon.rectangle([215, 100, 275, 75], Color.new(0, 0, 0, 200))
+
+    @key_press_sound = sound sound_path("key_press.ogg")
   end
 
   def register
@@ -24,6 +26,7 @@ class EnterName < Scene
             name = @entry.string
             name[first_blank_index] = char
             @entry.string = name
+            @key_press_sound.play
           end
       end
     end
@@ -51,6 +54,8 @@ class EnterName < Scene
   def accept_name
     unless @entry.string.include? BLANK_CHAR
       @set_name_proc.call @entry.string
+      @key_press_sound.play
+
       pop_scene
     end
   end
@@ -61,6 +66,8 @@ class EnterName < Scene
         name = @entry.string
         name[MAX_CHARS - 1 - i] = BLANK_CHAR
         @entry.string = name
+
+        @key_press_sound.play
 
         break
       end
