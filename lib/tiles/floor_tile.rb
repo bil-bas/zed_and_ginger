@@ -13,6 +13,8 @@ class FloorTile < Tile
   def initialize(sprite_position, grid_position, offset)
     super(image_path("floor_tiles.png"), sprite_position, grid_position, offset)
     @sprite.x += grid_position.y * height * SKEW
-    @sprite.skew_x(SKEW)
+    @sprite.scale_y = height / width.to_f
+    @sprite.skew_x(SKEW * 0.75)
+    # TODO: This is fudged because the matrix gets messed up by the scaling.
   end
 end

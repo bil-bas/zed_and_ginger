@@ -13,6 +13,7 @@ class Player < DynamicObject
 
   RIDING_OFFSET_X = -2 # Move ridden object back, since we have our origin far forward.
   SHADOW_OFFSET_X = -2
+  SQUASH_OFFSET_Y = 3 # Distance moved when squashed.
 
   FOUR_FRAME_ANIMATION_DURATION = 1
 
@@ -30,20 +31,24 @@ class Player < DynamicObject
   JUMP_ACROSS_SPRITE = [5, 2]
   JUMP_DOWN_SPRITE = [6, 2]
 
-  # 1 dead frame.
-  DEAD_SPRITE = [7, 2]
-
   # 4 frames dancing.
   DANCING_ANIMATION = [[0, 3], [3, 3]]
 
   # 4 frames surfing.
-  SURFING_ANIMATION = [[0, 4], [3, 4]]
+  SURFING_ANIMATION = [[4, 3], [7, 3]]
+
+  # 1 dead frame.
+  DEAD_SPRITE = [0, 4]
+  SQUASHED_SPRITE = [1, 4]
+  KNOCKED_OUT_SPRITE = DEAD_SPRITE
 
   def shadow_shape; Vector2[1.2, 0.6]; end
-  def casts_shadow?; true; end
-
-  def to_rect; Rect.new(@sprite.x - 5, @sprite.y - 3, 10, 6) end
+  def casts_shadow?; @state != :squashed; end
+  def z_order; (@state == :squashed) ? 0 : super; end
+  def to_rect; Rect.new(*(@position - [3, 2]), 6, 4) end
   def riding?; !!@riding_on; end
+  def ok?; @state == :ok; end
+  def squashed?; @state == :squashed; end
 
   def x=(value)
     super(value)
@@ -67,6 +72,7 @@ class Player < DynamicObject
 
     @sprite.scale *= 0.75
     @riding_on = nil
+    @state = :ok
 
     create_animations
   end
@@ -81,6 +87,25 @@ class Player < DynamicObject
     velocity *= @tile.speed if z == 0 and @tile and not riding?
 
     velocity
+  end
+
+  def squash
+    @state = :squashed
+    @sprite.sheet_pos = SQUASHED_SPRITE
+    self.z = 0
+    self.velocity_z = 0
+    @effect_time_remaining = 2
+    self.y += SQUASH_OFFSET_Y
+  end
+
+  def unsquash
+    self.y -= SQUASH_OFFSET_Y
+  end
+
+  def knock_out
+    @state = :knocked_out
+    @sprite.sheet_pos = KNOCKED_OUT_SPRITE
+    @effect_time_remaining = 2
   end
   
   def create_animations
@@ -152,59 +177,78 @@ class Player < DynamicObject
       @sprite.sheet_pos = DEAD_SPRITE
 
     else
-      # Move up and down.
-      @velocity.y = if holding? :w or holding? :up
-        -VERTICAL_SPEED
-      elsif holding? :s or holding? :down
-        +VERTICAL_SPEED
+      if @state == :ok
+        update_physics
+        update_animations
       else
-        0
+        @effect_time_remaining -= frame_time
+        if @effect_time_remaining <= 0
+          case @state
+            when :squashed then unsquash
+            else
+              raise "Bad state: #{state.inspect}"
+          end
+          @state = :ok
+        end
       end
-
-      # Accelerate and decelerate.
-      if holding? :a or holding? :left
-        @velocity.x += DECELERATION * frame_time
-        @velocity.x = [@velocity.x, MIN_SPEED].max
-      elsif holding? :d or holding? :right
-        @velocity.x += ACCELERATION * frame_time
-        @velocity.x = [@velocity.x, MAX_SPEED].min
-      end
-
-      self.position += effective_velocity * frame_time
-      self.y = [[position.y, @rect.y].max, @rect.y + @rect.height].min
 
       @tile = scene.floor_map.tile_at_coordinate(position)
-
-      if riding?
-        # Move back, since our center is a bit forward on the sprite.
-        @riding_on.position = [position.x + RIDING_OFFSET_X, position.y - 0.00001]
-        @player_animations[:surfing].update
-      elsif z == 0
-        # Sitting, running or walking.
-        vel = effective_velocity.length
-        if vel == 0
-          @player_animations[:sitting].update
-        elsif vel >= MIN_RUN_VELOCITY
-          @player_animations[:running].duration = (80 - vel) / 20.0
-          @player_animations[:running].update
-        else
-          @player_animations[:walking].duration = (80 - vel) / 20.0
-          @player_animations[:walking].update
-        end
-      else
-        # Jumping up, down or across (last at apex of jump).
-        if @velocity_z > 0.4
-          @sprite.sheet_pos = JUMP_UP_SPRITE
-        elsif @velocity_z < -0.4
-          @sprite.sheet_pos = JUMP_DOWN_SPRITE
-        else
-          @sprite.sheet_pos = JUMP_ACROSS_SPRITE
-        end
-      end
 
       scene.timer.reduce frame_time
     end
     
     super
+  end
+
+  def update_animations
+    if riding?
+      # Move back, since our center is a bit forward on the sprite.
+      @riding_on.position = [position.x + RIDING_OFFSET_X, position.y - 0.00001]
+      @player_animations[:surfing].update
+    elsif z == 0
+      # Sitting, running or walking.
+      vel = effective_velocity.length
+      if vel == 0
+        @player_animations[:sitting].update
+      elsif vel >= MIN_RUN_VELOCITY
+        @player_animations[:running].duration = (80 - vel) / 20.0
+        @player_animations[:running].update
+      else
+        @player_animations[:walking].duration = (80 - vel) / 20.0
+        @player_animations[:walking].update
+      end
+    else
+      # Jumping up, down or across (last at apex of jump).
+      if @velocity_z > 0.4
+        @sprite.sheet_pos = JUMP_UP_SPRITE
+      elsif @velocity_z < -0.4
+        @sprite.sheet_pos = JUMP_DOWN_SPRITE
+      else
+        @sprite.sheet_pos = JUMP_ACROSS_SPRITE
+      end
+    end
+  end
+
+  def update_physics
+    # Move up and down.
+    @velocity.y = if holding? :w or holding? :up
+      -VERTICAL_SPEED
+    elsif holding? :s or holding? :down
+      +VERTICAL_SPEED
+    else
+      0
+    end
+
+    # Accelerate and decelerate.
+    if holding? :a or holding? :left
+      @velocity.x += DECELERATION * frame_time
+      @velocity.x = [@velocity.x, MIN_SPEED].max
+    elsif holding? :d or holding? :right
+      @velocity.x += ACCELERATION * frame_time
+      @velocity.x = [@velocity.x, MAX_SPEED].min
+    end
+
+    self.position += effective_velocity * frame_time
+    self.y = [[position.y, @rect.y].max, @rect.y + @rect.height].min
   end
 end

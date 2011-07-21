@@ -109,7 +109,10 @@ class Level < Scene
         @floor_map.draw_on(win)
         
         @visible_objects.each {|obj| obj.draw_shadow_on win }      
-        @visible_objects.each {|obj| obj.draw_on win }  
+        @visible_objects.each {|obj| obj.draw_on win }
+        if DEVELOPMENT_MODE
+          @visible_objects.each {|obj| obj.draw_debug_on win }
+        end
       end
 
       win.draw @score_background

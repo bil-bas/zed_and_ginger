@@ -26,7 +26,9 @@ class FloorMap < Map
     end
 
     tile = tile_class.new grid_position, @position
-    obj = object_class.new(scene, tile.position + tile_size / 2) if object_class
+
+    # Place an object into the center of the new tile.
+    object_class.new(scene, (grid_position  + [0.5, 0.5]) * tile_size) if object_class
 
     tile
   end

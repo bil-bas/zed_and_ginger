@@ -3,7 +3,7 @@ require_relative "dynamic_object"
 class Spring < DynamicObject
   JUMP_SPEED = 2.8
 
-  def to_rect; Rect.new(@sprite.x - 2, @sprite.y - 1, 4, 2) end
+  def to_rect; Rect.new(*(@position - [2, 2]), 4, 4) end
 
   def initialize(scene, position)
     sprite = sprite image_path("spring.png"), at: position
@@ -25,7 +25,7 @@ class Spring < DynamicObject
   def update
     player = scene.player
 
-    if not @activated and collide? player
+    if player.ok? and not @activated and collide? player
       @sprite.sheet_pos = [1, 0]
       # Todo: Boing sound.
       player.z += 0.000001 # Just so we only collide with ONE spring.

@@ -32,6 +32,7 @@ class GameObject
     change_y = value - y
 
     @position.y = value
+
     @sprite.y = value - @z
     @sprite.x += change_y / 2.0
 
@@ -47,14 +48,17 @@ class GameObject
   end
   
   def initialize(scene, sprite, position) 
-    @sprite, @position = sprite, position.to_vector2
+    @sprite = sprite
+    @position = Vector2[0, 0] # Will be set properly later.
     @z = 0 
     
     create_shadow(position)
     
     scene.add_object(self)
 
-    register(scene)   
+    register(scene)
+
+    self.position = position
   end
 
   def create_shadow(position)
@@ -77,14 +81,30 @@ class GameObject
     self.event_runner = scene.event_runner
     @scene            = scene
   end
-  
+
   def to_rect
-    width = @sprite.sprite_width
-    Rect.new(x - @sprite.origin.x, y - @sprite.origin.y, width, width)
+    half_width = @sprite.sprite_width
+    Rect.new(*(@position - [half_width, half_width]), width, width)
   end
   
   def draw_on(win)
     win.draw @sprite
+  end
+
+  def draw_debug_on(win)
+    # Draw collision rectangle.
+    rect = Polygon.rectangle(to_rect)
+    rect.outlined = true
+    rect.outline = Color.new(255, 0, 0, 100)
+    rect.outline_width = 0.25
+    rect.filled = false
+    rect.skew_x(0.5)
+    win.draw rect
+
+    # Draw origin.
+    origin = Polygon.rectangle([*position - [0.25, 0.25], 0.5, 0.5], Color.new(0, 0, 255, 100))
+    origin.skew_x(0.5)
+    win.draw origin
   end
   
   def draw_shadow_on(win)
