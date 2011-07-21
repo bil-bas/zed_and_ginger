@@ -11,6 +11,9 @@ class Player < DynamicObject
   MIN_RUN_VELOCITY = 100 # Above this, run animation; below walk.
   JUMP_SPEED = 1.5 # Z-speed of jumping.
 
+  RIDING_OFFSET_X = -2 # Move ridden object back, since we have our origin far forward.
+  SHADOW_OFFSET_X = -2
+
   FOUR_FRAME_ANIMATION_DURATION = 1
 
   # 8 frames of walking.
@@ -41,6 +44,12 @@ class Player < DynamicObject
 
   def to_rect; Rect.new(@sprite.x - 5, @sprite.y - 3, 10, 6) end
   def riding?; !!@riding_on; end
+
+  def x=(value)
+    super(value)
+    @shadow.x += SHADOW_OFFSET_X
+    value
+  end
 
   def initialize(scene, position)
     sprite = sprite image_path("player.png"), at: position    
@@ -167,7 +176,8 @@ class Player < DynamicObject
       @tile = scene.floor_map.tile_at_coordinate(position)
 
       if riding?
-        @riding_on.position = [position.x, position.y - 0.00001]
+        # Move back, since our center is a bit forward on the sprite.
+        @riding_on.position = [position.x + RIDING_OFFSET_X, position.y - 0.00001]
         @player_animations[:surfing].update
       elsif z == 0
         # Sitting, running or walking.
