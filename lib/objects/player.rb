@@ -49,6 +49,8 @@ class Player < DynamicObject
   def riding?; !!@riding_on; end
   def ok?; @state == :ok; end
   def squashed?; @state == :squashed; end
+  def dead?; @state == :dead; end
+  def finished?; @state == :finished; end
 
   def x=(value)
     super(value)
@@ -73,6 +75,7 @@ class Player < DynamicObject
     @sprite.scale *= 0.75
     @riding_on = nil
     @state = :ok
+    @speed_modifier = 1.0
 
     create_animations
   end
@@ -83,10 +86,7 @@ class Player < DynamicObject
   end
 
   def effective_velocity
-    velocity = @velocity.dup
-    velocity *= @tile.speed if z == 0 and @tile and not riding?
-
-    velocity
+    @velocity * @speed_modifier
   end
 
   def squash
@@ -146,7 +146,7 @@ class Player < DynamicObject
     super(scene)
     
     on :key_press, key(:space) do
-      self.velocity_z = JUMP_SPEED unless z > 0
+      self.velocity_z = JUMP_SPEED if z == 0 and ok?
     end
   end
 
@@ -158,11 +158,26 @@ class Player < DynamicObject
     stop_riding if vely != 0
     super(vely)
   end
+
+  def die
+    stop_riding if riding?
+
+    @state = :dead
+    @effect_time_remaining = nil
+    @sprite.sheet_pos = DEAD_SPRITE
+  end
+
+  def finish
+    # Got to the end! Whee!
+    stop_riding if riding?
+
+    @effect_time_remaining = nil
+    @state = :finished
+  end
   
   def update
     if @tile.is_a? FinishFloor
-      # Got to the end! Whee!
-      stop_riding
+      finish unless finished?
 
       if z > 0
         @sprite.sheet_pos = JUMP_DOWN_SPRITE
@@ -171,16 +186,13 @@ class Player < DynamicObject
       end
 
     elsif scene.timer.out_of_time?
-      # Out of time. Game over :(
-      stop_riding
-
-      @sprite.sheet_pos = DEAD_SPRITE
+      die unless dead?
 
     else
       if @state == :ok
         update_physics
         update_animations
-      else
+      elsif @effect_time_remaining
         @effect_time_remaining -= frame_time
         if @effect_time_remaining <= 0
           case @state
@@ -230,6 +242,8 @@ class Player < DynamicObject
   end
 
   def update_physics
+    @speed_modifier = @tile.speed if @tile and z == 0 and not riding?
+
     # Move up and down.
     @velocity.y = if holding? :w or holding? :up
       -VERTICAL_SPEED
