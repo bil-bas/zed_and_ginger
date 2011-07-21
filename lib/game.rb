@@ -31,5 +31,5 @@ Ray.game "Zed and Ginger (WASD or ARROWS to move; SPACE to jump)", size: [768, 4
   end
 
   SCENE_CLASSES.each {|s| s.bind(self) }
-  scenes << :pick_level
+  scenes << :pick_level unless defined? Ocra
 end
