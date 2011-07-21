@@ -1,0 +1,32 @@
+---
+
+time_limit: 5.0
+
+wall: |
+  ------------------------------f-------
+  -----##----###--x-x--###------f-------
+  ------------------------------f-------
+
+
+floor: |
+  ..............................f.......
+  ..............................f.......
+  ...............B..............f.......
+  ..............................f.......
+  ..............................f.......
+
+#  Wall key:
+#    - wall
+#    # square window
+#    x tech panel
+#    o porthole
+#
+#  Floor key:
+#    . StandardFloor
+#    _ GlassFloor (window)
+#    f FinishFloor
+#    s SlowFloor
+#    = PipesFloor
+#    ^ Std + Spring
+#    b Std + Barrel
+#    B Std + Board

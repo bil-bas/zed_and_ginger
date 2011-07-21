@@ -17,10 +17,11 @@ class Level < Scene
   FIELD_HIGH_SCORER = 'high-scorer'
   FIELD_HIGH_SCORE = 'high-score'
 
-  # Hardcoded for now.
-  def level_number; 1; end
+  attr_reader :level_number
 
-  def setup
+  def setup(level_number)
+    @level_number = level_number
+
     @dynamic_objects = [] # Objects that need #update
 
     level_data = YAML::load_file(File.expand_path(File.join(__FILE__, "../../../config/levels/#{level_number}.yml")))
