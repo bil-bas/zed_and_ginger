@@ -3,7 +3,7 @@ class GameObject
   include Helper
   
   def_delegators :@scene, :window, :frame_time
-  def_delegators :@sprite, :x
+  def_delegators :@position, :x, :y
   
   attr_reader :scene, :z
 
@@ -14,21 +14,30 @@ class GameObject
   def width; @sprite.sprite_width; end
   def pos; Vector2[x, y]; end
   alias_method :position, :pos 
-  def pos=(pos)
+  def position=(pos)
     self.x, self.y = *pos
   end
-  alias_method :position=, :pos=
+  alias_method :pos=, :position=
   
   def x=(value)
-    @sprite.x = @shadow.x = value
+    @position.x = value
+    @sprite.x = @shadow.x = value + @position.y / 2.0
+
+    value
   end
-  
-  def y; @sprite.y + @z; end
-  alias_method :z_order, :y
+
+  def z_order; @position.y + @z; end
   
   def y=(value)
+    change_y = value - y
+
+    @position.y = value
     @sprite.y = value - @z
+    @sprite.x += change_y / 2.0
+
     @shadow.y = y
+    @shadow.x += change_y / 2.0
+
     value
   end
   
@@ -38,8 +47,7 @@ class GameObject
   end
   
   def initialize(scene, sprite, position) 
-    @sprite = sprite
-  
+    @sprite, @position = sprite, position.to_vector2
     @z = 0 
     
     create_shadow(position)

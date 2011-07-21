@@ -1,6 +1,6 @@
 require_relative '../objects/player'
-require_relative '../map'
-require_relative '../skewed_map'
+require_relative '../wall_map'
+require_relative '../floor_map'
 
 
 class Level < Scene 
@@ -16,16 +16,21 @@ class Level < Scene
     @dynamic_objects = [] # Objects that need #update
 
     level_data = YAML::load_file(File.expand_path(File.join(__FILE__, "../../../config/levels/1.yml")))
-    @wall_map = Map.new level_data['wall'].split("\n")
-    @floor_map = SkewedMap.new self, level_data['floor'].split("\n"), [0, @wall_map.to_rect.height]
+    @wall_map = WallMap.new self, level_data['wall'].split("\n")
+    @floor_map = FloorMap.new self, level_data['floor'].split("\n")
+
+    # Create a camera for displaying the wall map
+    @wall_camera = window.default_view
+    @wall_camera.zoom_by ZOOM
+    @wall_camera.center = @wall_camera.size / 2
+
+    # Create a camera for displaying the floor map (which has origin set in the view)
+    @floor_camera = @wall_camera.dup
+    @floor_camera.y -= @wall_map.to_rect.height
     
-    @camera = window.default_view
-    @camera.zoom_by ZOOM
-    @camera.center = @camera.size / 2
-    
-    @player = Player.new(self, Vector2[64, 40])
+    @player = Player.new(self, Vector2[FloorTile.width * 5.5, FloorTile.height * 2.5])
       
-    @half_size = @camera.rect.size / 2
+    @half_size = @wall_camera.rect.size / 2
     
     create_background 
 
@@ -67,11 +72,11 @@ class Level < Scene
       
       start_at = now
          
-      # Move the camera to the player position (left side, plus an amount asked for from the player).
-      @camera.x = @player.x + (@camera.rect.width / 2) - (@camera.rect.width * @player.screen_offset_x)
+      # Move the cameras to the player position (left side, plus an amount asked for from the player).
+      @wall_camera.x = @floor_camera.x =
+          @player.x + (@wall_camera.rect.width / 2) - (@wall_camera.rect.width * @player.screen_offset_x)
       
       # Checking for collision on the screen is significantly slower than just rendering everything.
-      clip_rect = @camera.rect
       @visible_dynamic_objects = @dynamic_objects
       
       # Update visible dynamic objects and stop them moving off the map. Others will just sleep off the side of the map.
@@ -96,8 +101,11 @@ class Level < Scene
         win.draw @background
       end
       
-      win.with_view @camera do
+      win.with_view @wall_camera do
         @wall_map.draw_on(win)
+      end
+
+      win.with_view @floor_camera do
         @floor_map.draw_on(win)
         
         @visible_objects.each {|obj| obj.draw_shadow_on win }      

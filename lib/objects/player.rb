@@ -45,15 +45,15 @@ class Player < DynamicObject
   def initialize(scene, position)
     sprite = sprite image_path("player.png"), at: position    
     sprite.sheet_size = [8, 5]
-    sprite.origin = [sprite.sprite_width / 2, sprite.sprite_height]
+    sprite.origin = [sprite.sprite_width * 0.75, sprite.sprite_height]
 
     super(scene, sprite, position)
 
     floor_rect = scene.floor_map.to_rect
     @rect = Rect.new(floor_rect.x + floor_rect.width * 0.1,
-                     floor_rect.y + FloorTile::HEIGHT * 0.5,
+                     floor_rect.y + FloorTile.height * 0.5,
                      floor_rect.width * 0.4,
-                     floor_rect.height - FloorTile::HEIGHT)
+                     floor_rect.height - FloorTile.height)
     @velocity = Vector2[0, 0]
 
     @sprite.scale *= 0.75
@@ -121,7 +121,7 @@ class Player < DynamicObject
   end
 
   def velocity_z=(vely)
-    stop_riding if z != 0
+    stop_riding if vely != 0
     super(vely)
   end
   
