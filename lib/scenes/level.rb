@@ -12,7 +12,8 @@ class Level < Scene
 
   FONT_SIZE = 30
 
-  HIGH_SCORE_FILE = File.join(ROOT_PATH, 'high_scores.dat')
+  HIGH_SCORE_FILE = File.join(ROOT_PATH, 'zed_and_ginger.dat')
+
   FIELD_LEVELS = 'levels'
   FIELD_HIGH_SCORER = 'high-scorer'
   FIELD_HIGH_SCORE = 'high-score'

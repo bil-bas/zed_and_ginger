@@ -169,10 +169,6 @@ class Player < DynamicObject
     end
   end
 
-  def dance
-    @player_animations[:dancing].update
-  end
-
   def velocity_z=(vely)
     stop_riding if vely != 0
     super(vely)
@@ -191,29 +187,26 @@ class Player < DynamicObject
   end
 
   def finish
-    # Got to the end! Whee!
-    stop_riding if riding?
-
     @effect_time_remaining = nil
     @state = :finished
+
+    scene.game_over(score)
   end
   
   def update
     if @tile.is_a? FinishFloor
-      finish unless finished?
+      stop_riding if riding?
 
       if z > 0
         @sprite.sheet_pos = JUMP_DOWN_SPRITE
       else
-        dance
+        @player_animations[:dancing].update
       end
 
+      # Empty out all the remaining time in the timer and convert to points, before finishing.
       if scene.timer.out_of_time?
-        unless @state == :finished
-          scene.game_over(score)
-          @state == :finished
-        end
-      elsesss
+        finish unless finished?
+      else
         scene.timer.decrease 0.1, finished: true
         @score += SCORE_PER_100_MS
       end
