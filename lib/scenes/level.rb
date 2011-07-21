@@ -80,9 +80,11 @@ class Level < Scene
       @visible_dynamic_objects = @dynamic_objects
       
       # Update visible dynamic objects and stop them moving off the map. Others will just sleep off the side of the map.
-      @dynamic_objects.each(&:update)
-      
-      @visible_objects = @dynamic_objects.sort_by(&:z_order)
+      min_x = @player.x - @floor_camera.rect.width * 0.75
+      max_x = @player.x + @floor_camera.rect.width
+      @visible_objects = @dynamic_objects.select {|o| o.x >= min_x and o.x <= max_x }
+      @visible_objects.sort_by!(&:z_order)
+      @visible_objects.each(&:update)
           
       @used_time += (Time.now - start_at).to_f
       recalculate_fps
