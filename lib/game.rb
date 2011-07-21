@@ -4,7 +4,7 @@ require 'pry' if DEVELOPMENT_MODE
 
 require_relative "ray_ext"
 
-%w[level pick_level].each do |filename|
+%w[enter_name level pick_level].each do |filename|
   require_relative "scenes/#{filename}"
 end
 
@@ -23,7 +23,7 @@ def font_path(resource); media_path('fonts', resource); end
 def shader_path(resource); File.expand_path File.join(File.dirname(__FILE__), "../lib/shaders", resource); end
 
 FONT_NAME = font_path("pixelated.ttf")
-SCENE_CLASSES = [Level, PickLevel]
+SCENE_CLASSES = [EnterName, Level, PickLevel]
 
 Ray.game "Zed and Ginger (WASD or ARROWS to move; SPACE to jump)", size: [768, 480] do
   register do

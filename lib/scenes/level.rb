@@ -17,6 +17,7 @@ class Level < Scene
   FIELD_LEVELS = 'levels'
   FIELD_HIGH_SCORER = 'high-scorer'
   FIELD_HIGH_SCORE = 'high-score'
+  DEFAULT_HIGH_SCORER = '???' # When noone has made a high score, it still needs a name.
 
   attr_reader :level_number
 
@@ -49,8 +50,8 @@ class Level < Scene
     score_height = window.size.height - 58
     @score_background = Polygon.rectangle([0, window.size.height - 48, window.size.width, 48], Color.new(80, 80, 80))
     @level_text = ShadowText.new "L %02d" % level_number, at: [30, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
-    @high_score = ShadowText.new "XXXXXXX", at: [160, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
-    @score = ShadowText.new "XXXXXXX", at: [390, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @high_score = ShadowText.new "XXXXXXX", at: [140, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @score = ShadowText.new "XXX:XXXXXXX", at: [410, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
     @timer = Timer.new level_data['time_limit'], at: [610, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
     @progress = ProgressBar.new(Rect.new(0, window.size.height - 16, window.size.width, 16))
 
@@ -74,26 +75,31 @@ class Level < Scene
 
     @high_score_data[FIELD_LEVELS][level_number] ||= {
         FIELD_HIGH_SCORE => 0,
-        FIELD_HIGH_SCORER => 'NOP',
+        FIELD_HIGH_SCORER => DEFAULT_HIGH_SCORER,
     }
 
     update_high_score
   end
 
   def update_high_score
-    @high_score.string = "%07d" % [high_score]
+    @high_score.string = "%s:%07d" % [high_scorer, high_score]
   end
 
   def game_over(score)
     if score > high_score
-      @high_score_data[FIELD_LEVELS][level_number] = {
-          FIELD_HIGH_SCORE => score,
-          FIELD_HIGH_SCORER => 'NOP'
-      }
+      name = nil
+      run_scene(:enter_name, self, lambda {|n| name = n })
 
-      update_high_score
+      if name
+        @high_score_data[FIELD_LEVELS][level_number] = {
+            FIELD_HIGH_SCORE => score,
+            FIELD_HIGH_SCORER => name,
+        }
 
-      File.open(HIGH_SCORE_FILE, "w") {|f| f.puts @high_score_data.to_yaml }
+        update_high_score
+
+        File.open(HIGH_SCORE_FILE, "w") {|f| f.puts @high_score_data.to_yaml }
+      end
     end
   end
 
