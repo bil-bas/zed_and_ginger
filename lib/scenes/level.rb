@@ -174,6 +174,8 @@ class Level < Scene
       if DEVELOPMENT_MODE
         window.title = "Pos: (#{@player.x.round}, #{@player.y.round}), FPS: #{@fps.round} [#{@potential_fps.round}]"
       end
+
+      update_shaders
     end
     
     render do |win| 
@@ -206,6 +208,12 @@ class Level < Scene
       
       @used_time += (Time.now - start_at).to_f
     end
+  end
+
+  def update_shaders
+    @shader_time ||= 0
+    @shader_time += frame_time
+    SlowFloor.shader_time = @shader_time
   end
 
   def move_camera
