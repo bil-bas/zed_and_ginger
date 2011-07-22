@@ -8,13 +8,13 @@ class Board < DynamicObject
 
   def casts_shadow?; true; end
 
-  def initialize(scene, position)
+  def initialize(map, position)
     sprite = sprite image_path("board.png"), at: position
     sprite.sheet_size = [2, 1]
     sprite.origin = Vector2[sprite.sprite_width / 2, sprite.sprite_height]
     sprite.scale = [0.75, 0.75]
 
-    super(scene, sprite, position)
+    super(map.scene, sprite, position)
 
     @animations << sprite_animation(from: [0, 0], to: [1, 0],
                                     duration: ANIMATION_DURATION).start(@sprite)

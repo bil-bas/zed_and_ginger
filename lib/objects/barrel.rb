@@ -9,12 +9,12 @@ class Barrel < DynamicObject
 
   def z_order; super - 3; end # So it appear behind the player.
 
-  def initialize(scene, position)
+  def initialize(map, position)
     sprite = sprite image_path("barrel.png")
     sprite.sheet_size = [4, 1]
     sprite.origin = ORIGIN
 
-    super(scene, sprite, position)
+    super(map.scene, sprite, position)
 
     @animations << sprite_animation(from: [0, 0], to: [3, 0],
                                     duration: ANIMATION_DURATION).start(@sprite)
@@ -22,7 +22,7 @@ class Barrel < DynamicObject
   end
 
   def collide?(other)
-    other.z == 0 and super(other)
+    other.z < 3 and super(other)
   end
 
   def update

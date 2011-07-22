@@ -7,7 +7,7 @@ class DynamicObject < GameObject
  
   def shadow_shape; Vector2[1, 1]; end
  
-  def initialize(scene, sprite, position) 
+  def initialize(scene, sprite, position)
     @velocity_z = 0
     @animations = []
     

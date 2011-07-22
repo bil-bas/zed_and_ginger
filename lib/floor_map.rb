@@ -2,7 +2,7 @@
   require_relative "tiles/#{file_name}"
 end
 
-%w[barrel board rat spring].each do |file_name|
+%w[barrel board pacer rat spring].each do |file_name|
   require_relative "objects/#{file_name}"
 end
 
@@ -27,6 +27,7 @@ class FloorMap < Map
       when 'b' then [StandardFloor, Barrel]
       when 'B' then [StandardFloor, Board]
       when 'r' then [StandardFloor, Rat]
+      when 'p' then [StandardFloor, Pacer]
       else
        raise "Unknown floor tile: '#{char}'"
     end
@@ -34,7 +35,7 @@ class FloorMap < Map
     tile = tile_class.new grid_position, @position
 
     # Place an object into the center of the new tile.
-    object_class.new(scene, (grid_position  + [0.5, 0.5]) * tile_size) if object_class
+    object_class.new(self, (grid_position  + [0.5, 0.5]) * tile_size) if object_class
 
     tile
   end

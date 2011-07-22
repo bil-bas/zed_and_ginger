@@ -6,7 +6,7 @@ class Spring < DynamicObject
 
   def to_rect; Rect.new(*(@position - [2, 2]), 4, 4) end
 
-  def initialize(scene, position)
+  def initialize(map, position)
     sprite = sprite image_path("spring.png"), at: position
     sprite.sheet_size = [2, 1]
     sprite.origin = Vector2[sprite.sprite_width, sprite.sprite_height] / 2 + [-1, 0.5]
@@ -16,7 +16,7 @@ class Spring < DynamicObject
     @bounce_sound = sound sound_path "spring_bounce.ogg"
     @bounce_sound.volume = 30
 
-    super(scene, sprite, position)
+    super(map.scene, sprite, position)
   end
 
   def z_order

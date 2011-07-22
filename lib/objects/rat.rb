@@ -13,7 +13,7 @@ class Rat < DynamicObject
   def z_order; @state == :squashed ? -0.1 : super; end
   def to_rect; Rect.new(*(@position - [0.5, 0.5]), 1, 1) end
 
-  def initialize(scene, position)
+  def initialize(map, position)
     sprite = sprite image_path("rat.png"), at: position
     sprite.sheet_size = [3, 1]
     sprite.origin = Vector2[sprite.sprite_width / 2, sprite.sprite_height]
@@ -22,7 +22,7 @@ class Rat < DynamicObject
     @state = :ok
     @speed = 0
 
-    super(scene, sprite, position)
+    super(map.scene, sprite, position)
 
     @sounds = {}
     [:chased, :squashed].each do |sound|
