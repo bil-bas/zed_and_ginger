@@ -38,8 +38,9 @@ class Level < Scene
     # Create a camera for displaying the floor map (which has origin set in the view)
     @floor_camera = @wall_camera.dup
     @floor_camera.y -= @wall_map.to_rect.height
-    
-    @player = Player.new(self, Vector2[FloorTile.width * 5.5, FloorTile.height * 2.5])
+
+    start_tile = @floor_map.tile_at_grid([5, 2])
+    @player = Player.new(self, start_tile, start_tile.position + @floor_map.tile_size / 2)
     @initial_player_x = player.x
     @distance_to_run = @floor_map.finish_line_x - @initial_player_x
 
@@ -213,7 +214,7 @@ class Level < Scene
   def update_shaders
     @shader_time ||= 0
     @shader_time += frame_time
-    SlowFloor.shader_time = @shader_time
+    [SlowFloor, SlowSplat].each {|c| c.shader_time = @shader_time }
   end
 
   def move_camera

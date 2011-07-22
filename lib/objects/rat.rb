@@ -13,7 +13,7 @@ class Rat < DynamicObject
   def z_order; @state == :squashed ? -0.1 : super; end
   def to_rect; Rect.new(*(@position - [0.5, 0.5]), 1, 1) end
 
-  def initialize(map, position)
+  def initialize(map, tile, position)
     sprite = sprite image_path("rat.png"), at: position
     sprite.sheet_size = [3, 1]
     sprite.origin = Vector2[sprite.sprite_width / 2, sprite.sprite_height]

@@ -8,7 +8,7 @@ class Pacer < DynamicObject
   def casts_shadow?; true; end
   def to_rect; Rect.new(*(@position - [4, 3]), 8, 6) end
 
-  def initialize(map, position)
+  def initialize(map, tile, position)
     sprite = sprite image_path("pacer.png")
     sprite.sheet_size = [4, 1]
     sprite.origin = [sprite.sprite_width * 0.5, sprite.sprite_height]

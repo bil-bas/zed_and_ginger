@@ -65,7 +65,7 @@ class Player < DynamicObject
     value
   end
 
-  def initialize(scene, position)
+  def initialize(scene, tile, position)
     @initial_x = position.x
     sprite = sprite image_path("player.png"), at: position    
     sprite.sheet_size = [8, 5]

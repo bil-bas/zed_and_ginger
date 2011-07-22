@@ -9,7 +9,7 @@ class Barrel < DynamicObject
 
   def z_order; super - 3; end # So it appear behind the player.
 
-  def initialize(map, position)
+  def initialize(map, tile, position)
     sprite = sprite image_path("barrel.png")
     sprite.sheet_size = [4, 1]
     sprite.origin = ORIGIN

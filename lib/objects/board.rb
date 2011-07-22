@@ -8,7 +8,7 @@ class Board < DynamicObject
 
   def casts_shadow?; true; end
 
-  def initialize(map, position)
+  def initialize(map, tile, position)
     sprite = sprite image_path("board.png"), at: position
     sprite.sheet_size = [2, 1]
     sprite.origin = Vector2[sprite.sprite_width / 2, sprite.sprite_height]

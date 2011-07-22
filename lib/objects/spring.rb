@@ -6,7 +6,7 @@ class Spring < DynamicObject
 
   def to_rect; Rect.new(*(@position - [2, 2]), 4, 4) end
 
-  def initialize(map, position)
+  def initialize(map, tile, position)
     sprite = sprite image_path("spring.png"), at: position
     sprite.sheet_size = [2, 1]
     sprite.origin = Vector2[sprite.sprite_width, sprite.sprite_height] / 2 + [-1, 0.5]

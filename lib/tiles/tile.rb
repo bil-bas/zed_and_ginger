@@ -3,6 +3,7 @@ class Tile
   extend Forwardable
 
   def_delegators :@sprite, :position
+  attr_reader :grid_position
 
   class << self
     def size; Vector2[width, height]; end
