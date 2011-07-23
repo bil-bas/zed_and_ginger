@@ -7,12 +7,13 @@ class PickLevel < Scene
     @levels = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")]
     @levels.map! {|file| File.basename(file).to_i }.sort
 
-    @heading = ShadowText.new("Pick a level", at: [40, 10], font: FONT_NAME, size: 80, shadow_offset: [4, 4])
+    @heading = ShadowText.new("Zed and Ginger", at: [40, 10], font: FONT_NAME, size: 80, shadow_offset: [4, 4])
+    @sub_heading = ShadowText.new("Pick a level", at: [40, 100], font: FONT_NAME, size: 48, shadow_offset: [4, 4])
 
     @level_buttons = []
     @levels.each_with_index do |level, i|
       name = level == 0 ? '[T]' : "[#{level}]"
-      @level_buttons << Text.new(name, at: [60 + i * 65, 110], font: FONT_NAME, size: 50)
+      @level_buttons << Text.new(name, at: [60 + i * 65, 170], font: FONT_NAME, size: 48)
     end
 
     @cat = sprite image_path("player.png"), at: [100, 200]
@@ -67,6 +68,7 @@ class PickLevel < Scene
       win.clear BACKGROUND_COLOR
 
       @heading.draw_on win
+      @sub_heading.draw_on win
       @level_buttons.each {|item| win.draw item }
 
       win.draw @cat
