@@ -193,37 +193,37 @@ class Level < Scene
 
       update_shaders
     end
+  end
     
-    render do |win| 
-      start_at = Time.now 
-      
-      win.with_view @background_camera do
-        win.draw @background
-      end
-      
-      win.with_view @wall_camera do
-        @wall_map.draw_on(win)
-      end
+  def render(win)
+    start_at = Time.now
 
-      win.with_view @floor_camera do
-        @floor_map.draw_on(win)
-        
-        @visible_objects.each {|obj| obj.draw_shadow_on win }      
-        @visible_objects.each {|obj| obj.draw_on win }
-        if DEVELOPMENT_MODE
-          @visible_objects.each {|obj| obj.draw_debug_on win }
-        end
-      end
-
-      win.draw @score_background
-      @level_text.draw_on win
-      @timer.draw_on win
-      @score.draw_on win
-      @high_score.draw_on win
-      @progress.draw_on win
-      
-      @used_time += (Time.now - start_at).to_f
+    win.with_view @background_camera do
+      win.draw @background
     end
+
+    win.with_view @wall_camera do
+      @wall_map.draw_on(win)
+    end
+
+    win.with_view @floor_camera do
+      @floor_map.draw_on(win)
+
+      @visible_objects.each {|obj| obj.draw_shadow_on win }
+      @visible_objects.each {|obj| obj.draw_on win }
+      if DEVELOPMENT_MODE
+        @visible_objects.each {|obj| obj.draw_debug_on win }
+      end
+    end
+
+    win.draw @score_background
+    @level_text.draw_on win
+    @timer.draw_on win
+    @score.draw_on win
+    @high_score.draw_on win
+    @progress.draw_on win
+
+    @used_time += (Time.now - start_at).to_f
   end
 
   def update_shaders

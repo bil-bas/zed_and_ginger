@@ -41,7 +41,7 @@ class PickLevel < Scene
     # Allow key 1, 2, 3 to start level.
     on :text_entered do |char|
       char = Ray::TextHelper.convert(char).upcase
-      char = '0' if char == TUTORIAL_LETTER
+      char = '0' if char == TUTORIAL_LETTER or char == '`'
       if ('0'..'2').include? char
         push_scene :level, char.to_i
       end
@@ -63,15 +63,15 @@ class PickLevel < Scene
     always do
       @cat_animation.update
     end
+  end
 
-    render do |win|
-      win.clear BACKGROUND_COLOR
+  def render(win)
+    win.clear BACKGROUND_COLOR
 
-      @heading.draw_on win
-      @sub_heading.draw_on win
-      @level_buttons.each {|item| win.draw item }
+    @heading.draw_on win
+    @sub_heading.draw_on win
+    @level_buttons.each {|item| win.draw item }
 
-      win.draw @cat
-    end
+    win.draw @cat
   end
 end

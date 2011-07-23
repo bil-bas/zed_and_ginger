@@ -9,11 +9,11 @@ class Pause < Scene
     on :key_press, key(:escape) do
       pop_scene
     end
+  end
 
-    render do |win|
-      @previous_scene.render(win)
+  def render(win)
+    @previous_scene.render(win)
 
-      @message.draw_on win
-    end
+    @message.draw_on win
   end
 end

@@ -40,15 +40,15 @@ class EnterName < Scene
     [:delete, :backspace].each do |key_code|
       on(:key_press, key(key_code)) { delete_last_char }
     end
+  end
 
-    render do |win|
-      @previous_scene.render(win)
+  def render(win)
+    @previous_scene.render(win)
 
-      @heading.draw_on win
+    @heading.draw_on win
 
-      win.draw @entry_background
-      win.draw @entry
-    end
+    win.draw @entry_background
+    win.draw @entry
   end
 
   def accept_name
