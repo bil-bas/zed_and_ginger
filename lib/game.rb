@@ -2,7 +2,7 @@ require 'yaml'
 require 'forwardable'
 
 begin
-  require 'bundler/setup' unless defined?(OSX_EXECUTABLE) or ENV['OCRA_EXECUTABLE']
+  #require 'bundler/setup' unless defined?(OSX_EXECUTABLE) or ENV['OCRA_EXECUTABLE']
 
 rescue LoadError
   $stderr.puts "Bundler gem not installed. To install:\n  gem install bundler"

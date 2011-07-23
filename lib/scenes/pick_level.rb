@@ -1,6 +1,8 @@
 class PickLevel < Scene
   BACKGROUND_COLOR = Color.new(0, 100, 50)
 
+  TUTORIAL_LETTER = 'T'
+
   def setup
     @levels = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")]
     @levels.map! {|file| File.basename(file).to_i }.sort
@@ -9,7 +11,8 @@ class PickLevel < Scene
 
     @level_buttons = []
     @levels.each_with_index do |level, i|
-      @level_buttons << Text.new(level.to_s, at: [60 + i * 60, 110], font: FONT_NAME, size: 50)
+      name = level == 0 ? TUTORIAL_LETTER : level.to_s
+      @level_buttons << Text.new(name, at: [60 + i * 60, 110], font: FONT_NAME, size: 50)
     end
 
     @cat = sprite image_path("player.png"), at: [100, 200]
@@ -27,7 +30,9 @@ class PickLevel < Scene
   def register
     # Allow key 1, 2, 3 to start level.
     on :text_entered do |char|
-      if char.to_i > 0
+      char = Ray::TextHelper.convert(char).upcase
+      char = '0' if char == TUTORIAL_LETTER
+      if ('0'..'9').include? char
         push_scene :level, char.to_i
       end
     end

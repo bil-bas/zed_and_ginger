@@ -30,3 +30,5 @@ floor: |
 #    ^ Std + Spring
 #    b Std + Barrel
 #    B Std + Board
+#    m Std + MessageScreen (on wall)
+#    S Std + SlowSplat (goo on wall)

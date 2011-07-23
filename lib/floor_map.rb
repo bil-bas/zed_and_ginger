@@ -2,14 +2,17 @@
   require_relative "tiles/#{file_name}"
 end
 
-%w[barrel board pacer rat slow_splat spring].each do |file_name|
+%w[barrel board message_screen pacer rat slow_splat spring].each do |file_name|
   require_relative "objects/#{file_name}"
 end
 
 class FloorMap < Map
-  def initialize(scene, data, position = [0, 0])
-    super(FloorTile.size, scene, data, position)
+  def initialize(scene, tile_data, messages)
+    @messages = messages
+    super(FloorTile.size, scene, tile_data)
   end
+
+  def next_message; @messages.shift; end
 
   def finish_line_x
     finish_tile = @tiles[0].find {|t| t.is_a? FinishFloor }
@@ -27,6 +30,7 @@ class FloorMap < Map
       when '^' then [StandardFloor, Spring]
       when 'b' then [StandardFloor, Barrel]
       when 'B' then [StandardFloor, Board]
+      when 'm' then [StandardFloor, MessageScreen]
       when 'p' then [StandardFloor, Pacer]
       when 'r' then [StandardFloor, Rat]
       else

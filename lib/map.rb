@@ -5,14 +5,14 @@ class Map
   
   def to_rect; Rect.new(*@position, @grid_width * @tile_size.x, @grid_height * @tile_size.y); end
 
-  def initialize(tile_size, scene, data, position = [0, 0])
+  def initialize(tile_size, scene, tile_data)
     @tile_size = tile_size.to_vector2
     @scene = scene
-    @position = position.to_vector2
-    @grid_width, @grid_height = data.first.length, data.size
+    @position = Vector2[0,0]
+    @grid_width, @grid_height = tile_data.first.length, tile_data.size
 
     @tiles = Array.new(@grid_height) { Array.new(@grid_width) }
-    data.each_with_index do |row, y|
+    tile_data.each_with_index do |row, y|
       row.each_char.with_index do |char, x|
         @tiles[y][x] = create_tile(char, Vector2[x, y])
       end

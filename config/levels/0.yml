@@ -1,0 +1,57 @@
+---
+
+time_limit: 60.0
+
+wall: |
+  ------------------------------------------------------------------------------------------------------------f-------
+  ------------------------------------------------------------------------------------------------------------f-------
+  ------------------------------------------------------------------------------------------------------------f-------
+
+
+floor: |
+  .......m....m....m.........m....msss.......m..s....s.....m....m....m...........m..b...p.......p.......m....mf...m...
+  .................................sss..........s....s...........rrrrrrrrr..........b.........................f.......
+  .................................sss..........s....s...........rrrrrrrrr..........b.........................f.......
+  .................................sss..........s....s...........rrrrrrrrr..........b.........................f.......
+  .................................sss..........s....s..............................b.......p.................f.......
+
+# Messages can be up to 15 chars and must have 4+ spaces between them.
+# - '0123456789012345'
+messages:
+  - '  WASD or arrows'
+  - 'to move.        '
+  - '  Run, cat, run!'
+
+  - '  Green-goo will'
+  - 'slow you down. '
+
+  - 'Space to jump...'
+
+  - '  Get extra time'
+  - 'by pouncing on  '
+  - 'GIANT RATOIDS!  '
+
+  - 'Avoid enemies!  '
+
+  - '           Cross'
+  - 'the line as fast'
+  - 'as you can!     '
+
+#  Wall key:
+#    - wall
+#    # square window
+#    x tech panel
+#    o porthole
+#
+#  Floor key:
+#    . StandardFloor
+#    _ GlassFloor (window)
+#    f FinishFloor
+#    s SlowFloor
+#    = PipesFloor
+#    ^ Std + Spring
+#    b Std + Barrel
+#    B Std + Board
+#    p Std + Pacer (walks up and down)
+#    m Std + MessageScreen (on wall)
+#    S Std + SlowSplat (goo on wall)

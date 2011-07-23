@@ -28,7 +28,7 @@ class Level < Scene
 
     level_data = YAML::load_file(File.expand_path(File.join(__FILE__, "../../../config/levels/#{level_number}.yml")))
     @wall_map = WallMap.new self, level_data['wall'].split("\n")
-    @floor_map = FloorMap.new self, level_data['floor'].split("\n")
+    @floor_map = FloorMap.new self, level_data['floor'].split("\n"), level_data['messages']
 
     # Create a camera for displaying the wall map
     @wall_camera = window.default_view

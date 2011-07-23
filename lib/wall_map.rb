@@ -2,8 +2,8 @@ require_relative "map"
 require_relative "tiles/wall_tile"
 
 class WallMap < Map
-  def initialize(scene, data, position = [0, 0])
-    super(WallTile.size, scene, data, position)
+  def initialize(scene, data)
+    super(WallTile.size, scene, data)
   end
 
   def create_tile(char, grid_position)
@@ -13,7 +13,7 @@ class WallMap < Map
                    when 'o' then [2, 0] # Round window
                    when '#' then [3, 0] # Square window
                    when 'f' then [4, 0] # Finish line
-                   else
+                 else
                      raise "unknown wall tile: '#{char}'"
                  end
 
