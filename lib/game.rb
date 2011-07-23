@@ -29,16 +29,26 @@ end
 def image_path(resource); media_path('images', resource); end
 def sound_path(resource); media_path('sounds', resource); end
 def font_path(resource); media_path('fonts', resource); end
+def music_path(resource); media_path('music', resource); end
 
 def shader_path(resource); File.expand_path File.join(File.dirname(__FILE__), "../lib/shaders", resource); end
 
 FONT_NAME = font_path("MonteCarloFixed12.ttf") # http://www.bok.net/MonteCarlo/
 SCENE_CLASSES = [EnterName, Level, Pause, PickLevel, ReadySetGo]
 
-Ray.game "Zed and Ginger (WASD or ARROWS to move; SPACE to jump)", size: [768, 480] do
+class Ray::Window
+  attr_accessor :scaling
+end
+
+DEFAULT_SCALING = 8
+GAME_RESOLUTION = Vector2[96, 60]
+
+Ray.game "Zed and Ginger (WASD or ARROWS to move; SPACE to jump)", size: GAME_RESOLUTION * DEFAULT_SCALING do
   register do
     on :quit, &method(:exit!)
   end
+
+  window.scaling = window.size.width / GAME_RESOLUTION.width
 
   SCENE_CLASSES.each {|s| s.bind(self) }
   scenes << :pick_level unless defined? Ocra

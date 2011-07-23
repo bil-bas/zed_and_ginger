@@ -71,8 +71,16 @@ class Level < Scene
     @visible_objects = [@player]
     move_camera
 
+    @@level_music ||= music music_path "Space_Cat_Habitat.ogg"
+    @@level_music.volume = 20
+    @@level_music.play
+
     # TODO: Disabled this, because it was working erratically.
     #run_scene :ready_set_go, self
+  end
+
+  def clean_up
+    @@level_music.stop
   end
 
   def load_high_scores

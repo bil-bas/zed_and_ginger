@@ -20,6 +20,7 @@ h2. How to run the game
 * OS X: <pre>zed_and_ginger.app</pre>
 * Linux: <pre>ruby bin/zed_and_ginger.rbw</pre> (see below under _compatibility_ for requirements).
 
+
 h2. Compatibility
 
 Runs in a 768x480 window.
@@ -29,7 +30,7 @@ Runs in a 768x480 window.
 * Linux: Can run from Ruby source + libraries + Ruby gems 
   * Install Ruby 1.9.2
   * Install Ruby gem dependencies <pre>bundle install</pre> (may need to <pre>sudo gem install bundler</pre> beforehand).
-  * <pre>ruby bin/alpha_channel.rbw</pre>
+  * <pre>ruby bin/zed_and_ginger.rbw</pre>
 
 
 h2. Where to get a copy of the game from
@@ -39,18 +40,19 @@ h2. Where to get a copy of the game from
 * Repository: git://github.com/Spooner/zed_and_ginger.git
 
 
+h2. External assets
+
+* "Ray":http://mon-ouie.github.com/projects/ray.html (game-making library) [Included in executable versions].
+* Original music by "Maverick (Brian Peppers)":http://polyhedricpeppers.weebly.com/. !http://i.creativecommons.org/l/by-sa/3.0/88x31.png(CC BY-SA)!:http://creativecommons.org/licenses/by-sa/3.0/
+
+
 h2. Tools used
 
 * Ruby 1.9.2
-* Developed using JetBrains RubyMine IDE
-* Sounds created with sfxr and converted to Ogg Vorbis format with Audacity.
-* Windows executable created with the Ocra gem.
-
-
-h2. External assets
-
-* Ray gem (libraries) [Included in executable versions].
-* pixelated.ttf (font by Affinity and Epsilon - benepsilon {at} gmail.com) [INCLUDED]
+* Developed using "JetBrains RubyMine IDE":http://www.jetbrains.com/ruby/
+* Graphics created with "GIMP":http://www.gimp.org/
+* Sound effects created using "bfxr":http://www.bfxr.net/ and converted using "Audacity":http://audacity.sourceforge.net/
+* Windows executable created with the "Ocra":http://ocra.rubyforge.org/.
 
 
 h2. License
