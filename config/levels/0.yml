@@ -1,6 +1,6 @@
 ---
 
-time_limit: 60.0
+time_limit: 33.3
 
 wall: |
   --------------------o------------o-----------------o-------------------------o---o----------------o---------f-------
@@ -15,23 +15,23 @@ floor: |
   ---------------------------------sss----------s----s-----------rrrrrrrrr----------b-------------------------f-------
   ---------------------------------sss----------s----s------------------------------b-------p-----------------f-------
 
-# Messages can be up to 15 chars and must have 4+ spaces between them.
+# Messages can be up to 14 chars (15 if there is a follow-on screen) and must have 4+ spaces between them.
 # - '0123456789012345'
 messages:
   - '  WASD or arrows'
   - 'to move.        '
-  - '  Run, cat, run!'
+  - ' Run, cat, run!'
 
   - '  Green-goo will'
-  - 'slow you down. '
+  - 'slow you down  '
 
-  - 'Space to jump...'
+  - 'Space to jump  '
 
   - '  Get extra time'
   - 'by pouncing on  '
-  - 'GIANT RATOIDS!  '
+  - 'GIANT RATOIDS! '
 
-  - 'Avoid enemies!  '
+  - 'Avoid enemies! '
 
   - '           Cross'
   - 'the line as fast'
