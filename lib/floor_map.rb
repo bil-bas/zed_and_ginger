@@ -22,8 +22,8 @@ class FloorMap < Map
   def create_tile(char, grid_position)
     # Create the tile and, optionally, also create an object on that tile.
     tile_class, object_class = case char
-      when '.' then [StandardFloor, nil]
-      when '_' then [GlassFloor, nil]
+      when '-' then [StandardFloor, nil]
+      when '#' then [GlassFloor, nil]
       when 'f' then [FinishFloor, nil]
       when 's' then [SlowFloor, nil]
       when 'S' then [SlowFloor, SlowSplat]

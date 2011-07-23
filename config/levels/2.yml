@@ -9,21 +9,21 @@ wall: |
 
 
 floor: |
-  .................sSsSSSs......f.......
-  .................s.sss.s......f.......
-  ...............B.sss.sss......f.......
-  .................s.sss.s......f.......
-  .................sssssss......f.......
+  -----------------sSsSSSs------f-------
+  -----------------s-sss-s------f-------
+  ---------------B-sss-sss------f-------
+  -----------------s-sss-s------f-------
+  -----------------sssssss------f-------
 
 #  Wall key:
 #    - wall
-#    # square window
+#    # square glass window
 #    x tech panel
 #    o porthole
 #
 #  Floor key:
-#    . StandardFloor
-#    _ GlassFloor (window)
+#    - StandardFloor
+#    # GlassFloor (window)
 #    f FinishFloor
 #    s SlowFloor
 #    = PipesFloor
