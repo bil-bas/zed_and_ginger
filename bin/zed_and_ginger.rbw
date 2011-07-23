@@ -76,7 +76,7 @@ TEXT
   LOG_FILE = options[:log]
   DEVELOPMENT_MODE = options[:dev]
 
-  ENV['PATH'] = "#{File.join(ROOT_PATH, 'bin')};#{ENV['PATH']}"
+  ENV['PATH'] = File.join(EXTRACT_PATH, 'bin') + File::PATH_SEPARATOR + ENV['PATH']
 
   if LOG_FILE
     # Add a timestamp to the end of the log file-name.
