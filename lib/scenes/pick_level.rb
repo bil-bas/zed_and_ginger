@@ -30,7 +30,7 @@ class PickLevel < Scene
     @@ambient_music ||= music music_path("Space_Cat_Ambient.ogg")
     @@ambient_music.looping = true
     @@ambient_music.play
-    @@ambient_music.volume = 50
+    @@ambient_music.volume = 70
   end
 
   def clean_up
