@@ -11,8 +11,8 @@ class PickLevel < Scene
 
     @level_buttons = []
     @levels.each_with_index do |level, i|
-      name = level == 0 ? TUTORIAL_LETTER : level.to_s
-      @level_buttons << Text.new(name, at: [60 + i * 60, 110], font: FONT_NAME, size: 50)
+      name = level == 0 ? '[T]' : "[#{level}]"
+      @level_buttons << Text.new(name, at: [60 + i * 65, 110], font: FONT_NAME, size: 50)
     end
 
     @cat = sprite image_path("player.png"), at: [100, 200]
