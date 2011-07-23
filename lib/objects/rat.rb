@@ -11,7 +11,7 @@ class Rat < DynamicObject
 
   def casts_shadow?; @state != :squashed; end
   def z_order; @state == :squashed ? -0.1 : super; end
-  def to_rect; Rect.new(*(@position - [0.5, 0.5]), 1, 1) end
+  def to_rect; Rect.new(*(@position - [1.5, 1.5]), 3, 3) end
 
   def initialize(map, tile, position)
     sprite = sprite image_path("rat.png"), at: position
