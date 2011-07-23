@@ -75,12 +75,16 @@ class Level < Scene
     @@level_music.volume = 20
     @@level_music.play
 
+    @@finish_music ||= music music_path "Space_Cat_Winner.ogg"
+    @@finish_music.volume = 50
+
     # TODO: Disabled this, because it was working erratically.
     #run_scene :ready_set_go, self
   end
 
   def clean_up
     @@level_music.stop
+    @@finish_music.stop
   end
 
   def load_high_scores
@@ -105,6 +109,9 @@ class Level < Scene
   end
 
   def game_over(score)
+    @@level_music.stop
+    @@finish_music.play if player.finished?
+
     if score > high_score
       name = nil
       run_scene(:enter_name, self, lambda {|n| name = n })

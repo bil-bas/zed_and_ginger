@@ -25,6 +25,15 @@ class PickLevel < Scene
     @cat.scale = [16, 16]
 
     window.show_cursor
+
+    @@ambient_music ||= music music_path("Space_Cat_Ambient.ogg")
+    @@ambient_music.looping = true
+    @@ambient_music.play
+    @@ambient_music.volume = 50
+  end
+
+  def clean_up
+    @@ambient_music.pause
   end
 
   def register
