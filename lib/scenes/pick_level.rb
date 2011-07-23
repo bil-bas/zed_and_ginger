@@ -32,7 +32,7 @@ class PickLevel < Scene
     on :text_entered do |char|
       char = Ray::TextHelper.convert(char).upcase
       char = '0' if char == TUTORIAL_LETTER
-      if ('0'..'9').include? char
+      if ('0'..'2').include? char
         push_scene :level, char.to_i
       end
     end
