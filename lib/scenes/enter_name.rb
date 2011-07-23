@@ -1,15 +1,15 @@
 # encoding: UTF-8
 
 class EnterName < Scene
-  BLANK_CHAR = '_'
+  BLANK_CHAR = '.'
   MAX_CHARS = 3
 
   def setup(previous_scene, set_name_proc)
     @previous_scene, @set_name_proc = previous_scene, set_name_proc
-    @heading = ShadowText.new("Enter Name", at: [150, 10], font: FONT_NAME, size: 64, shadow_offset: [4, 4])
+    @heading = ShadowText.new("Enter name:", at: [170, 10], font: FONT_NAME, size: 80, shadow_offset: [4, 4])
 
-    @entry = text BLANK_CHAR * MAX_CHARS, at: [260, 65], font: FONT_NAME, size: 90
-    @entry_background = Polygon.rectangle([220, 100, 275, 75], Color.new(0, 0, 0, 200))
+    @entry = text BLANK_CHAR * MAX_CHARS, at: [285, 95], font: FONT_NAME, size: 90
+    @entry_background = Polygon.rectangle([240, 100, 200, 75], Color.new(0, 0, 0, 200))
 
     @key_press_sound = sound sound_path("key_press.ogg")
   end

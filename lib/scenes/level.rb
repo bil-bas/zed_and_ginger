@@ -10,7 +10,7 @@ class Level < Scene
   WALL_MAP_ROWS = 3
   FLOOR_MAP_ROWS = 6
 
-  FONT_SIZE = 30
+  FONT_SIZE = 45
 
   HIGH_SCORE_FILE = File.join(ROOT_PATH, 'zed_and_ginger.dat')
 
@@ -50,11 +50,11 @@ class Level < Scene
 
     # Player's score, time remaining and progress through the level.
     text_color = Color.new(190, 190, 255)
-    score_height = window.size.height - 58
+    score_height = window.size.height - 53
     @score_background = Polygon.rectangle([0, window.size.height - 48, window.size.width, 48], Color.new(80, 80, 80))
-    @level_text = ShadowText.new "L %02d" % level_number, at: [30, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
-    @high_score = ShadowText.new "XXXXXXX", at: [140, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
-    @score = ShadowText.new "XXX:XXXXXXX", at: [410, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @level_text = ShadowText.new "L%02d" % level_number, at: [25, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @high_score = ShadowText.new "XXXXXXX", at: [125, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
+    @score = ShadowText.new "XXX: XXXXXXX", at: [425, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
     @timer = Timer.new level_data['time_limit'], at: [610, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
     @progress = ProgressBar.new(Rect.new(0, window.size.height - 16, window.size.width, 16))
 
@@ -93,7 +93,7 @@ class Level < Scene
   end
 
   def update_high_score
-    @high_score.string = "%s:%07d" % [high_scorer, high_score]
+    @high_score.string = "%s: %07d" % [high_scorer, high_score]
   end
 
   def game_over(score)

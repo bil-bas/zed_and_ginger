@@ -3,7 +3,7 @@ class ReadySetGo < Scene
     @previous_scene = previous_scene
     time = Time.now.to_f
 
-    @message = ShadowText.new "Ready...", at: [300, 70], font: FONT_NAME, size: 60
+    @message = ShadowText.new "Ready...", at: [300, 70], font: FONT_NAME, size: 80
     @events = [
         ->{ @message.string = "Set..." },
         ->{ @message.string = "Go!" },

@@ -5,11 +5,11 @@ class PickLevel < Scene
     @levels = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")]
     @levels.map! {|file| File.basename(file).to_i }.sort
 
-    @heading = ShadowText.new("Pick a level", at: [40, 10], font: FONT_NAME, size: 64, shadow_offset: [4, 4])
+    @heading = ShadowText.new("Pick a level", at: [40, 10], font: FONT_NAME, size: 80, shadow_offset: [4, 4])
 
     @level_buttons = []
     @levels.each_with_index do |level, i|
-      @level_buttons << Text.new(level.to_s, at: [60 + i * 60, 110], font: FONT_NAME, size: 32)
+      @level_buttons << Text.new(level.to_s, at: [60 + i * 60, 110], font: FONT_NAME, size: 50)
     end
 
     @cat = sprite image_path("player.png"), at: [100, 200]
@@ -20,6 +20,8 @@ class PickLevel < Scene
     @cat_animation.loop!
     @cat_animation.start(@cat)
     @cat.scale = [16, 16]
+
+    window.show_cursor
   end
 
   def register
