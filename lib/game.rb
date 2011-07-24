@@ -18,7 +18,7 @@ require_relative "ray_ext"
   require_relative "scenes/#{filename}"
 end
 
-%w[progress_bar shadow_text timer].each do |filename|
+%w[button progress_bar shadow_text timer].each do |filename|
   require_relative "gui/#{filename}"
 end
 
@@ -31,7 +31,9 @@ window_size =  GAME_RESOLUTION * $scaling
 
 Ray.game "Zed and Ginger (WASD or ARROWS to move; SPACE to jump, P to pause)", size: window_size do
   register do
-    on :quit, &method(:exit!)
+    on :quit do
+      Kernel.exit
+    end
   end
 
   window_view = window.default_view

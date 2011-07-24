@@ -141,7 +141,11 @@ class Level < Scene
   end
   
   def create_background
-    img = Image.new window.size / 2
+    img = Image.new window.size
+    image_target img do |target|
+      target.clear Color.black
+      target.update
+    end
     400.times { img[rand(img.size.width), rand(img.size.height)] = Color.new(*([55 + rand(200)] * 3)) }
 
     @background = sprite img
