@@ -20,11 +20,11 @@ class PickLevel < Scene
       @level_buttons << Button.new(name, at: [20 + i * 8, 14], size: 6, data: i, &level_button_handler)
     end
 
-    @scale_down_button = Button.new("[-]", at: [78, 52], size: 6) do
+    @scale_down_button = Button.new("[-]", at: [80, 50], size: 6) do
       scale_down
     end
 
-    @scale_up_button = Button.new("[+]", at: [85, 52], size: 6) do
+    @scale_up_button = Button.new("[+]", at: [87, 50], size: 6) do
       scale_up
     end
 
@@ -37,12 +37,15 @@ class PickLevel < Scene
     @cat_animation.start(@cat)
     @cat.scale = [2, 2]
 
+    @version = ShadowText.new("v#{ZedAndGinger::VERSION}", at: [84, 56], size: 4)
+
     window.hide_cursor
 
     create_background
 
     cursor_image = image(image_path("cursor.png"))
     @cursor = sprite cursor_image, scale: [0.5, 0.5], origin: [0, 0]
+    @cursor_shown = false
 
     @@ambient_music ||= music music_path("Space_Cat_Ambient.ogg")
     @@ambient_music.looping = true
@@ -141,6 +144,22 @@ class PickLevel < Scene
       end
     end
 
+    on :mouse_left do
+      @cursor_shown = false
+    end
+
+    on :mouse_entered do
+      @cursor_shown = true
+    end
+
+    on :focus_gain do
+      @@ambient_music.play
+    end
+
+    on :focus_loss do
+      @@ambient_music.pause
+    end
+
     on :key_press, key(:plus) do
       scale_up
     end
@@ -168,10 +187,11 @@ class PickLevel < Scene
       @level_buttons.each {|item| item.draw_on win }
       @scale_up_button.draw_on win
       @scale_down_button.draw_on win
+      @version.draw_on win
     end
 
     win.draw @cat
 
-    win.draw @cursor
+    win.draw @cursor if @cursor_shown
   end
 end

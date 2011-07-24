@@ -55,8 +55,6 @@ class Level < Scene
     @timer = Timer.new level_data['time_limit'], at: [76, score_height], size: FONT_SIZE, color: text_color
     @progress = ProgressBar.new(Rect.new(0, window.scaled_size.height - 2, window.scaled_size.width, 2))
 
-    window.hide_cursor
-
     init_fps
 
     load_high_scores

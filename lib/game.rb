@@ -13,6 +13,7 @@ rescue Exception
 end
 
 require_relative "ray_ext"
+require_relative "version"
 
 %w[enter_name level pause pick_level ready_set_go teleporting].each do |filename|
   require_relative "scenes/#{filename}"
