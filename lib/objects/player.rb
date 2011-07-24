@@ -170,9 +170,14 @@ class Player < DynamicObject
     end
   end
 
-  def velocity_z=(vely)
-    stop_riding if vely != 0
-    super(vely)
+  def velocity_z=(velocity)
+    stop_riding if velocity != 0
+    super(velocity)
+  end
+
+  def velocity_x; @velocity.x; end
+  def velocity_x=(velocity)
+    @velocity.x = velocity
   end
 
   def die

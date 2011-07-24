@@ -18,6 +18,10 @@ class GameObject
     self.x, self.y = *pos
   end
   alias_method :pos=, :position=
+
+  def distance(other)
+    pos.distance(other.pos)
+  end
   
   def x=(value)
     @position.x = value

@@ -14,6 +14,6 @@ class FloorTile < Tile
     super(image_path("floor_tiles.png"), sprite_position, grid_position, offset)
     @sprite.x += grid_position.y * height * SKEW
     @sprite.scale_y = height / width.to_f
-    @sprite.skew_x(SKEW * 0.75)
+    @sprite.skew_x(SKEW * @sprite.scale_y)
   end
 end

@@ -1,8 +1,8 @@
-%w[finish_floor glass_floor slow_floor standard_floor].each do |file_name|
-  require_relative "tiles/#{file_name}"
+%w[finish glass slow standard teleport].each do |file_name|
+  require_relative "tiles/#{file_name}_floor"
 end
 
-%w[barrel board message_screen pacer rat slow_splat spring].each do |file_name|
+%w[barrel board message_screen pacer rat slow_splat spring teleporter].each do |file_name|
   require_relative "objects/#{file_name}"
 end
 
@@ -25,6 +25,8 @@ class FloorMap < Map
       when '-' then [StandardFloor, nil]
       when '#' then [GlassFloor, nil]
       when 'f' then [FinishFloor, nil]
+      when 't' then [TeleportFloor, Teleporter]
+      when 'T' then [TeleportBackwardsFloor, TeleporterBackwards]
       when 's' then [SlowFloor, nil]
       when 'S' then [SlowFloor, SlowSplat]
       when '^' then [StandardFloor, Spring]

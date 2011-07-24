@@ -151,6 +151,8 @@ class Level < Scene
   def add_object(object)
     @dynamic_objects << object
   end
+
+  def objects; @dynamic_objects; end
   
   def register
     on :key_press, key(:escape) do
@@ -229,7 +231,7 @@ class Level < Scene
   def update_shaders
     @shader_time ||= 0
     @shader_time += frame_time
-    [SlowFloor, SlowSplat].each {|c| c.shader_time = @shader_time }
+    [SlowFloor, SlowSplat, Teleporter].each {|c| c.shader_time = @shader_time }
   end
 
   def move_camera

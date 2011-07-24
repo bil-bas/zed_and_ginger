@@ -14,7 +14,7 @@ end
 
 require_relative "ray_ext"
 
-%w[enter_name level pause pick_level ready_set_go].each do |filename|
+%w[enter_name level pause pick_level ready_set_go teleporting].each do |filename|
   require_relative "scenes/#{filename}"
 end
 
@@ -34,7 +34,7 @@ def music_path(resource); media_path('music', resource); end
 def shader_path(resource); File.expand_path File.join(File.dirname(__FILE__), "../lib/shaders", resource); end
 
 FONT_NAME = font_path("MonteCarloFixed12.ttf") # http://www.bok.net/MonteCarlo/
-SCENE_CLASSES = [EnterName, Level, Pause, PickLevel, ReadySetGo]
+SCENE_CLASSES = [EnterName, Level, Pause, PickLevel, ReadySetGo, Teleporting]
 
 class Ray::Window
   attr_accessor :scaling
