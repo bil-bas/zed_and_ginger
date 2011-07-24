@@ -20,7 +20,7 @@ class Spring < DynamicObject
   end
 
   def z_order
-    @activated ? super : -1000
+    @activated ? super : Player::Z_ORDER_SQUASHED - 1
   end
 
   def collide?(other)

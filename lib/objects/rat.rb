@@ -10,7 +10,7 @@ class Rat < DynamicObject
   RUN_SPEED = -40
 
   def casts_shadow?; @state != :squashed; end
-  def z_order; @state == :squashed ? -0.1 : super; end
+  def z_order; @state == :squashed ? Player::Z_ORDER_SQUASHED - 1 : super; end
   def to_rect; Rect.new(*(@position - [1.5, 1.5]), 3, 3) end
 
   def initialize(map, tile, position)
