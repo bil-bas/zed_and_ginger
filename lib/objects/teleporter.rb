@@ -9,7 +9,7 @@ class Teleporter < DynamicObject
 
   def self.shader_time=(time); @@shader[:time] = time if defined? @@shader; end
 
-  def to_rect; Rect.new(*(@position - [0, 3]), 0, 6) end
+  def to_rect; Rect.new(*(@position), 0, 0) end
 
   def initialize(map, tile, position)
     @@image ||= Image.new([8, 8])
