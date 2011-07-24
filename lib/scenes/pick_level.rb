@@ -7,7 +7,7 @@ class PickLevel < Scene
     @levels = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")]
     @levels.map! {|file| File.basename(file).to_i }.sort
 
-    @heading = ShadowText.new("Zed and Ginger", at: [5, 2.5], size: 10)
+    @heading = ShadowText.new("Zed and Ginger", at: [5, 0], size: 16, color: Color.new(255, 150, 0))
     @sub_heading = ShadowText.new("Level: ", at: [5, 14], size: 6)
 
     @level_buttons = []
@@ -21,23 +21,11 @@ class PickLevel < Scene
     end
 
     @scale_down_button = Button.new("[-]", at: [78, 52], size: 6) do
-      if $scaling > 1
-        pop_scene
-        $scaling -= 1
-        window.size = GAME_RESOLUTION * $scaling
-        push_scene :pick_level
-      end
+      scale_down
     end
 
     @scale_up_button = Button.new("[+]", at: [85, 52], size: 6) do
-      new_size = GAME_RESOLUTION * ($scaling + 1)
-      if new_size.x <= Ray.screen_size.width * 0.95 and
-          new_size.y <= Ray.screen_size.height * 0.95
-        pop_scene
-        $scaling += 1
-        window.size = new_size
-        push_scene :pick_level
-      end
+      scale_up
     end
 
     @cat = sprite image_path("player.png"), at: [12.5, 25]
@@ -59,18 +47,65 @@ class PickLevel < Scene
     @@ambient_music.volume = 70
   end
 
-  def create_background
-    img = Image.new window.size / 2
-    image_target img do |target|
-      target.clear Color.black
-      target.update
+  def scale_up
+    new_size = GAME_RESOLUTION * ($scaling + 1)
+    if new_size.x <= Ray.screen_size.width * 0.95 and
+      new_size.y <= Ray.screen_size.height * 0.95
+      pop_scene
+      $scaling += 1
+      window.size = new_size
+      push_scene :pick_level
     end
-    400.times { img[rand(img.size.width), rand(img.size.height)] = Color.new(*([55 + rand(200)] * 3)) }
+  end
 
-    @background = sprite img
+  def scale_down
+    if $scaling > 2
+      pop_scene
+      $scaling -= 1
+      window.size = GAME_RESOLUTION * $scaling
+      push_scene :pick_level
+    end
+  end
+
+  def create_background
+    unless defined? @@background_image
+      @@background_image = Image.new GAME_RESOLUTION * 4
+      image_target @@background_image do |target|
+        target.clear Color.new(0, 0, 25)
+        target.update
+      end
+
+      # Draw on some stars.
+      400.times do
+        star_pos = [rand(@@background_image.size.width), rand(@@background_image.size.height)]
+        @@background_image[*star_pos] = Color.new(*([55 + rand(200)] * 3))
+      end
+
+      # Add the moon and a sprinkling of asteroids.
+      moon = sprite image(image_path("moon.png")),
+                  at: [310, 18],
+                  scale: Vector2[4, 4]
+
+      asteroid = sprite image(image_path("asteroid.png"))
+      image_target @@background_image do |target|
+        target.draw moon
+        20.times do
+          rock_pos = Vector2[150 + rand(100), rand(@@background_image.size.height)]
+          rock_pos.x += rock_pos.y / 3.0
+          asteroid.pos = rock_pos
+          asteroid.scale = [0.5 + rand() * 0.3] * 2
+          brightness = 50 + rand(100)
+          asteroid.color = Color.new(*[brightness] * 3)
+          target.draw asteroid
+        end
+        target.update
+      end
+    end
+
+    @background = sprite @@background_image
 
     @background_camera = window.default_view
-    @background_camera.zoom_by 2
+    @background_camera.size = @@background_image.size
     @background_camera.center = @background_camera.size / 2
   end
 
@@ -101,6 +136,13 @@ class PickLevel < Scene
         @scale_down_button.mouse_click pos
         @scale_up_button.mouse_click pos
       end
+    end
+
+    on :key_press, key(:plus) do
+      scale_up
+    end
+    on :key_press, key(:minus) do
+      scale_down
     end
 
     always do
