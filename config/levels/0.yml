@@ -54,3 +54,5 @@ messages:
 #    B Std + Board
 #    m Std + MessageScreen (on wall)
 #    S Std + SlowSplat (goo on wall)
+#    > Forward Teleporter
+#    < Backward Teleporter

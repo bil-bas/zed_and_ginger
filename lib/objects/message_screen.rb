@@ -15,14 +15,14 @@ class MessageScreen < DynamicObject
     # Create text for the message.
     message = map.next_message
     raise "no message for screen" unless message
-    @text = text message, size: 50, font: FONT_NAME, color: Color.green
-    num_tiles = 5
 
-    @text.pos = [@sprite.x + 0.5 - (num_tiles * tile.width / 2.0), -tile.width * 2 + 1]
-    @text.scale = [1.0 / TEXT_SCALING] * 2
+    num_tiles = 5
+    pos = Vector2[@sprite.x + 0.5 - (num_tiles * tile.width / 2.0), -tile.width * 2 + 1]
+    @text = text message, size: 6.25, color: Color.green, at: pos / $scaling
+    @text.scale = [1.0 / $scaling] * 2
 
     # Move the sprite behind the text and make it wide enough to show it all.
-    @sprite.pos = @text.pos - [2, 1] # Move it up onto the wall.
+    @sprite.pos = pos - [2, 1] # Move it up onto the wall.
     @sprite.scale_x = num_tiles * tile.width
   end
 

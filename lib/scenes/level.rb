@@ -5,12 +5,11 @@ require_relative '../floor_map'
 
 class Level < Scene 
   attr_reader :frame_time, :floor_map, :player, :timer
-  
-  ZOOM = 8
+
   WALL_MAP_ROWS = 3
   FLOOR_MAP_ROWS = 6
 
-  FONT_SIZE = 45
+  FONT_SIZE = 5.625
 
   HIGH_SCORE_FILE = File.join(ROOT_PATH, 'zed_and_ginger.dat')
 
@@ -32,7 +31,7 @@ class Level < Scene
 
     # Create a camera for displaying the wall map
     @wall_camera = window.default_view
-    @wall_camera.zoom_by ZOOM
+    @wall_camera.zoom_by $scaling
     @wall_camera.center = @wall_camera.size / 2
 
     # Create a camera for displaying the floor map (which has origin set in the view)
@@ -50,15 +49,13 @@ class Level < Scene
 
     # Player's score, time remaining and progress through the level.
     text_color = Color.new(190, 190, 255)
-    score_height = window.size.height - 53
-    @score_background = Polygon.rectangle([0, window.size.height - 48, window.size.width, 48], Color.new(80, 80, 80))
-    @level_text = ShadowText.new "L%02d" % level_number, at: [25, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
-    @high_score = ShadowText.new "XXXXXXX", at: [125, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
-    @score = ShadowText.new "XXX: XXXXXXX", at: [425, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
-    @timer = Timer.new level_data['time_limit'], at: [610, score_height], font: FONT_NAME, size: FONT_SIZE, color: text_color
-    @progress = ProgressBar.new(Rect.new(0, window.size.height - 16, window.size.width, 16))
-
-    @last_frame_started_at = Time.now.to_f
+    score_height = window.scaled_size.height - 6.625
+    @score_background = Polygon.rectangle([0, window.scaled_size.height - 6, window.scaled_size.width, 6], Color.new(80, 80, 80))
+    @level_text = ShadowText.new "L%02d" % level_number, at: [3, score_height], size: FONT_SIZE, color: text_color
+    @high_score = ShadowText.new "XXXXXXX", at: [15.5, score_height], size: FONT_SIZE, color: text_color
+    @score = ShadowText.new "XXX: XXXXXXX", at: [53, score_height], size: FONT_SIZE, color: text_color
+    @timer = Timer.new level_data['time_limit'], at: [76, score_height], size: FONT_SIZE, color: text_color
+    @progress = ProgressBar.new(Rect.new(0, window.scaled_size.height - 2, window.scaled_size.width, 2))
 
     window.hide_cursor
 
@@ -219,10 +216,14 @@ class Level < Scene
     end
 
     win.draw @score_background
-    @level_text.draw_on win
-    @timer.draw_on win
-    @score.draw_on win
-    @high_score.draw_on win
+
+    win.with_view win.default_view do
+      @level_text.draw_on win
+      @timer.draw_on win
+      @score.draw_on win
+      @high_score.draw_on win
+    end
+
     @progress.draw_on win
 
     @used_time += (Time.now - start_at).to_f
@@ -241,6 +242,7 @@ class Level < Scene
   end
   
   def init_fps
+    @last_frame_started_at = Time.now.to_f
     @fps_next_calculated_at = Time.now.to_f + 1
     @fps = @potential_fps = 0
     @num_frames = 0

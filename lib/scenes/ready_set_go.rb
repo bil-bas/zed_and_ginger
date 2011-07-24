@@ -3,7 +3,7 @@ class ReadySetGo < Scene
     @previous_scene = previous_scene
     time = Time.now.to_f
 
-    @message = ShadowText.new "Ready...", at: [300, 70], font: FONT_NAME, size: 80
+    @message = ShadowText.new "Ready...", at: [37.5, 8.75], size: 8
     @events = [
         ->{ @message.string = "Set..." },
         ->{ @message.string = "Go!" },
@@ -29,6 +29,8 @@ class ReadySetGo < Scene
   def render(win)
     @previous_scene.render(win)
 
-    @message.draw_on win
+    win.with_view win.default_view do
+      @message.draw_on win
+    end
   end
 end

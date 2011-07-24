@@ -22,33 +22,22 @@ end
   require_relative "gui/#{filename}"
 end
 
-def media_path(type, resource)
- File.expand_path File.join(File.dirname(__FILE__), "../media/#{type}", resource)
-end
-
-def image_path(resource); media_path('images', resource); end
-def sound_path(resource); media_path('sounds', resource); end
-def font_path(resource); media_path('fonts', resource); end
-def music_path(resource); media_path('music', resource); end
-
-def shader_path(resource); File.expand_path File.join(File.dirname(__FILE__), "../lib/shaders", resource); end
-
-FONT_NAME = font_path("MonteCarloFixed12.ttf") # http://www.bok.net/MonteCarlo/
 SCENE_CLASSES = [EnterName, Level, Pause, PickLevel, ReadySetGo, Teleporting]
-
-class Ray::Window
-  attr_accessor :scaling
-end
-
-DEFAULT_SCALING = 8
+$scaling = 8.0
 GAME_RESOLUTION = Vector2[96, 60]
 
-Ray.game "Zed and Ginger (WASD or ARROWS to move; SPACE to jump)", size: GAME_RESOLUTION * DEFAULT_SCALING do
+window_size =  GAME_RESOLUTION * $scaling
+
+
+Ray.game "Zed and Ginger (WASD or ARROWS to move; SPACE to jump)", size: window_size do
   register do
     on :quit, &method(:exit!)
   end
 
-  window.scaling = window.size.width / GAME_RESOLUTION.width
+  window_view = window.default_view
+  window_view.zoom_by $scaling
+  window_view.center = window_view.size / 2
+  window.view = window_view
 
   SCENE_CLASSES.each {|s| s.bind(self) }
   scenes << :pick_level unless defined? Ocra

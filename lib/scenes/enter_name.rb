@@ -6,10 +6,10 @@ class EnterName < Scene
 
   def setup(previous_scene, set_name_proc)
     @previous_scene, @set_name_proc = previous_scene, set_name_proc
-    @heading = ShadowText.new("Enter name:", at: [170, 10], font: FONT_NAME, size: 80, shadow_offset: [4, 4])
+    @heading = ShadowText.new("HIGH SCORE!", at: [21.25, 1.25], size: 12, color: Color.red)
 
-    @entry = text BLANK_CHAR * MAX_CHARS, at: [285, 95], font: FONT_NAME, size: 90
-    @entry_background = Polygon.rectangle([240, 100, 200, 75], Color.new(0, 0, 0, 200))
+    @entry = text BLANK_CHAR * MAX_CHARS, at: [35.625, 11.875], size: 11.25
+    @entry_background = Polygon.rectangle([30, 12.5, 25, 9.375], Color.new(0, 0, 0, 200))
 
     @key_press_sound = sound sound_path("key_press.ogg")
   end
@@ -45,10 +45,15 @@ class EnterName < Scene
   def render(win)
     @previous_scene.render(win)
 
-    @heading.draw_on win
+    win.with_view win.default_view do
+      @heading.draw_on win
+    end
 
     win.draw @entry_background
-    win.draw @entry
+
+    win.with_view win.default_view do
+      win.draw @entry
+    end
   end
 
   def accept_name
