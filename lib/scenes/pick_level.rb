@@ -37,9 +37,12 @@ class PickLevel < Scene
     @cat_animation.start(@cat)
     @cat.scale = [2, 2]
 
-    window.show_cursor
+    window.hide_cursor
 
     create_background
+
+    cursor_image = image(image_path("cursor.png"))
+    @cursor = sprite cursor_image, scale: [0.5, 0.5], origin: [0, 0]
 
     @@ambient_music ||= music music_path("Space_Cat_Ambient.ogg")
     @@ambient_music.looping = true
@@ -145,6 +148,10 @@ class PickLevel < Scene
       scale_down
     end
 
+    on :mouse_motion do |pos|
+      @cursor.pos = pos / $scaling
+    end
+
     always do
       @cat_animation.update
     end
@@ -164,5 +171,7 @@ class PickLevel < Scene
     end
 
     win.draw @cat
+
+    win.draw @cursor
   end
 end
