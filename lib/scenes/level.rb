@@ -94,6 +94,11 @@ class Level < Scene
       end
     end
 
+    # It is possible to get a high score without finishing and vice versa.
+    if player.finished? and not window.user_data.finished_level?(level_number)
+      window.user_data.finish_level(level_number)
+    end
+
     @game_over = true
   end
 

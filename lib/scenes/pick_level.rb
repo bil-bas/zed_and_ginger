@@ -11,13 +11,18 @@ class PickLevel < Scene
     @sub_heading = ShadowText.new("Level: ", at: [5, 14], size: 6)
 
     @level_buttons = []
+    @level_labels = []
     level_button_handler = lambda do |button|
       start_level @levels[button.data]
     end
 
     @levels.each_with_index do |level, i|
       name = level == 0 ? '[T]' : "[#{level}]"
-      @level_buttons << Button.new(name, at: [20 + i * 8, 14], size: 6, data: i, &level_button_handler)
+       if window.user_data.level_unlocked?(level) or DEVELOPMENT_MODE
+        @level_buttons << Button.new(name, at: [20 + i * 8, 14], size: 6, data: i, &level_button_handler)
+      else
+        @level_labels << ShadowText.new(name, at: [20 + i * 8, 14], size: 6, color: Color.new(100, 100, 100))
+      end
     end
 
     @scale_down_button = Button.new("[-]", at: [80, 50], size: 6) do
@@ -128,7 +133,7 @@ class PickLevel < Scene
     on :text_entered do |char|
       char = Ray::TextHelper.convert(char).upcase
       char = '0' if char == TUTORIAL_LETTER or char == '`'
-      if ('0'..'2').include? char
+      if ('0'..'2').include? char and window.user_data.level_unlocked?(char.to_i)
         start_level char.to_i
       end
     end
@@ -185,6 +190,7 @@ class PickLevel < Scene
       @heading.draw_on win
       @sub_heading.draw_on win
       @level_buttons.each {|item| item.draw_on win }
+      @level_labels.each {|item| item.draw_on win }
       @scale_up_button.draw_on win
       @scale_down_button.draw_on win
       @version.draw_on win

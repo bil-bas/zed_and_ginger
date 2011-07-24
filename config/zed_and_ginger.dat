@@ -6,11 +6,14 @@ levels:
   0:
     high-score: 0
     high-scorer: ???
+    finished: false
   1:
     high-score: 0
     high-scorer: ???
+    finished: false
   2:
     high-score: 0
     high-scorer: ???
+    finished: false
 
 scaling: 8

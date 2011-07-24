@@ -10,7 +10,7 @@ class BaseUserData
   end
 end
 
-class UserData < UserData
+class UserData < BaseUserData
   FILE_NAME = 'zed_and_ginger.dat'
   DEFAULT_DATA_FILE = File.join(EXTRACT_PATH, 'config', FILE_NAME)
   DATA_FILE = File.join(ROOT_PATH, FILE_NAME)
@@ -19,6 +19,7 @@ class UserData < UserData
 
   FIELD_HIGH_SCORER = 'high-scorer'
   FIELD_HIGH_SCORE = 'high-score'
+  FIELD_FINISHED = 'finished'
 
   FIELD_SCALING = 'scaling'
 
@@ -43,11 +44,22 @@ class UserData < UserData
   end
 
   def level_unlocked?(level)
+    # First (tutorial) level is always unlocked.
     if level == 0
       true
     else
-      @data[FIELD_LEVELS][level][FIELD_HIGH_SCORE] > 0
+      @data[FIELD_LEVELS][level - 1][FIELD_FINISHED]
     end
+  end
+
+  def finished_level?(level)
+    @data[FIELD_LEVELS][level][FIELD_FINISHED]
+  end
+
+  # Possible to finish a level without having made a high score.
+  def finish_level(level)
+    @data[FIELD_LEVELS][level][FIELD_FINISHED] = true
+    save
   end
 
   def scaling
