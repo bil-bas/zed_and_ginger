@@ -238,7 +238,7 @@ class Level < Scene
   def update_shaders
     @shader_time ||= 0
     @shader_time += frame_time
-    [SlowFloor, SlowSplat, Teleporter].each {|c| c.shader_time = @shader_time }
+    [SlowFloor, SlowSplat, Teleporter, Teleporting].each {|c| c.shader_time = @shader_time }
   end
 
   def move_camera

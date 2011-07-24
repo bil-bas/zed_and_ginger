@@ -244,10 +244,14 @@ class Player < DynamicObject
     super
   end
 
+  def update_riding_position
+    @riding_on.position = [position.x + RIDING_OFFSET_X, position.y - 0.00001]
+  end
+
   def update_animations
     if riding?
       # Move back, since our center is a bit forward on the sprite.
-      @riding_on.position = [position.x + RIDING_OFFSET_X, position.y - 0.00001]
+      update_riding_position
       @player_animations[:surfing].update
     elsif z == 0
       # Sitting, running or walking.
