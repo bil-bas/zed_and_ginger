@@ -63,6 +63,8 @@ class Level < Scene
 
     load_high_scores
 
+    @game_over = false
+
     # Setup a few things, so we can show a countdown before playing.
     @progress.progress = 0
     @visible_objects = [@player]
@@ -126,6 +128,8 @@ class Level < Scene
         File.open(HIGH_SCORE_FILE, "w") {|f| f.puts @high_score_data.to_yaml }
       end
     end
+
+    @game_over = true
   end
 
   def high_score
@@ -152,15 +156,20 @@ class Level < Scene
   end
 
   def objects; @dynamic_objects; end
-  
+
+  def pause; run_scene :pause, self unless @game_over; end
+
   def register
     on :key_press, key(:escape) do
       pop_scene
     end
 
     on :focus_loss do
-      # TODO: Disabled this, because it was working erratically.
-      #push_scene :pause, self
+      pause
+    end
+
+    on :key_press, key(:p) do
+      pause
     end
 
     always do

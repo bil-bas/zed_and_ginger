@@ -2,11 +2,17 @@ class Pause < Scene
   def setup(previous_scene)
     @previous_scene = previous_scene
 
-    @message = ShadowText.new "-Paused -", at: [37.5, 8.75], size: 7.5
+    @message = ShadowText.new "Paused", at: [22, 15], size: 26,
+                              color: Color.new(255, 255, 255, 150),
+                              shadow_color: Color.new(0, 0, 0, 150)
   end
 
   def register
     on :key_press, key(:escape) do
+      pop_scene
+    end
+
+    on :key_press, key(:p) do
       pop_scene
     end
   end

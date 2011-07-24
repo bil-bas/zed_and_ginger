@@ -29,7 +29,7 @@ GAME_RESOLUTION = Vector2[96, 60]
 window_size =  GAME_RESOLUTION * $scaling
 
 
-Ray.game "Zed and Ginger (WASD or ARROWS to move; SPACE to jump)", size: window_size do
+Ray.game "Zed and Ginger (WASD or ARROWS to move; SPACE to jump, P to pause)", size: window_size do
   register do
     on :quit, &method(:exit!)
   end
