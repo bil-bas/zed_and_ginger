@@ -1,27 +1,33 @@
+require 'fiber'
+
 class ReadySetGo < Scene
   def setup(previous_scene)
     @previous_scene = previous_scene
     time = Time.now.to_f
 
     @message = ShadowText.new "Ready...", at: [37.5, 8.75], size: 8
-    @events = [
-        ->{ @message.string = "Set..." },
-        ->{ @message.string = "Go!" },
-        ->{ exit! }
-    ]
 
-    @time_events = [time + 1, time + 2, time + 3]
+    beep = sound sound_path("ready_beep.ogg")
+    beep.volume = 30
+    beep.play
 
-    @beep = sound sound_path("ready_beep.ogg")
-    @beep.volume = 30
+    @events = Fiber.new do
+      ["Set...", "Go!!!"].each do |string|
+        @message.string = string
+        beep.play
+        Fiber.yield
+      end
+    end
+
+    @next_event_at = Time.now + 1
   end
 
   def register
     always do
-      if Time.now.to_f >= @time_events.first
-        @time_events.shift
-        @beep.play
-        @events.shift.call
+      if Time.now >= @next_event_at
+        @events.resume
+        pop_scene unless @events.alive?
+        @next_event_at += 1
       end
     end
   end

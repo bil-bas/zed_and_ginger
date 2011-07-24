@@ -52,8 +52,8 @@ class Level < Scene
     score_height = window.scaled_size.height - 6.625
     @score_background = Polygon.rectangle([0, window.scaled_size.height - 6, window.scaled_size.width, 6], Color.new(80, 80, 80))
     @level_text = ShadowText.new "L%02d" % level_number, at: [3, score_height], size: FONT_SIZE, color: text_color
-    @high_score = ShadowText.new "XXXXXXX", at: [15.5, score_height], size: FONT_SIZE, color: text_color
-    @score = ShadowText.new "XXX: XXXXXXX", at: [53, score_height], size: FONT_SIZE, color: text_color
+    @high_score = ShadowText.new "XXX: 0000000", at: [15.5, score_height], size: FONT_SIZE, color: text_color
+    @score = ShadowText.new "0000000", at: [53, score_height], size: FONT_SIZE, color: text_color
     @timer = Timer.new level_data['time_limit'], at: [76, score_height], size: FONT_SIZE, color: text_color
     @progress = ProgressBar.new(Rect.new(0, window.scaled_size.height - 2, window.scaled_size.width, 2))
 
@@ -70,13 +70,15 @@ class Level < Scene
 
     @@level_music ||= music music_path "Space_Cat_Habitat.ogg"
     @@level_music.volume = 20
-    @@level_music.play
 
     @@finish_music ||= music music_path "Space_Cat_Winner.ogg"
     @@finish_music.volume = 50
 
-    # TODO: Disabled this, because it was working erratically.
-    #run_scene :ready_set_go, self
+    calculate_visible_objects
+
+    run_scene :ready_set_go, self
+
+    @@level_music.play
   end
 
   def clean_up
@@ -170,14 +172,7 @@ class Level < Scene
 
       move_camera
 
-      # Checking for collision on the screen is significantly slower than just rendering everything.
-      @visible_dynamic_objects = @dynamic_objects
-
-      # Update visible dynamic objects and stop them moving off the map. Others will just sleep off the side of the map.
-      min_x = @player.x - @floor_camera.rect.width * 0.75
-      max_x = @player.x + @floor_camera.rect.width
-      @visible_objects = @dynamic_objects.select {|o| o.x >= min_x and o.x <= max_x }
-      @visible_objects.sort_by!(&:z_order)
+      calculate_visible_objects
       @visible_objects.each(&:update)
 
       @progress.progress = (@player.position.x.to_f - @initial_player_x) / @distance_to_run
@@ -192,6 +187,17 @@ class Level < Scene
 
       update_shaders
     end
+  end
+
+  def calculate_visible_objects
+    # Checking for collision on the screen is significantly slower than just rendering everything.
+    @visible_dynamic_objects = @dynamic_objects
+
+    # Update visible dynamic objects and stop them moving off the map. Others will just sleep off the side of the map.
+    min_x = @player.x - @floor_camera.rect.width * 0.75
+    max_x = @player.x + @floor_camera.rect.width
+    @visible_objects = @dynamic_objects.select {|o| o.x >= min_x and o.x <= max_x }
+    @visible_objects.sort_by!(&:z_order)
   end
     
   def render(win)
