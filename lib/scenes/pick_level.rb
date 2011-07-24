@@ -50,7 +50,7 @@ class PickLevel < Scene
 
     cursor_image = image(image_path("cursor.png"))
     @cursor = sprite cursor_image, scale: [0.5, 0.5], origin: [0, 0]
-    @cursor_shown = false
+    @cursor_shown = true
 
     @@ambient_music ||= music music_path("Space_Cat_Ambient.ogg")
     @@ambient_music.looping = true
