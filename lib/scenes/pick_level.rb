@@ -54,21 +54,21 @@ class PickLevel < Scene
   end
 
   def scale_up
-    new_size = GAME_RESOLUTION * ($scaling + 1)
+    new_size = GAME_RESOLUTION * (window.user_data.scaling + 1)
     if new_size.x <= Ray.screen_size.width * 0.95 and
       new_size.y <= Ray.screen_size.height * 0.95
       pop_scene
-      $scaling += 1
+      window.scaling  += 1
       window.size = new_size
       push_scene :pick_level
     end
   end
 
   def scale_down
-    if $scaling > 2
+    if window.user_data.scaling > 2
       pop_scene
-      $scaling -= 1
-      window.size = GAME_RESOLUTION * $scaling
+      window.scaling -= 1
+      window.size = GAME_RESOLUTION * window.scaling
       push_scene :pick_level
     end
   end
@@ -168,7 +168,7 @@ class PickLevel < Scene
     end
 
     on :mouse_motion do |pos|
-      @cursor.pos = pos / $scaling
+      @cursor.pos = pos / window.scaling
     end
 
     always do

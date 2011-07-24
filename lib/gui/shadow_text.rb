@@ -13,7 +13,7 @@ class ShadowText
 
     @shadow = Text.new string, options # @main.dup should work here.
     @shadow.color = options[:shadow_color]
-    @shadow.pos += options[:shadow_offset].to_vector2 * $scaling
+    @shadow.pos += options[:shadow_offset].to_vector2 * Window.user_data.scaling
   end
 
   def string=(string)

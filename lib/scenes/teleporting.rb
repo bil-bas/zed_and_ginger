@@ -41,7 +41,7 @@ class Teleporting < Scene
 
   def render(win)
     @previous_scene.render(win)
-    @@shader[:offset] = (@player.position - @position) / ($scaling * 5)
+    @@shader[:offset] = (@player.position - @position) / (window.user_data.scaling * 5)
     win.draw @overlay
   end
 end

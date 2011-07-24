@@ -14,6 +14,7 @@ end
 
 require_relative "ray_ext"
 require_relative "version"
+require_relative "user_data"
 
 %w[enter_name level pause pick_level ready_set_go teleporting].each do |filename|
   require_relative "scenes/#{filename}"
@@ -23,12 +24,16 @@ end
   require_relative "gui/#{filename}"
 end
 
+%w[hash].each do |filename|
+  require_relative "standard_ext/#{filename}"
+end
+
 SCENE_CLASSES = [EnterName, Level, Pause, PickLevel, ReadySetGo, Teleporting]
-$scaling = 8.0
+
 GAME_RESOLUTION = Vector2[96, 60]
 
-window_size =  GAME_RESOLUTION * $scaling
-
+Window.user_data = UserData.new
+window_size = GAME_RESOLUTION * Window.scaling
 
 Ray.game "Zed and Ginger (WASD or ARROWS to move; SPACE to jump, P to pause)", size: window_size do
   register do
@@ -38,7 +43,7 @@ Ray.game "Zed and Ginger (WASD or ARROWS to move; SPACE to jump, P to pause)", s
   end
 
   window_view = window.default_view
-  window_view.zoom_by $scaling
+  window_view.zoom_by window.scaling
   window_view.center = window_view.size / 2
   window.view = window_view
 

@@ -1,0 +1,16 @@
+# This is the master settings file, in which all defaults are held.
+# These are merged with the user's settings each time the game is loaded.
+
+---
+levels:
+  0:
+    high-score: 0
+    high-scorer: ???
+  1:
+    high-score: 0
+    high-scorer: ???
+  2:
+    high-score: 0
+    high-scorer: ???
+
+scaling: 8

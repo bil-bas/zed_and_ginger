@@ -3,7 +3,7 @@ class ProgressBar
     @background = Polygon.rectangle(rect)
     @background.outline = Color.black
     @background.outlined = true
-    @background.outline_width /= $scaling
+    @background.outline_width /= Window.user_data.scaling
 
     @progress = Polygon.rectangle(rect)
     @progress.color = Color.new(50, 50, 200)

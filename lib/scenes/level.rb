@@ -11,13 +11,6 @@ class Level < Scene
 
   FONT_SIZE = 5.625
 
-  HIGH_SCORE_FILE = File.join(ROOT_PATH, 'zed_and_ginger.dat')
-
-  FIELD_LEVELS = 'levels'
-  FIELD_HIGH_SCORER = 'high-scorer'
-  FIELD_HIGH_SCORE = 'high-score'
-  DEFAULT_HIGH_SCORER = '???' # When noone has made a high score, it still needs a name.
-
   attr_reader :level_number
 
   def setup(level_number, background, background_camera)
@@ -25,13 +18,13 @@ class Level < Scene
 
     @dynamic_objects = [] # Objects that need #update
 
-    level_data = YAML::load_file(File.expand_path(File.join(__FILE__, "../../../config/levels/#{level_number}.yml")))
+    level_data = YAML::load_file(File.expand_path(File.join(EXTRACT_PATH, "config/levels/#{level_number}.yml")))
     @wall_map = WallMap.new self, level_data['wall'].split("\n")
     @floor_map = FloorMap.new self, level_data['floor'].split("\n"), level_data['messages']
 
     # Create a camera for displaying the wall map
     @wall_camera = window.default_view
-    @wall_camera.zoom_by $scaling
+    @wall_camera.zoom_by window.scaling
     @wall_camera.center = @wall_camera.size / 2
 
     # Create a camera for displaying the floor map (which has origin set in the view)
@@ -56,8 +49,7 @@ class Level < Scene
     @progress = ProgressBar.new(Rect.new(0, window.scaled_size.height - 2, window.scaled_size.width, 2))
 
     init_fps
-
-    load_high_scores
+    update_high_score
 
     @game_over = false
 
@@ -84,23 +76,6 @@ class Level < Scene
     @@finish_music.stop
   end
 
-  def load_high_scores
-    @high_score_data = if File.exists? HIGH_SCORE_FILE
-      YAML::load_file(HIGH_SCORE_FILE)
-    else
-      {
-          FIELD_LEVELS => {}
-      }
-    end
-
-    @high_score_data[FIELD_LEVELS][level_number] ||= {
-        FIELD_HIGH_SCORE => 0,
-        FIELD_HIGH_SCORER => DEFAULT_HIGH_SCORER,
-    }
-
-    update_high_score
-  end
-
   def update_high_score
     @high_score.string = "%s: %07d" % [high_scorer, high_score]
   end
@@ -114,14 +89,8 @@ class Level < Scene
       run_scene(:enter_name, self, lambda {|n| name = n })
 
       if name
-        @high_score_data[FIELD_LEVELS][level_number] = {
-            FIELD_HIGH_SCORE => score,
-            FIELD_HIGH_SCORER => name,
-        }
-
+        window.user_data.set_high_score(level_number, name, score)
         update_high_score
-
-        File.open(HIGH_SCORE_FILE, "w") {|f| f.puts @high_score_data.to_yaml }
       end
     end
 
@@ -129,11 +98,11 @@ class Level < Scene
   end
 
   def high_score
-    @high_score_data[FIELD_LEVELS][level_number][FIELD_HIGH_SCORE] || 0
+    window.user_data.high_score(level_number)
   end
 
   def high_scorer
-    @high_score_data[FIELD_LEVELS][level_number][FIELD_HIGH_SCORER] || 0
+    window.user_data.high_scorer(level_number)
   end
   
   def add_object(object)
