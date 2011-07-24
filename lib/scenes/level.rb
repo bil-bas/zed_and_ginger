@@ -20,8 +20,8 @@ class Level < Scene
 
   attr_reader :level_number
 
-  def setup(level_number)
-    @level_number = level_number
+  def setup(level_number, background, background_camera)
+    @level_number, @background, @background_camera = level_number, background, background_camera
 
     @dynamic_objects = [] # Objects that need #update
 
@@ -44,8 +44,6 @@ class Level < Scene
     @distance_to_run = @floor_map.finish_line_x - @initial_player_x
 
     @half_size = @wall_camera.rect.size / 2
-    
-    create_background 
 
     # Player's score, time remaining and progress through the level.
     text_color = Color.new(190, 190, 255)
@@ -138,21 +136,6 @@ class Level < Scene
 
   def high_scorer
     @high_score_data[FIELD_LEVELS][level_number][FIELD_HIGH_SCORER] || 0
-  end
-  
-  def create_background
-    img = Image.new window.size
-    image_target img do |target|
-      target.clear Color.black
-      target.update
-    end
-    400.times { img[rand(img.size.width), rand(img.size.height)] = Color.new(*([55 + rand(200)] * 3)) }
-
-    @background = sprite img
-    
-    @background_camera = window.default_view
-    @background_camera.zoom_by 2
-    @background_camera.center = @background_camera.size / 2
   end
   
   def add_object(object)

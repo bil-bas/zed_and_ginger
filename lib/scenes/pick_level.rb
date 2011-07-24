@@ -1,23 +1,26 @@
 class PickLevel < Scene
-  BACKGROUND_COLOR = Color.new(0, 100, 50)
-
   TUTORIAL_LETTER = 'T'
+
+  attr_reader :background, :background_camera
 
   def setup
     @levels = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")]
     @levels.map! {|file| File.basename(file).to_i }.sort
 
     @heading = ShadowText.new("Zed and Ginger", at: [5, 2.5], size: 10)
-    @sub_heading = ShadowText.new("Pick a level", at: [5, 12.5], size: 6)
+    @sub_heading = ShadowText.new("Level: ", at: [5, 14], size: 6)
 
     @level_buttons = []
-    level_button_handler = lambda {|button| push_scene :level, @levels[button.data] }
-    @levels.each_with_index do |level, i|
-      name = level == 0 ? '[T]' : "[#{level}]"
-      @level_buttons << Button.new(name, at: [7.5 + i * 8, 21], size: 6, data: i, &level_button_handler)
+    level_button_handler = lambda do |button|
+      start_level @levels[button.data]
     end
 
-    @scale_down_button = Button.new("[-]", at: [75, 52], size: 6) do
+    @levels.each_with_index do |level, i|
+      name = level == 0 ? '[T]' : "[#{level}]"
+      @level_buttons << Button.new(name, at: [20 + i * 8, 14], size: 6, data: i, &level_button_handler)
+    end
+
+    @scale_down_button = Button.new("[-]", at: [78, 52], size: 6) do
       if $scaling > 1
         pop_scene
         $scaling -= 1
@@ -26,11 +29,13 @@ class PickLevel < Scene
       end
     end
 
-    @scale_up_button = Button.new("[+]", at: [82, 52], size: 6) do
-      if $scaling < 16
+    @scale_up_button = Button.new("[+]", at: [85, 52], size: 6) do
+      new_size = GAME_RESOLUTION * ($scaling + 1)
+      if new_size.x <= Ray.screen_size.width * 0.95 and
+          new_size.y <= Ray.screen_size.height * 0.95
         pop_scene
         $scaling += 1
-        window.size = GAME_RESOLUTION * $scaling
+        window.size = new_size
         push_scene :pick_level
       end
     end
@@ -46,14 +51,35 @@ class PickLevel < Scene
 
     window.show_cursor
 
+    create_background
+
     @@ambient_music ||= music music_path("Space_Cat_Ambient.ogg")
     @@ambient_music.looping = true
     @@ambient_music.play
     @@ambient_music.volume = 70
   end
 
+  def create_background
+    img = Image.new window.size / 2
+    image_target img do |target|
+      target.clear Color.black
+      target.update
+    end
+    400.times { img[rand(img.size.width), rand(img.size.height)] = Color.new(*([55 + rand(200)] * 3)) }
+
+    @background = sprite img
+
+    @background_camera = window.default_view
+    @background_camera.zoom_by 2
+    @background_camera.center = @background_camera.size / 2
+  end
+
   def clean_up
     @@ambient_music.pause
+  end
+
+  def start_level(level_number)
+    push_scene :level, level_number, @background, @background_camera
   end
 
   def register
@@ -62,7 +88,7 @@ class PickLevel < Scene
       char = Ray::TextHelper.convert(char).upcase
       char = '0' if char == TUTORIAL_LETTER or char == '`'
       if ('0'..'2').include? char
-        push_scene :level, char.to_i
+        start_level char.to_i
       end
     end
 
@@ -83,7 +109,9 @@ class PickLevel < Scene
   end
 
   def render(win)
-    win.clear BACKGROUND_COLOR
+    win.with_view @background_camera do
+      win.draw @background
+    end
 
     win.with_view win.default_view do
       @heading.draw_on win
