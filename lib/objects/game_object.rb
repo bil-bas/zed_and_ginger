@@ -45,7 +45,13 @@ class GameObject
 
     value
   end
-  
+
+  def alpha=(alpha)
+    color = @sprite.color
+    color.alpha = alpha
+    @sprite.color = color
+  end
+
   def z=(value)
     @sprite.y += @z - value
     @z = value

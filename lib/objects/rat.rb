@@ -1,4 +1,5 @@
 require_relative "dynamic_object"
+require_relative "float_icon"
 
 class Rat < DynamicObject
   OK_SPRITE = [0, 0]
@@ -46,6 +47,7 @@ class Rat < DynamicObject
         @state = :squashed
         @sprite.y += 2
         @sounds[:squashed].play
+        FloatIcon.new(:extra_time, player)
       else
         @sprite.sheet_pos = CHASED_SPRITE
         player.score += TOUCHED_SCORE

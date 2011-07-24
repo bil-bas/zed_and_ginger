@@ -158,9 +158,6 @@ class Level < Scene
   end
 
   def calculate_visible_objects
-    # Checking for collision on the screen is significantly slower than just rendering everything.
-    @visible_dynamic_objects = @dynamic_objects
-
     # Update visible dynamic objects and stop them moving off the map. Others will just sleep off the side of the map.
     min_x = @player.x - @floor_camera.rect.width * 0.75
     max_x = @player.x + @floor_camera.rect.width
