@@ -66,7 +66,7 @@ class Level < Scene
 
     calculate_visible_objects
 
-    run_scene :ready_set_go, self
+    run_scene :ready_set_go, self unless DEVELOPMENT_MODE
 
     @@level_music.play
   end
