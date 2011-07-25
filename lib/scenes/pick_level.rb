@@ -3,13 +3,18 @@ require_relative 'gui_scene'
 class PickLevel < GuiScene
   TUTORIAL_LETTER = 'T'
 
+  TITLE_COLOR = Color.new(255, 150, 0)
+  BUTTON_COLOR = Color.white
+  TEXT_COLOR = Color.new(200, 200, 200)
+  DISABLED_COLOR = Color.new(100, 100, 100)
+
   attr_reader :background, :background_camera
 
   def setup
     super
 
-    gui_controls << ShadowText.new("Zed and Ginger", at: [5, 0], size: 16, color: Color.new(255, 150, 0))
-    gui_controls << ShadowText.new("Level: ", at: [5, 14], size: 6)
+    gui_controls << ShadowText.new("Zed and Ginger", at: [5, 0], size: 16, color: TITLE_COLOR)
+    gui_controls << ShadowText.new("Level: ", at: [5, 14], size: 6, color: TEXT_COLOR)
 
     # Get the numbers of all the levels defined.
     levels = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")]
@@ -19,32 +24,35 @@ class PickLevel < GuiScene
     levels.each_with_index do |level, i|
       pos = [20 + i * 8, 14]
       if window.user_data.level_unlocked?(level)
-        gui_controls << Button.new(level.to_s, self, at: pos, size: 6) do
+        gui_controls << Button.new(level.to_s, self, at: pos, size: 6, color: BUTTON_COLOR) do
           start_level level
         end
       else
         # Show a greyed out "button" if the level is available.
-        gui_controls << ShadowText.new("[#{level}]".to_s, at: pos, size: 6, color: Color.new(100, 100, 100))
+        gui_controls << ShadowText.new("[#{level}]".to_s, at: pos, size: 6, color: DISABLED_COLOR)
       end
     end
 
     if DEVELOPMENT_MODE
-      gui_controls << Button.new("#{UserData::DEV_LEVEL}-dev", self, at: [75, 14], size: 6) do
+      gui_controls << Button.new("#{UserData::DEV_LEVEL}-dev", self, at: [75, 14], size: 6, color: BUTTON_COLOR) do
         start_level UserData::DEV_LEVEL
       end
     end
 
     # Increase and reduce the size of the window.
-    gui_controls << Button.new("-", self, at: [80, 50], size: 6) do
+    gui_controls << Button.new("-", self, at: [63, 50], size: 6, color: BUTTON_COLOR) do
       scale_down
     end
 
-    gui_controls << Button.new("+", self, at: [87, 50], size: 6) do
+    @screen_size = ShadowText.new("0000x0000", at: [70, 50.5], size: 5, color: TEXT_COLOR)
+    gui_controls << @screen_size
+    update_screen_size
+    gui_controls << Button.new("+", self, at: [87, 50], size: 6, color: BUTTON_COLOR) do
       scale_up
     end
 
     # Version number.
-    gui_controls << ShadowText.new("v#{ZedAndGinger::VERSION}", at: [84, 56], size: 4)
+    gui_controls << ShadowText.new("v#{ZedAndGinger::VERSION}", at: [84, 56], size: 4, color: TEXT_COLOR)
 
     create_cat
     create_background
@@ -67,23 +75,29 @@ class PickLevel < GuiScene
   end
 
   def scale_up
-    new_size = GAME_RESOLUTION * (window.user_data.scaling + 1)
+    new_size = GAME_RESOLUTION * (window.user_data.scaling + 2)
     if new_size.x <= Ray.screen_size.width * 0.95 and
       new_size.y <= Ray.screen_size.height * 0.95
       pop_scene
-      window.scaling  += 1
+      window.scaling += 2
       window.size = new_size
       push_scene :pick_level
+      update_screen_size
     end
   end
 
   def scale_down
     if window.user_data.scaling > 2
       pop_scene
-      window.scaling -= 1
+      window.scaling -= 2
       window.size = GAME_RESOLUTION * window.scaling
       push_scene :pick_level
+      update_screen_size
     end
+  end
+
+  def update_screen_size
+    @screen_size.string = ("%dx%d" % (GAME_RESOLUTION * window.scaling).to_a).rjust(9)
   end
 
   def create_background
