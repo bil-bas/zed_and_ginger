@@ -17,7 +17,7 @@ class PickLevel < Scene
     end
 
     @levels.each_with_index do |level, i|
-      name = level == 0 ? '[T]' : "[#{level}]"
+      name = level == 0 ? 'T' : level.to_s
        if window.user_data.level_unlocked?(level) or DEVELOPMENT_MODE
         @level_buttons << Button.new(name, at: [20 + i * 8, 14], size: 6, data: i, &level_button_handler)
       else
@@ -25,11 +25,11 @@ class PickLevel < Scene
       end
     end
 
-    @scale_down_button = Button.new("[-]", at: [80, 50], size: 6) do
+    @scale_down_button = Button.new("-", at: [80, 50], size: 6) do
       scale_down
     end
 
-    @scale_up_button = Button.new("[+]", at: [87, 50], size: 6) do
+    @scale_up_button = Button.new("+", at: [87, 50], size: 6) do
       scale_up
     end
 

@@ -3,7 +3,7 @@ class Button
 
   def initialize(text, options = {}, &handler)
     @data = options[:data]
-    @text = Text.new text, options
+    @text = Text.new "[#{text}]", options
     @handler = handler
   end
 
