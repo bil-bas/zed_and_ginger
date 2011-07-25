@@ -21,6 +21,9 @@ class UserData < BaseUserData
   HIGH_SCORE = 'high-score'
   FINISHED = 'finished'
 
+  DEV_LEVEL = 0 # Level just used for development.
+  INITIAL_LEVEL = 1 # Tutorial level (always unlocked).
+
   # Graphics options.
   GROUP_GRAPHICS = 'graphics'
   SCALING = 'scaling'
@@ -59,11 +62,12 @@ class UserData < BaseUserData
   end
 
   def level_unlocked?(level)
-    # First (tutorial) level is always unlocked.
-    if level == 0
-      true
-    else
-      @data[GROUP_LEVELS][level - 1][FINISHED]
+
+    case level
+      when DEV_LEVEL     then DEVELOPMENT_MODE
+      when INITIAL_LEVEL then true # First (tutorial) level is always unlocked.
+      else
+        @data[GROUP_LEVELS][level - 1][FINISHED]
     end
   end
 

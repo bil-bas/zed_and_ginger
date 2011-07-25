@@ -8,23 +8,33 @@ class PickLevel < GuiScene
   def setup
     super
 
-    levels = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")]
-    levels.map! {|file| File.basename(file).to_i }.sort
-
     gui_controls << ShadowText.new("Zed and Ginger", at: [5, 0], size: 16, color: Color.new(255, 150, 0))
     gui_controls << ShadowText.new("Level: ", at: [5, 14], size: 6)
 
+    # Get the numbers of all the levels defined.
+    levels = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")]
+    levels.map! {|file| File.basename(file).to_i }.sort
+    levels -= [UserData::DEV_LEVEL]
+
     levels.each_with_index do |level, i|
-      name = level == 0 ? 'T' : level.to_s
-       if window.user_data.level_unlocked?(level) or DEVELOPMENT_MODE
-        gui_controls << Button.new(name, self, at: [20 + i * 8, 14], size: 6) do
+      pos = [20 + i * 8, 14]
+      if window.user_data.level_unlocked?(level)
+        gui_controls << Button.new(level.to_s, self, at: pos, size: 6) do
           start_level level
         end
       else
-        gui_controls << ShadowText.new(name, at: [20 + i * 8, 14], size: 6, color: Color.new(100, 100, 100))
+        # Show a greyed out "button" if the level is available.
+        gui_controls << ShadowText.new("[#{level}]".to_s, at: pos, size: 6, color: Color.new(100, 100, 100))
       end
     end
 
+    if DEVELOPMENT_MODE
+      gui_controls << Button.new("#{UserData::DEV_LEVEL}-dev", self, at: [75, 14], size: 6) do
+        start_level UserData::DEV_LEVEL
+      end
+    end
+
+    # Increase and reduce the size of the window.
     gui_controls << Button.new("-", self, at: [80, 50], size: 6) do
       scale_down
     end
@@ -33,8 +43,19 @@ class PickLevel < GuiScene
       scale_up
     end
 
+    # Version number.
     gui_controls << ShadowText.new("v#{ZedAndGinger::VERSION}", at: [84, 56], size: 4)
 
+    create_cat
+    create_background
+
+    @@ambient_music ||= music music_path("Space_Cat_Ambient.ogg")
+    @@ambient_music.looping = true
+    @@ambient_music.play
+    @@ambient_music.volume = 70
+  end
+
+  def create_cat
     @cat = sprite image_path("player.png"), at: [12.5, 25]
     @cat.sheet_size = [8, 5]
     @cat_animation = sprite_animation from: Player::SITTING_ANIMATION[0],
@@ -43,13 +64,6 @@ class PickLevel < GuiScene
     @cat_animation.loop!
     @cat_animation.start(@cat)
     @cat.scale = [2, 2]
-
-    create_background
-
-    @@ambient_music ||= music music_path("Space_Cat_Ambient.ogg")
-    @@ambient_music.looping = true
-    @@ambient_music.play
-    @@ambient_music.volume = 70
   end
 
   def scale_up

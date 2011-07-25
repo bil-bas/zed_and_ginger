@@ -3,15 +3,17 @@
 
 ---
 levels:
-  0:
-    high-score: 0
-    high-scorer: ???
-    finished: false
-  1:
+  1: # Tutorial track.
     high-score: 0
     high-scorer: ???
     finished: false
   2:
+    high-score: 0
+    high-scorer: ???
+    finished: false
+
+
+  0: # Test track for development purposes.
     high-score: 0
     high-scorer: ???
     finished: false
