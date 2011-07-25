@@ -68,6 +68,8 @@ class GameObject
 
     register(scene)
 
+    create_debug_shapes if DEVELOPMENT_MODE
+
     self.position = position
   end
 
@@ -101,20 +103,31 @@ class GameObject
     win.draw @sprite
   end
 
-  def draw_debug_on(win)
-    # Draw collision rectangle.
-    rect = Polygon.rectangle(to_rect)
-    rect.outlined = true
-    rect.outline = Color.new(255, 0, 0, 100)
-    rect.outline_width = 0.25
-    rect.filled = false
-    rect.skew_x(0.5)
-    win.draw rect
+  def create_debug_shapes
+    @collision_rect = Polygon.rectangle(to_rect)
+    @collision_rect.outlined = true
+    @collision_rect.outline = Color.new(255, 0, 0, 100)
+    @collision_rect.outline_width = 0.25
+    @collision_rect.filled = false
 
-    # Draw origin.
-    origin = Polygon.rectangle([*position - [0.25, 0.25], 0.5, 0.5], Color.new(0, 0, 255, 100))
-    origin.skew_x(0.5)
-    win.draw origin
+    @origin = Polygon.rectangle([*position - [0.25, 0.25], 0.5, 0.5], Color.new(0, 0, 255, 100))
+  end
+
+  def update
+    if DEVELOPMENT_MODE
+      @collision_rect.matrix = nil
+      @collision_rect.pos = @sprite.pos
+      @collision_rect.skew_x(0.5)
+
+      @origin.matrix = nil
+      @origin.pos = @sprite.pos - [0.25, 0.25]
+      @origin.skew_x(0.5)
+    end
+  end
+
+  def draw_debug_on(win)
+    win.draw @collision_rect
+    win.draw @origin
   end
   
   def draw_shadow_on(win)

@@ -31,6 +31,8 @@ class DynamicObject < GameObject
     end
 
     @animations.each(&:update)
+
+    super
   end
   
   def animated?
