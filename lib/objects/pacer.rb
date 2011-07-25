@@ -48,6 +48,7 @@ class Pacer < DynamicObject
     player = scene.player
     if player.ok? and collide? player
       player.squash
+      scene.remove_object self
     end
 
     super
