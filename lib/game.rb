@@ -35,7 +35,7 @@ GAME_RESOLUTION = Vector2[96, 60]
 Window.user_data = UserData.new
 window_size = GAME_RESOLUTION * Window.scaling
 
-Ray.game "Zed and Ginger (WASD or ARROWS to move; SPACE to jump, P to pause)", size: window_size do
+Ray.game "Zed and Ginger (WASD to move; SPACE to jump, P to pause)", size: window_size do
   register do
     on :quit do
       Kernel.exit

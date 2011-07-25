@@ -12,7 +12,7 @@ class Pause < Scene
       pop_scene
     end
 
-    on :key_press, key(:p) do
+    on :key_press, key(window.user_data.control(:pause)) do
       pop_scene
     end
   end

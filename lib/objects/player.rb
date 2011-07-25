@@ -98,6 +98,13 @@ class Player < DynamicObject
     create_animations
   end
 
+  def read_controls
+    @controls = {}
+    [:left, :right, :up, :down, :jump].each do |control|
+      @controls[control] = scene.window.user_data.player_control(1, control)
+    end
+  end
+
   def screen_offset_x
     # 0.2..0.5 across the screen.
     0.2 + (@velocity.x / MAX_SPEED) * 0.3
@@ -163,8 +170,10 @@ class Player < DynamicObject
   
   def register(scene)
     super(scene)
-    
-    on :key_press, key(:space) do
+
+    read_controls
+
+    on :key_press, key(@controls[:jump]) do
       if z == 0 and ok?
         @sounds[:jump].play
         self.velocity_z = JUMP_SPEED
@@ -283,19 +292,19 @@ class Player < DynamicObject
     @speed_modifier = @tile.speed if @tile and z == 0 and not riding?
 
     # Move up and down.
-    @velocity.y = if holding? :w or holding? :up
+    @velocity.y = if holding? @controls[:up]
       -VERTICAL_SPEED
-    elsif holding? :s or holding? :down
+    elsif holding? :s or holding? @controls[:down]
       +VERTICAL_SPEED
     else
       0
     end
 
     # Accelerate and decelerate.
-    if holding? :a or holding? :left
+    if holding? @controls[:left]
       @velocity.x += DECELERATION * frame_time
       @velocity.x = [@velocity.x, MIN_SPEED].max
-    elsif holding? :d or holding? :right
+    elsif holding? @controls[:right]
       @velocity.x += ACCELERATION * frame_time
       @velocity.x = [@velocity.x, MAX_SPEED].min
     end

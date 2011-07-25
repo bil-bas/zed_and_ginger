@@ -15,31 +15,46 @@ class UserData < BaseUserData
   DEFAULT_DATA_FILE = File.join(EXTRACT_PATH, 'config', FILE_NAME)
   DATA_FILE = File.join(ROOT_PATH, FILE_NAME)
 
-  FIELD_LEVELS = 'levels'
+  # High scores, high scorers and level unlocking.
+  GROUP_LEVELS = 'levels'
+  HIGH_SCORER = 'high-scorer'
+  HIGH_SCORE = 'high-score'
+  FINISHED = 'finished'
 
-  FIELD_HIGH_SCORER = 'high-scorer'
-  FIELD_HIGH_SCORE = 'high-score'
-  FIELD_FINISHED = 'finished'
-
-  FIELD_SCALING = 'scaling'
+  # Graphics options.
+  GROUP_GRAPHICS = 'graphics'
+  SCALING = 'scaling'
 
   MIN_SCALING = 2
+
+  # Sound options.
+  GROUP_SOUND = 'sound'
+  # TODO: sound options.
+
+  # Controls.
+  GROUP_CONTROLS = 'controls'
+  GROUP_CONTROLS_GENERAL = 'general'
+
+  VALID_PLAYER_CONTROLS = [:left, :right, :up, :down, :jump]
+  VALID_CONTROLS = [:pause]
 
   def initialize
     super DATA_FILE, DEFAULT_DATA_FILE
   end
 
+  # High scores, high scorers and level unlocking.
+
   def high_scorer(level)
-    @data[FIELD_LEVELS][level][FIELD_HIGH_SCORER]
+    @data[GROUP_LEVELS][level][HIGH_SCORER]
   end
 
   def high_score(level)
-    @data[FIELD_LEVELS][level][FIELD_HIGH_SCORE]
+    @data[GROUP_LEVELS][level][HIGH_SCORE]
   end
 
   def set_high_score(level, player, score)
-    @data[FIELD_LEVELS][level][FIELD_HIGH_SCORER] = player
-    @data[FIELD_LEVELS][level][FIELD_HIGH_SCORE] = score
+    @data[GROUP_LEVELS][level][HIGH_SCORER] = player
+    @data[GROUP_LEVELS][level][HIGH_SCORE] = score
     save
   end
 
@@ -48,26 +63,41 @@ class UserData < BaseUserData
     if level == 0
       true
     else
-      @data[FIELD_LEVELS][level - 1][FIELD_FINISHED]
+      @data[GROUP_LEVELS][level - 1][FINISHED]
     end
   end
 
   def finished_level?(level)
-    @data[FIELD_LEVELS][level][FIELD_FINISHED]
+    @data[GROUP_LEVELS][level][FINISHED]
   end
 
   # Possible to finish a level without having made a high score.
   def finish_level(level)
-    @data[FIELD_LEVELS][level][FIELD_FINISHED] = true
+    @data[GROUP_LEVELS][level][FINISHED] = true
     save
   end
 
+  # Graphics options.
+
   def scaling
-    [@data[FIELD_SCALING].round, MIN_SCALING].max
+    [@data[GROUP_GRAPHICS][SCALING].round, MIN_SCALING].max
   end
 
   def scaling=(scaling)
-    @data[FIELD_SCALING] = scaling
+    @data[GROUP_GRAPHICS][SCALING] = scaling
     save
+  end
+
+  # Controls
+
+  def player_control(player, action)
+    raise "Bad player #{player.inspect}" unless [1, 2].include? player
+    raise "Bad action #{action.inspect}" unless VALID_PLAYER_CONTROLS.include? action
+    @data[GROUP_CONTROLS][player][action.to_s].to_sym
+  end
+
+  def control(action)
+    raise "Bad action #{action.inspect}" unless VALID_CONTROLS.include? action
+    @data[GROUP_CONTROLS][GROUP_CONTROLS_GENERAL][action.to_s].to_sym
   end
 end

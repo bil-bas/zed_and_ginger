@@ -16,4 +16,17 @@ levels:
     high-scorer: ???
     finished: false
 
-scaling: 8
+graphics:
+  scaling: 8
+
+sound: {}
+
+controls:
+  general:
+    pause: p
+  1:
+    left: a
+    right: d
+    up: w
+    down: s
+    jump: space

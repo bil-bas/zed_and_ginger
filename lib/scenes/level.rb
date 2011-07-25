@@ -127,7 +127,7 @@ class Level < Scene
       pause
     end
 
-    on :key_press, key(:p) do
+    on :key_press, key(window.user_data.control(:pause)) do
       pause
     end
 
