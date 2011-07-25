@@ -5,7 +5,7 @@ class ShadowText
 
   def initialize(string, options = {})
     options = {
-        shadow_offset: [0.25, 0.25],
+        shadow_offset: [0.04, 0.04],
         shadow_color: Color.black,
     }.merge! options
 

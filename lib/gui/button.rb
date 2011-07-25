@@ -15,7 +15,7 @@ class Button
     @handler = handler
 
     scene.add_event_handler(:mouse_press) do |button, pos|
-      activate if button == :left and @text.to_rect.contain?(pos)
+      activate if button == :left and @text.to_rect.contain?(pos / Window.scaling)
     end
   end
 

@@ -1,11 +1,16 @@
 require 'fiber'
 
-class ReadySetGo < Scene
+require_relative 'game_scene'
+
+class ReadySetGo < GameScene
   def setup(previous_scene)
+    super()
+
     @previous_scene = previous_scene
     time = Time.now.to_f
 
     @message = ShadowText.new "Ready...", at: [37.5, 8.75], size: 8
+    gui_controls << @message
 
     beep = sound sound_path("ready_beep.ogg")
     beep.volume = 30
@@ -34,9 +39,6 @@ class ReadySetGo < Scene
 
   def render(win)
     @previous_scene.render(win)
-
-    win.with_view win.default_view do
-      @message.draw_on win
-    end
+    super(win)
   end
 end

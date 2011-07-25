@@ -11,7 +11,7 @@ def music_path(resource); media_path('music', resource); end
 
 def shader_path(resource); File.expand_path File.join(EXTRACT_PATH, 'lib/shaders', resource); end
 
-%w[animation drawable font matrix rect window].each do |file_name|
+%w[animation drawable font matrix rect text window].each do |file_name|
   require_relative "ray_ext/#{file_name}"
 end
 

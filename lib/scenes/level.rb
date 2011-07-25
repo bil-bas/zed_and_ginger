@@ -2,8 +2,9 @@ require_relative '../objects/player'
 require_relative '../wall_map'
 require_relative '../floor_map'
 
+require_relative 'game_scene'
 
-class Level < Scene 
+class Level < GameScene
   attr_reader :frame_time, :floor_map, :player, :timer
 
   WALL_MAP_ROWS = 3
@@ -14,6 +15,8 @@ class Level < Scene
   attr_reader :level_number
 
   def setup(level_number, background, background_camera)
+    super()
+
     @level_number, @background, @background_camera = level_number, background, background_camera
 
     @dynamic_objects = [] # Objects that need #update
@@ -42,11 +45,13 @@ class Level < Scene
     text_color = Color.new(190, 190, 255)
     score_height = window.scaled_size.height - 6.625
     @score_background = Polygon.rectangle([0, window.scaled_size.height - 6, window.scaled_size.width, 6], Color.new(80, 80, 80))
-    @level_text = ShadowText.new "L%02d" % level_number, at: [3, score_height], size: FONT_SIZE, color: text_color
+    gui_controls << ShadowText.new("L%02d" % level_number, at: [3, score_height], size: FONT_SIZE, color: text_color)
     @high_score = ShadowText.new "XXX: 0000000", at: [15.5, score_height], size: FONT_SIZE, color: text_color
     @score = ShadowText.new "0000000", at: [53, score_height], size: FONT_SIZE, color: text_color
     @timer = Timer.new level_data['time_limit'], at: [76, score_height], size: FONT_SIZE, color: text_color
     @progress = ProgressBar.new(Rect.new(0, window.scaled_size.height - 2, window.scaled_size.width, 2))
+
+    self.gui_controls += [@high_score, @score, @timer, @progress]
 
     init_fps
     update_high_score
@@ -192,14 +197,7 @@ class Level < Scene
 
     win.draw @score_background
 
-    win.with_view win.default_view do
-      @level_text.draw_on win
-      @timer.draw_on win
-      @score.draw_on win
-      @high_score.draw_on win
-    end
-
-    @progress.draw_on win
+    super
 
     @used_time += (Time.now - start_at).to_f
   end

@@ -1,16 +1,13 @@
 require_relative "game_scene"
 
+# Just like a GameScene, but with a cursor.
 class GuiScene < GameScene
-  # List of controls, automatically drawn in order.
-  attr_reader :gui_controls
-
   def setup
-    super
+    super()
 
     cursor_image = image(image_path("cursor.png"))
     @cursor = sprite cursor_image, scale: [0.5, 0.5], origin: [0, 0]
     @cursor_shown = true
-    @gui_controls = []
   end
 
   def register
@@ -30,10 +27,7 @@ class GuiScene < GameScene
   end
 
   def render(win)
-    win.with_view win.default_view do
-      @gui_controls.each {|c| c.draw_on win }
-    end
-
+    super
     win.draw @cursor if @cursor_shown
   end
 end

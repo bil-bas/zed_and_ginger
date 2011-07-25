@@ -10,10 +10,6 @@ module Ray
           font: DEFAULT_FONT,
       }.merge! options
 
-      scaling = Window.user_data.scaling
-      options[:at] = (options[:at] || [0, 0]).to_vector2 *  scaling
-      options[:size] *= scaling
-
       original_initialize(text, options)
     end
   end
