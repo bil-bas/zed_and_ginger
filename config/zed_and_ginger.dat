@@ -11,6 +11,10 @@ levels:
     high-score: 0
     high-scorer: ???
     finished: false
+  3:
+    high-score: 0
+    high-scorer: ???
+    finished: false
 
 
   0: # Test track for development purposes.
