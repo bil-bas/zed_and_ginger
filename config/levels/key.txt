@@ -26,5 +26,9 @@
 #    < Std + BackwardConveyor - pushes player backwards.
 
 #    X Std + Mine
-#    l MetalFloor + LowLaserBeam
-#    L MetalFloor + HighLaserBeam
+
+#    l LaserFloor + LowLaserBeam
+#    L LaserFloor + HighLaserBeam
+
+#    e ExhaustFloor + FireExhaust
+#    E ExhaustFloor + FireExhaustShifted
