@@ -9,11 +9,18 @@
 #    # GlassFloor (window)
 #    f FinishFloor
 #    s SlowFloor
-#    = PipesFloor
+
 #    ^ Std + Spring
 #    b Std + Barrel
 #    B Std + Board
 #    m Std + MessageScreen (on wall)
-#    S Std + SlowSplat (goo on wall)
-#    > Forward Teleporter
-#    < Backward Teleporter
+
+#    S Std + SlowSplat (goo on wall
+)
+#    { Std + Forward Teleporter
+#    } Std + Backward Teleporter
+
+#    \ Std + RightConveyor    - pushes player to her right.
+#    / Std + LeftConveyor     - pushes player to her left.
+#    > Std + ForwardConveyor  - pushes player forwards.
+#    < Std + BackwardConveyor - pushes player backwards.
