@@ -1,8 +1,8 @@
-%w[finish glass slow standard teleport].each do |file_name|
+%w[finish glass laser slow standard teleport].each do |file_name|
   require_relative "tiles/#{file_name}_floor"
 end
 
-%w[barrel board conveyors message_screen mine pacer rat slow_splat spring teleporter].each do |file_name|
+%w[barrel board conveyors laser_beam message_screen mine pacer rat slow_splat spring teleporter].each do |file_name|
   require_relative "objects/#{file_name}"
 end
 
@@ -30,6 +30,9 @@ class FloorMap < Map
       when '/' then [StandardFloor, LeftConveyor]
       when '>' then [StandardFloor, ForwardConveyor]
       when '<' then [StandardFloor, BackwardConveyor]
+
+      when 'l' then [LaserFloor, LowLaserBeam]
+      when 'L' then [LaserFloor, HighLaserBeam]
 
       when '{' then [TeleportFloor, Teleporter]
       when '}' then [TeleportBackwardsFloor, TeleporterBackwards]

@@ -26,3 +26,5 @@
 #    < Std + BackwardConveyor - pushes player backwards.
 
 #    X Std + Mine
+#    l MetalFloor + LowLaserBeam
+#    L MetalFloor + HighLaserBeam

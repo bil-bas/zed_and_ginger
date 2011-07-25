@@ -13,6 +13,7 @@ class WallMap < Map
                    when 'o' then [2, 0] # Round window
                    when '#' then [3, 0] # Square window
                    when 'f' then [4, 0] # Finish line
+                   when 'L' then [5, 0] # Laser groove
                  else
                      raise "unknown wall tile: '#{char}'"
                  end
