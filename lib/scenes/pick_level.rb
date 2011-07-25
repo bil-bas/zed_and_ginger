@@ -33,6 +33,8 @@ class PickLevel < GuiScene
       scale_up
     end
 
+    gui_controls << ShadowText.new("v#{ZedAndGinger::VERSION}", at: [84, 56], size: 4)
+
     @cat = sprite image_path("player.png"), at: [12.5, 25]
     @cat.sheet_size = [8, 5]
     @cat_animation = sprite_animation from: Player::SITTING_ANIMATION[0],
@@ -41,8 +43,6 @@ class PickLevel < GuiScene
     @cat_animation.loop!
     @cat_animation.start(@cat)
     @cat.scale = [2, 2]
-
-    @version = ShadowText.new("v#{ZedAndGinger::VERSION}", at: [84, 56], size: 4)
 
     create_background
 
