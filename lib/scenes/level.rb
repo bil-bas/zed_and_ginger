@@ -114,6 +114,10 @@ class Level < Scene
     @dynamic_objects << object
   end
 
+  def remove_object(object)
+    @dynamic_objects -= [object]
+  end
+
   def objects; @dynamic_objects; end
 
   def pause; run_scene :pause, self unless @game_over; end

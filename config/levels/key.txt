@@ -24,3 +24,5 @@
 #    / Std + LeftConveyor     - pushes player to her left.
 #    > Std + ForwardConveyor  - pushes player forwards.
 #    < Std + BackwardConveyor - pushes player backwards.
+
+#    X Std + Mine
