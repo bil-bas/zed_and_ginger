@@ -10,27 +10,7 @@ wall: |
 
 floor: |
   --------------->-sSsSSSs------f----------
-  -----------------s-sss-s------f----------
+  --------------->-s-sss-s------f----------
   ---------------B-sss-sss------f----------
   -----------------s-sss-s------f----------
   -----------------sssssss-<----f----------
-
-#  Wall key:
-#    - wall
-#    # square glass window
-#    x tech panel
-#    o porthole
-#
-#  Floor key:
-#    - StandardFloor
-#    # GlassFloor (window)
-#    f FinishFloor
-#    s SlowFloor
-#    = PipesFloor
-#    ^ Std + Spring
-#    b Std + Barrel
-#    B Std + Board
-#    m Std + MessageScreen (on wall)
-#    S Std + SlowSplat (goo on wall)
-#    > Forward Teleporter
-#    < Backward Teleporter
