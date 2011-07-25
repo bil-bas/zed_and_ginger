@@ -1,9 +1,10 @@
 require_relative 'game_object'
 
 class LaserBeam < GameObject
-  MOVE_SPEED = 5
-  MIN_Z = 2
-  MAX_Z = 22
+  MIN_Z = 1.0
+  MAX_Z = 23.0
+  Z_DIFFERENCE = MAX_Z - MIN_Z
+  SPEED = 5.0
 
   def to_rect; Rect.new(*(@position - [0, 3]), 0, 6) end
   def z_order; super - 3; end # So it appear behind the player.
@@ -20,22 +21,6 @@ class LaserBeam < GameObject
     sprite.scale_y = 0.75
 
     super(map.scene, sprite, position)
-
-    @velocity_z = initial_speed
-
-    self.z = initial_z # Make me move to the correct height, before I get skewed.
-
-    recalculate_direction
-  end
-
-  def recalculate_direction
-    if z <= MIN_Z or not defined? @velocity_z
-      @velocity_z = + MOVE_SPEED
-      self.z = MIN_Z + (MIN_Z - z)
-    elsif z >= MAX_Z
-      @velocity_z = - MOVE_SPEED
-      self.z = MAX_Z - (z - MAX_Z)
-    end
   end
 
   def collide?(other)
@@ -43,8 +28,10 @@ class LaserBeam < GameObject
   end
 
   def update
-    self.z += @velocity_z * frame_time
-    recalculate_direction
+    # Can't use an animation, since we want all animations to synchronize (even if not animated).
+    z_offset = ((scene.timer.elapsed * SPEED) + phase_shift) % (Z_DIFFERENCE * 2) # 0..(2*height)
+    z_offset = Z_DIFFERENCE * 2 - z_offset if z_offset > Z_DIFFERENCE
+    self.z = MIN_Z + z_offset
 
     player = scene.player
     if player.ok? and collide? player
@@ -59,12 +46,10 @@ end
 
 # Starts at the top and moves down.
 class HighLaserBeam < LaserBeam
-  def initial_z; MAX_Z; end
-  def initial_speed; - MOVE_SPEED; end
+  def phase_shift; Z_DIFFERENCE; end
 end
 
 # Starts at the bottom, moving up.
 class LowLaserBeam < LaserBeam
-  def initial_z; MIN_Z; end
-  def initial_speed; + MOVE_SPEED; end
+  def phase_shift; 0; end
 end

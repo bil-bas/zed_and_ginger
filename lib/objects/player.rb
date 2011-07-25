@@ -3,8 +3,8 @@ require_relative "dynamic_object"
 class Player < DynamicObject
   ANIMATION_DURATION = 2
 
-  ACCELERATION = 40
-  DECELERATION = -64
+  ACCELERATION = 64
+  DECELERATION = -128
   MIN_SPEED = 0
   MAX_SPEED = 64
   VERTICAL_SPEED = 25

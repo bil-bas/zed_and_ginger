@@ -7,7 +7,6 @@ class ReadySetGo < GameScene
     super()
 
     @previous_scene = previous_scene
-    time = Time.now.to_f
 
     @message = ShadowText.new "Ready...", at: [37.5, 8.75], size: 8
     gui_controls << @message

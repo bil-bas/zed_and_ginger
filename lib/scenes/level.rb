@@ -5,7 +5,7 @@ require_relative '../floor_map'
 require_relative 'game_scene'
 
 class Level < GameScene
-  attr_reader :frame_time, :floor_map, :player, :timer
+  attr_reader :frame_time, :floor_map, :player, :timer, :scene_time
 
   WALL_MAP_ROWS = 3
   FLOOR_MAP_ROWS = 6
@@ -141,11 +141,9 @@ class Level < GameScene
     end
 
     always do
-      now = Time.now.to_f
-      @frame_time = [now - @last_frame_started_at, 0.1].min
-      @last_frame_started_at = now
-
-      start_at = now
+      @scene_time = Time.now.to_f - @level_started_at # Time elapsed since start of level.
+      @frame_time = [@scene_time - @last_frame_started_at, 0.1].min # Time elapsed since start of last frame.
+      @last_frame_started_at = @scene_time
 
       move_camera
 
@@ -155,7 +153,7 @@ class Level < GameScene
       @progress.progress = (@player.position.x.to_f - @initial_player_x) / @distance_to_run
       @score.string = "%07d" % player.score
 
-      @used_time += (Time.now - start_at).to_f
+      @used_time += Time.now.to_f - @last_frame_started_at
       recalculate_fps
 
       if DEVELOPMENT_MODE
@@ -203,9 +201,7 @@ class Level < GameScene
   end
 
   def update_shaders
-    @shader_time ||= 0
-    @shader_time += frame_time
-    [SlowFloor, SlowSplat, Teleporter, Teleporting].each {|c| c.shader_time = @shader_time }
+    [SlowFloor, SlowSplat, Teleporter, Teleporting].each {|c| c.shader_time = timer.elapsed }
   end
 
   def move_camera
@@ -215,8 +211,9 @@ class Level < GameScene
   end
   
   def init_fps
-    @last_frame_started_at = Time.now.to_f
-    @fps_next_calculated_at = Time.now.to_f + 1
+    @level_started_at = Time.now.to_f
+    @last_frame_started_at = 0
+    @fps_next_calculated_at = @level_started_at + 1
     @fps = @potential_fps = 0
     @num_frames = 0
     @used_time = 0

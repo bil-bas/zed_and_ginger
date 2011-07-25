@@ -2,22 +2,17 @@ require_relative 'dynamic_object'
 
 class Conveyor < DynamicObject
   SPEED = 16.0
+  NUM_FRAMES = 8
 
   def to_rect; Rect.new(*(@position - [4, 3]), 8, 6) end
 
   def initialize(map, tile, position)
     sprite = sprite image_path("conveyor.png"), at: position.to_vector2 + [tile.grid_position.y * 3, 0]
-    sprite.sheet_size = [8, 1]
+    sprite.sheet_size = [NUM_FRAMES, 1]
 
     super(map.scene, sprite, position)
 
     init_sprite
-
-    @animations << sprite_animation(from: [0, 0],
-                                    to: [7, 0],
-                                    duration: 8.0 / SPEED)
-    @animations.last.start sprite
-    @animations.last.loop!
   end
 
   def collide?(other)
@@ -29,14 +24,16 @@ class Conveyor < DynamicObject
   end
 
   def update
+    # Can't use an animation, since we want all animations to synchronize (even if not animated).
+    next_frame = [((scene.timer.elapsed * SPEED) % NUM_FRAMES).floor, 0]
+    @sprite.sheet_pos = next_frame
+
     player = scene.player
 
     if collide? player
       pos = player.pos
       player.pos = pos + (direction * SPEED * frame_time)
     end
-
-    super
   end
 end
 

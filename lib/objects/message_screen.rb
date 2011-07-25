@@ -2,7 +2,6 @@ require_relative "dynamic_object"
 
 class MessageScreen < DynamicObject
   TEXT_SCALING = 8.0
-  TEXT_PADDING = 2 # 2 pixels gap at each end.
 
   def casts_shadow?; false; end
 
