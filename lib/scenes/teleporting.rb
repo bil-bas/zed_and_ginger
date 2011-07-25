@@ -19,7 +19,7 @@ class Teleporting < Scene
 
     @overlay = sprite Image.new(window.scaled_size - [0, 6])
     unless defined? @@shader
-      @@shader = Shader.new frag: shader_path("teleporter.frag")
+      @@shader = Shader.new frag: StringIO.new(read_shader("teleporter.frag"))
       @@shader[:pixel_width] = 1.0 / window.scaled_size.width
       @@shader[:pixel_height] = 1.0 / window.scaled_size.height
       @@shader[:interference_amplitude] = INTERFERENCE_AMPLITUDE

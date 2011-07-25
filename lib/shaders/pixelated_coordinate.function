@@ -1,0 +1,9 @@
+uniform float pixel_width; // = Image width / num pixels
+uniform float pixel_height; // = Image width / num pixels
+
+// Returns the position of this pixel, assuming it was pixelated.
+vec2 pixelated_coordinate(vec2 coord)
+{
+  return vec2(pixel_width * floor(coord.x / pixel_width),
+              pixel_height * ceil(coord.y / pixel_height));
+}

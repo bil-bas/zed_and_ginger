@@ -18,7 +18,7 @@ class SlowSplat < DynamicObject
     @sprite.y = 0 # Move it up next to the wall.
 
     unless defined? @@shader
-      @@shader = Shader.new frag: shader_path("slime.frag")
+      @@shader = Shader.new frag: StringIO.new(read_shader("slime.frag"))
       @@shader[:pixel_width] = 1.0 / (@sprite.image.width * SlowFloor::SHADER_PIXELS_PER_PIXEL)
       @@shader[:pixel_height] = 1.0 / (@sprite.image.height * SlowFloor::SHADER_PIXELS_PER_PIXEL)
       @@shader[:interference_amplitude] = SlowFloor::INTERFERENCE_AMPLITUDE

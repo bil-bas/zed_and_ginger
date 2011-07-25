@@ -19,7 +19,7 @@ class Teleporter < DynamicObject
     super(map.scene, sprite, position)
 
     unless defined? @@shader
-      @@shader = Shader.new frag: shader_path("teleporter.frag")
+      @@shader = Shader.new frag: StringIO.new(read_shader("teleporter.frag"))
       @@shader[:pixel_width] = 1.0 / @sprite.image.width
       @@shader[:pixel_height] = 1.0 / @sprite.image.height
       @@shader[:interference_amplitude] = INTERFERENCE_AMPLITUDE
