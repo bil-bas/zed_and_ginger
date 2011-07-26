@@ -119,12 +119,15 @@ class Player < DynamicObject
     @sprite.sheet_pos = SQUASHED_SPRITE
     self.z = 0
     self.velocity_z = 0
+    self.velocity_x = 0
     @effect_time_remaining = 2
     self.y += SQUASH_OFFSET_Y
     @sounds[:squashed].play
   end
 
   def unsquash
+    self.velocity_z = 1.5
+    self.velocity_x = 32
     self.y -= SQUASH_OFFSET_Y
   end
 
