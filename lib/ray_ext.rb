@@ -31,4 +31,12 @@ module Ray
   end
 end
 
+module Ray
+  class Sprite
+    def draw_on(win)
+      win.draw self
+    end
+  end
+end
+
 include Ray

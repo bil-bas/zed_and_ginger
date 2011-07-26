@@ -14,10 +14,10 @@ class Level < GameScene
 
   attr_reader :level_number
 
-  def setup(level_number, background, background_camera)
+  def setup(level_number, background, background_camera, player_sheet)
     super()
 
-    @level_number, @background, @background_camera = level_number, background, background_camera
+    @level_number, @background, @background_camera, @player_sheet = level_number, background, background_camera, player_sheet
 
     @dynamic_objects = [] # Objects that need #update
 
@@ -35,7 +35,7 @@ class Level < GameScene
     @floor_camera.y -= @wall_map.to_rect.height
 
     start_tile = @floor_map.tile_at_grid([5, 2])
-    @player = Player.new(self, start_tile, start_tile.position + @floor_map.tile_size / 2)
+    @player = Player.new(self, start_tile, start_tile.position + @floor_map.tile_size / 2, @player_sheet)
     @initial_player_x = player.x
     @distance_to_run = @floor_map.finish_line_x - @initial_player_x
 
@@ -110,9 +110,9 @@ class Level < GameScene
         when :menu
           # Do nothing.
         when :restart
-          push_scene :level, @level_number, @background, @background_camera
+          push_scene :level, @level_number, @background, @background_camera, @player_sheet
         when :next
-          push_scene :level, @level_number + 1, @background, @background_camera
+          push_scene :level, @level_number + 1, @background, @background_camera, @player_sheet
       end
     end
   end

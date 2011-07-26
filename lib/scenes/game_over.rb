@@ -17,12 +17,9 @@ class GameOver < DialogScene
       pop_scene :restart
     end
 
-    if next_unlocked
-      gui_controls << Button.new("Next   ", self, at: [60, BUTTON_Y], size: TEXT_SIZE) do
-        pop_scene :next
-      end
-    else
-      gui_controls << Text.new("[Next   ]", at: [60, BUTTON_Y], size: TEXT_SIZE, color: PickLevel::DISABLED_COLOR)
+    gui_controls << Button.new("Next   ", self, at: [60, BUTTON_Y], size: TEXT_SIZE,
+                               enabled: next_unlocked) do
+      pop_scene :next
     end
   end
 end
