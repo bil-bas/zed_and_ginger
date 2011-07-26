@@ -2,13 +2,13 @@ require_relative "map"
 require_relative "tiles/wall_tile"
 
 class WallMap < Map
-  def initialize(scene, data)
-    super(WallTile.size, scene, data)
+  def initialize(scene, data, default_tile)
+    super(WallTile.size, scene, data, default_tile)
   end
 
   def create_tile(char, grid_position)
     sprite_pos = case char
-                   when '-' then [0, 0] # Std wall.
+                   when '-' then default_tile # Std wall.
                    when 'x' then [1, 0] # Tech panel
                    when 'o' then [2, 0] # Round window
                    when '#' then [3, 0] # Square window

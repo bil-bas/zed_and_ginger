@@ -75,7 +75,7 @@ class PickLevel < GuiScene
     @floor_camera.x = 30.5
     @floor_camera.y = -8
 
-    @floor_map = FloorMap.new self, FLOOR_TILES, []
+    @floor_map = FloorMap.new self, FLOOR_TILES, CheckeredFloor, []
   end
 
   protected

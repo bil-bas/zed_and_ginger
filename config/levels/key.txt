@@ -1,11 +1,11 @@
 #  Wall key:
-#    - wall
+#    - default floor for map
 #    # square glass window
 #    x tech panel
 #    o porthole
 #
 #  Floor key:
-#    - StandardFloor
+#    - default floor for map
 #    # GlassFloor (window)
 #    f FinishFloor
 #    s SlowFloor

@@ -1,4 +1,4 @@
-%w[exhaust finish glass laser slow standard teleport].each do |file_name|
+%w[checkered exhaust finish glass laser metal slow teleport].each do |file_name|
   require_relative "tiles/#{file_name}_floor"
 end
 
@@ -7,9 +7,9 @@ end
 end
 
 class FloorMap < Map
-  def initialize(scene, tile_data, messages)
+  def initialize(scene, tile_data, default_tile, messages)
     @messages = messages
-    super(FloorTile.size, scene, tile_data)
+    super(FloorTile.size, scene, tile_data, default_tile)
   end
 
   def next_message; @messages.shift; end
@@ -22,14 +22,14 @@ class FloorMap < Map
   def create_tile(char, grid_position)
     # Create the tile and, optionally, also create an object on that tile.
     tile_class, object_class = case char
-      when '-' then [StandardFloor, nil]
+      when '-' then [default_tile, nil]
       when '#' then [GlassFloor, nil]
       when 'f' then [FinishFloor, nil]
 
-      when '\\' then [StandardFloor, RightConveyor]
-      when '/' then [StandardFloor, LeftConveyor]
-      when '>' then [StandardFloor, ForwardConveyor]
-      when '<' then [StandardFloor, BackwardConveyor]
+      when '\\' then [default_tile, RightConveyor]
+      when '/' then [default_tile, LeftConveyor]
+      when '>' then [default_tile, ForwardConveyor]
+      when '<' then [default_tile, BackwardConveyor]
 
       when 'l' then [LaserFloor, LaserBeam]
       when 'L' then [LaserFloor, LaserBeamShifted]
@@ -43,13 +43,13 @@ class FloorMap < Map
       when 's' then [SlowFloor, nil]
       when 'S' then [SlowFloor, SlowSplat]
 
-      when '^' then [StandardFloor, Spring]
-      when 'b' then [StandardFloor, Barrel]
-      when 'B' then [StandardFloor, Board]
-      when 'm' then [StandardFloor, MessageScreen]
-      when 'X' then [StandardFloor, Mine]
-      when 'p' then [StandardFloor, Pacer]
-      when 'r' then [StandardFloor, Rat]
+      when '^' then [default_tile, Spring]
+      when 'b' then [default_tile, Barrel]
+      when 'B' then [default_tile, Board]
+      when 'm' then [default_tile, MessageScreen]
+      when 'X' then [default_tile, Mine]
+      when 'p' then [default_tile, Pacer]
+      when 'r' then [default_tile, Rat]
       else
        raise "Unknown floor tile: '#{char}'"
     end

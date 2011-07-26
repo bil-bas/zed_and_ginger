@@ -1,13 +1,13 @@
 class Map
   include Helper
   
-  attr_reader :grid_width, :grid_height, :tile_size, :scene, :position
+  attr_reader :grid_width, :grid_height, :tile_size, :scene, :position, :default_tile
   
   def to_rect; Rect.new(*@position, @grid_width * @tile_size.x, @grid_height * @tile_size.y); end
 
-  def initialize(tile_size, scene, tile_data)
+  def initialize(tile_size, scene, tile_data, default_tile)
     @tile_size = tile_size.to_vector2
-    @scene = scene
+    @scene, @default_tile = scene, default_tile
     @position = Vector2[0,0]
     @grid_width, @grid_height = tile_data.first.length, tile_data.size
 

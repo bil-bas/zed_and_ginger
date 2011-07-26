@@ -22,8 +22,10 @@ class Level < GameScene
     @dynamic_objects = [] # Objects that need #update
 
     level_data = YAML::load_file(File.expand_path(File.join(EXTRACT_PATH, "config/levels/#{level_number}.yml")))
-    @wall_map = WallMap.new self, level_data['wall'].split("\n")
-    @floor_map = FloorMap.new self, level_data['floor'].split("\n"), level_data['messages']
+    @wall_map = WallMap.new self, level_data['wall']['tiles'].split("\n"),
+                            level_data['wall']['default_tile']
+    @floor_map = FloorMap.new self, level_data['floor']['tiles'].split("\n"),
+                              Kernel::const_get(level_data['floor']['default_tile'].to_sym), level_data['messages']
 
     # Create a camera for displaying the wall map
     @wall_camera = window.default_view
