@@ -47,6 +47,11 @@ class Player < DynamicObject
 
   Z_ORDER_SQUASHED = -10
 
+  MAX_SCREEN_MOVE_PER_SECOND = 0.5
+  MIN_SCREEN_OFFSET = 0.1
+  MAX_SCREEN_OFFSET = 0.4
+  SCREEN_OFFSET_RANGE = MAX_SCREEN_OFFSET - MIN_SCREEN_OFFSET
+
   attr_accessor :speed_modifier
   attr_writer :score
 
@@ -89,6 +94,8 @@ class Player < DynamicObject
     @speed_modifier = 1.0
     @score = 0
 
+    @screen_offset_x = MIN_SCREEN_OFFSET
+
     @sounds = {}
     [:died, :jump, :squashed].each do |sound|
       @sounds[sound] = sound sound_path "player_#{sound}.ogg"
@@ -106,8 +113,11 @@ class Player < DynamicObject
   end
 
   def screen_offset_x
-    # 0.2..0.5 across the screen.
-    0.2 + (@velocity.x / MAX_SPEED) * 0.3
+    screen_movement = (MIN_SCREEN_OFFSET + (@velocity.x / MAX_SPEED) * SCREEN_OFFSET_RANGE) - @screen_offset_x
+    max_move =  MAX_SCREEN_MOVE_PER_SECOND * frame_time
+    @screen_offset_x += [[screen_movement, max_move].min, -max_move].max
+
+    @screen_offset_x
   end
 
   def effective_velocity
@@ -126,9 +136,11 @@ class Player < DynamicObject
   end
 
   def unsquash
-    self.velocity_z = 1.5
-    self.velocity_x = 32
     self.y -= SQUASH_OFFSET_Y
+
+    # Do a little jump!
+    self.velocity_z = JUMP_SPEED
+    self.velocity_x = 32
   end
 
   def knock_out

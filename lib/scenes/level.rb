@@ -63,6 +63,8 @@ class Level < GameScene
     # Setup a few things, so we can show a countdown before playing.
     @progress.progress = 0
     @visible_objects = [@player]
+    @frame_time = 0
+
     move_camera
 
     @@level_music ||= music music_path "Space_Cat_Habitat.ogg"
