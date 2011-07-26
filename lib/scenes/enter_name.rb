@@ -1,21 +1,20 @@
 # encoding: UTF-8
 
-require_relative "game_scene"
+require_relative "dialog_scene"
 
-class EnterName < GameScene
+class EnterName < DialogScene
   BLANK_CHAR = '.'
   MAX_CHARS = 3
 
-  def setup(previous_scene, set_name_proc)
-    super()
+  def setup(previous_scene)
+    super(previous_scene, enable_cursor: false)
 
-    @previous_scene, @set_name_proc = previous_scene, set_name_proc
     gui_controls << ShadowText.new("HIGH SCORE!", at: [21.25, 1.25], size: 12, color: Color.red)
+
+    gui_controls << Polygon.rectangle([30, 12.5, 25, 9.375], Color.new(0, 0, 0, 200))
 
     @entry = text BLANK_CHAR * MAX_CHARS, at: [35.625, 11.875], size: 11.25
     gui_controls << @entry
-
-    @entry_background = Polygon.rectangle([30, 12.5, 25, 9.375], Color.new(0, 0, 0, 200))
 
     @key_press_sound = sound sound_path("key_press.ogg")
   end
@@ -48,20 +47,10 @@ class EnterName < GameScene
     end
   end
 
-  def render(win)
-    @previous_scene.render(win)
-
-    win.draw @entry_background
-
-    super
-  end
-
   def accept_name
     unless @entry.string.include? BLANK_CHAR
-      @set_name_proc.call @entry.string
       @key_press_sound.play
-
-      pop_scene
+      pop_scene @entry.string
     end
   end
 

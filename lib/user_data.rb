@@ -62,12 +62,12 @@ class UserData < BaseUserData
   end
 
   def level_unlocked?(level)
-
     case level
       when DEV_LEVEL     then DEVELOPMENT_MODE
       when INITIAL_LEVEL then true # First (tutorial) level is always unlocked.
       else
-        @data[GROUP_LEVELS][level - 1][FINISHED]
+        # If the level we are asking for exists and we've completed the previous one.
+        @data[GROUP_LEVELS].has_key?(level) and @data[GROUP_LEVELS][level - 1][FINISHED]
     end
   end
 

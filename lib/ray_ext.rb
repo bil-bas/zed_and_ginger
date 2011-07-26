@@ -1,6 +1,5 @@
 require 'ray'
 
-
 def media_path(type, resource)
  File.expand_path File.join(EXTRACT_PATH, 'media', type, resource)
 end
@@ -22,6 +21,14 @@ def read_shader(file_name)
   shader = File.read shader_path(file_name)
   shader.gsub!(/^#include "(.*?)"/) { "\n\n#{read_shader($1)}\n\n" }
   shader
+end
+
+module Ray
+  class Polygon
+    def draw_on(win)
+      win.draw self
+    end
+  end
 end
 
 include Ray

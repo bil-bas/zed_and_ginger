@@ -16,7 +16,7 @@ require_relative "ray_ext"
 require_relative "version"
 require_relative "user_data"
 
-%w[enter_name level pause pick_level ready_set_go teleporting].each do |filename|
+%w[enter_name game_over level pause pick_level ready_set_go teleporting].each do |filename|
   require_relative "scenes/#{filename}"
 end
 
@@ -28,7 +28,7 @@ end
   require_relative "standard_ext/#{filename}"
 end
 
-SCENE_CLASSES = [EnterName, Level, Pause, PickLevel, ReadySetGo, Teleporting]
+SCENE_CLASSES = [EnterName, GameOver, Level, Pause, PickLevel, ReadySetGo, Teleporting]
 
 GAME_RESOLUTION = Vector2[96, 60]
 

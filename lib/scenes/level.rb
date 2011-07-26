@@ -44,7 +44,7 @@ class Level < GameScene
     # Player's score, time remaining and progress through the level.
     text_color = Color.new(190, 190, 255)
     score_height = window.scaled_size.height - 6.625
-    @score_background = Polygon.rectangle([0, window.scaled_size.height - 6, window.scaled_size.width, 6], Color.new(80, 80, 80))
+    gui_controls << Polygon.rectangle([0, window.scaled_size.height - 6, window.scaled_size.width, 6], Color.new(80, 80, 80))
     gui_controls << ShadowText.new("L%02d" % level_number, at: [3, score_height], size: FONT_SIZE, color: text_color)
     @high_score = ShadowText.new "XXX: 0000000", at: [15.5, score_height], size: FONT_SIZE, color: text_color
     @score = ShadowText.new "0000000", at: [53, score_height], size: FONT_SIZE, color: text_color
@@ -90,12 +90,11 @@ class Level < GameScene
     @@finish_music.play if player.finished?
 
     if score > high_score
-      name = nil
-      run_scene(:enter_name, self, lambda {|n| name = n })
-
-      if name
-        window.user_data.set_high_score(level_number, name, score)
-        update_high_score
+      run_scene(:enter_name, self) do |name|
+        if name
+          window.user_data.set_high_score(level_number, name, score)
+          update_high_score
+        end
       end
     end
 
@@ -104,7 +103,18 @@ class Level < GameScene
       window.user_data.finish_level(level_number)
     end
 
-    @game_over = true
+    run_scene :game_over, self, window.user_data.level_unlocked?(@level_number + 1) do |choice|
+      pop_scene
+
+      case choice
+        when :menu
+          # Do nothing.
+        when :restart
+          push_scene :level, @level_number, @background, @background_camera
+        when :next
+          push_scene :level, @level_number + 1, @background, @background_camera
+      end
+    end
   end
 
   def high_score
@@ -192,8 +202,6 @@ class Level < GameScene
         @visible_objects.each {|obj| obj.draw_debug_on win }
       end
     end
-
-    win.draw @score_background
 
     super
 
