@@ -31,8 +31,8 @@ class FloorMap < Map
       when '>' then [StandardFloor, ForwardConveyor]
       when '<' then [StandardFloor, BackwardConveyor]
 
-      when 'l' then [LaserFloor, LowLaserBeam]
-      when 'L' then [LaserFloor, HighLaserBeam]
+      when 'l' then [LaserFloor, LaserBeam]
+      when 'L' then [LaserFloor, LaserBeamShifted]
 
       when 'e' then [ExhaustFloor, FireExhaust]
       when 'E' then [ExhaustFloor, FireExhaustShifted]

@@ -8,6 +8,8 @@ class LaserBeam < GameObject
 
   def to_rect; Rect.new(*(@position - [0, 3]), 0, 6) end
   def z_order; super - 3; end # So it appear behind the player.
+  def phase_shift; 0; end
+
   def z=(z)
     @sprite.matrix = nil
     super(z)
@@ -44,12 +46,7 @@ class LaserBeam < GameObject
   end
 end
 
-# Starts at the top and moves down.
-class HighLaserBeam < LaserBeam
+class LaserBeamShifted < LaserBeam
   def phase_shift; Z_DIFFERENCE; end
 end
 
-# Starts at the bottom, moving up.
-class LowLaserBeam < LaserBeam
-  def phase_shift; 0; end
-end

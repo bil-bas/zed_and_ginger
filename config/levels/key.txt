@@ -15,7 +15,7 @@
 #    B Std + Board
 #    m Std + MessageScreen (on wall)
 
-#    S Std + SlowSplat (goo on wall
+#    S SlowFloor + SlowSplat (goo on wall)
 )
 #    { Std + Forward Teleporter
 #    } Std + Backward Teleporter
@@ -27,8 +27,8 @@
 
 #    X Std + Mine
 
-#    l LaserFloor + LowLaserBeam
-#    L LaserFloor + HighLaserBeam
+#    l LaserFloor + LaserBeam
+#    L LaserFloor + LaserBeamShifted
 
 #    e ExhaustFloor + FireExhaust
 #    E ExhaustFloor + FireExhaustShifted
