@@ -40,6 +40,14 @@ Ray.game "Zed and Ginger (WASD to move; SPACE to jump, P to pause)", size: windo
     on :quit do
       Kernel.exit
     end
+
+    on :key_press, key(:f12) do
+      path = File.join(ROOT_PATH, 'screenshots')
+      FileUtils.mkdir_p path
+      files = Dir[File.join(path, "screenshot_*.*")]
+      last_number = files.map {|f| f =~ /(\d+)\.bmp$/; $1.to_i }.sort.last || 0
+      window.to_image.write(File.join(path, "screenshot_#{(last_number + 1).to_s.rjust(3, '0')}.bmp"))
+    end
   end
 
   window_view = window.default_view

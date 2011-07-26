@@ -14,10 +14,10 @@ class Level < GameScene
 
   attr_reader :level_number
 
-  def setup(level_number, background, background_camera, player_sheet)
+  def setup(level_number, background, player_sheet)
     super()
 
-    @level_number, @background, @background_camera, @player_sheet = level_number, background, background_camera, player_sheet
+    @level_number, @background, @player_sheet = level_number, background, player_sheet
 
     @dynamic_objects = [] # Objects that need #update
 
@@ -27,21 +27,10 @@ class Level < GameScene
     @floor_map = FloorMap.new self, level_data['floor']['tiles'].split("\n"),
                               Kernel::const_get(level_data['floor']['default_tile'].to_sym), level_data['messages']
 
-    # Create a camera for displaying the wall map
-    @wall_camera = window.default_view
-    @wall_camera.zoom_by window.scaling
-    @wall_camera.center = @wall_camera.size / 2
-
-    # Create a camera for displaying the floor map (which has origin set in the view)
-    @floor_camera = @wall_camera.dup
-    @floor_camera.y -= @wall_map.to_rect.height
-
     start_tile = @floor_map.tile_at_grid([5, 2])
     @player = Player.new(self, start_tile, start_tile.position + @floor_map.tile_size / 2, @player_sheet)
     @initial_player_x = player.x
     @distance_to_run = @floor_map.finish_line_x - @initial_player_x
-
-    @half_size = @wall_camera.rect.size / 2
 
     # Player's score, time remaining and progress through the level.
     text_color = Color.new(190, 190, 255)
@@ -114,9 +103,9 @@ class Level < GameScene
         when :menu
           # Do nothing.
         when :restart
-          push_scene :level, @level_number, @background, @background_camera, @player_sheet
+          push_scene :level, @level_number, @background, @player_sheet
         when :next
-          push_scene :level, @level_number + 1, @background, @background_camera, @player_sheet
+          push_scene :level, @level_number + 1, @background, @player_sheet
       end
     end
   end
@@ -181,8 +170,8 @@ class Level < GameScene
 
   def calculate_visible_objects
     # Update visible dynamic objects and stop them moving off the map. Others will just sleep off the side of the map.
-    min_x = @player.x - @floor_camera.rect.width * 0.75
-    max_x = @player.x + @floor_camera.rect.width
+    min_x = @player.x - window.scaled_size.width * 0.75 # Look behind.
+    max_x = @player.x + window.scaled_size.width # Look ahead a bit more to wake things up.
     @visible_objects = @dynamic_objects.select {|o| o.x >= min_x and o.x <= max_x }
     @visible_objects.sort_by!(&:z_order)
   end
@@ -190,15 +179,20 @@ class Level < GameScene
   def render(win)
     start_at = Time.now
 
-    win.with_view @background_camera do
-      win.draw @background
-    end
+    win.draw @background
 
-    win.with_view @wall_camera do
+    # Create a camera for displaying the wall map
+    wall_camera = window.default_view
+    wall_camera.zoom_by window.scaling
+    wall_camera.center = [@camera_x, wall_camera.rect.height / 2]
+    win.with_view wall_camera do
       @wall_map.draw_on(win)
     end
 
-    win.with_view @floor_camera do
+    # Create a camera for displaying the floor map (which has origin set in the view)
+    floor_camera = wall_camera.dup
+    floor_camera.y -= @wall_map.to_rect.height
+    win.with_view floor_camera do
       @floor_map.draw_on(win)
 
       @visible_objects.each {|obj| obj.draw_shadow_on win }
@@ -219,8 +213,8 @@ class Level < GameScene
 
   def move_camera
     # Move the cameras to the player position (left side, plus an amount asked for from the player).
-    @wall_camera.x = @floor_camera.x =
-        @player.x + (@wall_camera.rect.width / 2) - (@wall_camera.rect.width * @player.screen_offset_x)
+
+    @camera_x = @player.x + (window.scaled_size.width / 2) - (window.scaled_size.width * @player.screen_offset_x)
   end
   
   def init_fps

@@ -69,12 +69,6 @@ class PickLevel < GuiScene
 
   protected
   def create_floor
-    @floor_camera = window.default_view
-    @floor_camera.size = GAME_RESOLUTION * window.scaling
-    @floor_camera.zoom_by window.scaling * 2
-    @floor_camera.x = 30.5
-    @floor_camera.y = -8
-
     @floor_map = FloorMap.new self, FLOOR_TILES, CheckeredFloor, []
   end
 
@@ -208,10 +202,7 @@ class PickLevel < GuiScene
     end
 
     @background = sprite @@background_image
-
-    @background_camera = window.default_view
-    @background_camera.size = @@background_image.size
-    @background_camera.center = @background_camera.size / 2
+    @background.scale = [0.25] * 2
   end
 
   public
@@ -221,7 +212,7 @@ class PickLevel < GuiScene
 
   protected
   def start_level(level_number)
-    push_scene :level, level_number, @background, @background_camera, @player_sheets[@player_number]
+    push_scene :level, level_number, @background, @player_sheets[@player_number]
   end
 
   public
@@ -246,11 +237,14 @@ class PickLevel < GuiScene
 
   public
   def render(win)
-    win.with_view @background_camera do
-      win.draw @background
-    end
+    win.draw @background
 
-    win.with_view @floor_camera do
+    floor_camera = win.view
+    floor_camera.size = GAME_RESOLUTION * window.scaling
+    floor_camera.zoom_by window.scaling * 2
+    floor_camera.x = 30.5
+    floor_camera.y = -8
+    win.with_view floor_camera do
       @floor_map.draw_on win
     end
 
