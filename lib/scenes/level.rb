@@ -153,7 +153,8 @@ class Level < GameScene
     end
 
     always do
-      @scene_time = Time.now.to_f - @level_started_at # Time elapsed since start of level.
+      started_at = Time.now.to_f
+      @scene_time = started_at - @level_started_at # Time elapsed since start of level.
       @frame_time = [@scene_time - @last_frame_started_at, 0.1].min # Time elapsed since start of last frame.
       @last_frame_started_at = @scene_time
 
@@ -165,7 +166,7 @@ class Level < GameScene
       @progress.progress = (@player.position.x.to_f - @initial_player_x) / @distance_to_run
       @score.string = "%07d" % player.score
 
-      @used_time += Time.now.to_f - @last_frame_started_at
+      @used_time += Time.now.to_f - started_at
       recalculate_fps
 
       if DEVELOPMENT_MODE
@@ -231,7 +232,7 @@ class Level < GameScene
   
   def recalculate_fps
     @num_frames += 1
-    
+
     if Time.now.to_f >= @fps_next_calculated_at     
       elapsed_time = @fps_next_calculated_at - Time.now.to_f + 1
       @fps = @num_frames / elapsed_time
