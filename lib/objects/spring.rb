@@ -4,23 +4,32 @@ class Spring < DynamicObject
   JUMP_Z_SPEED = 2
   JUMP_SPEED_MODIFIER = 1.3
 
-  def to_rect; Rect.new(*(@position - [2, 2]), 4, 4) end
+  def to_rect; Rect.new(*(@position - [2, 1.5]), 4, 3) end
 
   def initialize(map, tile, position)
-    sprite = sprite image_path("spring.png"), at: position
-    sprite.sheet_size = [2, 1]
-    sprite.origin = Vector2[sprite.sprite_width, sprite.sprite_height] / 2 + [-1, 0.5]
+    img = image image_path("spring.png")
+    @sprite_flat = sprite img, at: position.to_vector2 + [tile.grid_position.y * 3, 0]
+    @sprite_flat.sheet_size = [2, 1]
+
+    @sprite_flat.origin = Vector2[@sprite_flat.sprite_width / 2, @sprite_flat.sprite_height / 2]
+    @sprite_flat.scale_y = 0.75
+    @sprite_flat.skew_x(FloorTile::SKEW * 0.75)
+
+    @sprite_strut = sprite img, at: position.to_vector2 + [tile.grid_position.y * 3, 0]
+    @sprite_strut.sheet_size = [2, 1]
+    @sprite_strut.sheet_pos = [1, 0]
+    @sprite_strut.origin = Vector2[@sprite_strut.sprite_width / 2 - 2, @sprite_strut.sprite_height - 3]
 
     @activated = false
 
     @bounce_sound = sound sound_path "spring_bounce.ogg"
     @bounce_sound.volume = 30
 
-    super(map.scene, sprite, position)
+    super(map.scene, @sprite_flat, position)
   end
 
   def z_order
-    @activated ? super : Player::Z_ORDER_SQUASHED - 1
+    @activated ? super - 3 : Player::Z_ORDER_SQUASHED - 1
   end
 
   def collide?(other)
@@ -31,14 +40,20 @@ class Spring < DynamicObject
     player = scene.player
 
     if player.ok? and not @activated and collide? player
-      @sprite.sheet_pos = [1, 0]
+      @sprite_flat.matrix = nil
+      @sprite_flat.position += [-1.5, -4]
+      @sprite_flat.skew_x(FloorTile::SKEW * 0.75)
+
       player.z += 0.000001 # Just so we only collide with ONE spring.
       player.velocity_z = JUMP_Z_SPEED
       @bounce_sound.play
       player.speed_modifier = JUMP_SPEED_MODIFIER
       @activated = true
     end
+  end
 
-    super
+  def draw_on(win)
+    win.draw @sprite_strut if @activated
+    win.draw @sprite_flat
   end
 end
