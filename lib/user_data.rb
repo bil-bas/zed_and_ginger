@@ -1,4 +1,14 @@
 class BaseUserData
+  HEADER = <<END
+# =======================================================================
+# ------------------------- User settings file --------------------------
+#
+# WARNING: Editing this file manually may stop the game from starting up,
+#          but, if deleted, the game will create a new data file.
+# =======================================================================
+
+END
+
   def initialize(user_file, default_file)
     @user_file = user_file
     @data = File.exists?(@user_file) ? YAML::load_file(@user_file) : {}
@@ -8,7 +18,10 @@ class BaseUserData
   end
 
   def save
-    File.open(@user_file, "w") {|f| f.puts @data.to_yaml }
+    File.open(@user_file, "w") do |f|
+      f.puts HEADER
+      f.puts @data.to_yaml
+    end
   end
 end
 
