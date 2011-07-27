@@ -171,7 +171,7 @@ class Level < GameScene
   def calculate_visible_objects
     # Update visible dynamic objects and stop them moving off the map. Others will just sleep off the side of the map.
     min_x = @player.x - window.scaled_size.width * 0.75 # Look behind.
-    max_x = @player.x + window.scaled_size.width # Look ahead a bit more to wake things up.
+    max_x = @player.x + window.scaled_size.width * 1.25 # Look ahead a bit more to wake things up.
     @visible_objects = @dynamic_objects.select {|o| o.x >= min_x and o.x <= max_x }
     @visible_objects.sort_by!(&:z_order)
   end
