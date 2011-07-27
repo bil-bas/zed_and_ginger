@@ -35,6 +35,10 @@ GAME_RESOLUTION = Vector2[96, 60]
 Window.user_data = UserData.new
 window_size = GAME_RESOLUTION * Window.scaling
 
+class Ray::Game
+  SCREEN_SHOT_EXTENSION = 'tga'
+end
+
 Ray.game "Zed and Ginger (WASD to move; SPACE to jump, P to pause)", size: window_size do
   register do
     on :quit do
@@ -44,9 +48,9 @@ Ray.game "Zed and Ginger (WASD to move; SPACE to jump, P to pause)", size: windo
     on :key_press, key(:f12) do
       path = File.join(ROOT_PATH, 'screenshots')
       FileUtils.mkdir_p path
-      files = Dir[File.join(path, "screenshot_*.*")]
-      last_number = files.map {|f| f =~ /(\d+)\.bmp$/; $1.to_i }.sort.last || 0
-      window.to_image.write(File.join(path, "screenshot_#{(last_number + 1).to_s.rjust(3, '0')}.bmp"))
+      files = Dir[File.join(path, "screenshot_*.#{SCREEN_SHOT_EXTENSION}")]
+      last_number = files.map {|f| f =~ /(\d+)\.#{SCREEN_SHOT_EXTENSION}$/; $1.to_i }.sort.last || 0
+      window.to_image.write(File.join(path, "screenshot_#{(last_number + 1).to_s.rjust(3, '0')}.#{SCREEN_SHOT_EXTENSION}"))
     end
   end
 
