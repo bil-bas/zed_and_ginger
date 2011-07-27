@@ -3,6 +3,8 @@ class BaseUserData
     @user_file = user_file
     @data = File.exists?(@user_file) ? YAML::load_file(@user_file) : {}
     @data = YAML::load_file(default_file).deep_merge @data
+
+    save
   end
 
   def save
@@ -11,9 +13,8 @@ class BaseUserData
 end
 
 class UserData < BaseUserData
-  FILE_NAME = 'zed_and_ginger.dat'
-  DEFAULT_DATA_FILE = File.join(EXTRACT_PATH, 'config', FILE_NAME)
-  DATA_FILE = File.join(ROOT_PATH, FILE_NAME)
+  DEFAULT_DATA_FILE = File.join(EXTRACT_PATH, 'config/default_user_settings.dat')
+  DATA_FILE = File.join(ROOT_PATH, 'zed_and_ginger.dat')
 
   # High scores, high scorers and level unlocking.
   GROUP_LEVELS = 'levels'
