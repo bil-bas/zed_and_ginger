@@ -23,10 +23,10 @@ floor:
 # Messages can be up to 14 chars (15 if there is a follow-on screen) and must have 4+ spaces between them.
 # - '0123456789012345'
 messages:
-  - 'Tutorial...   '
+  - 'Tutorial...    '
 
-  - '  WASD or arrows'
-  - 'to move.        '
+  - '     WASD keys to'
+  - 'move. Run right!'
 
   - ' Run, cat, run!'
 
