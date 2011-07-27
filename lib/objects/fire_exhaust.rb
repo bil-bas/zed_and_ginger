@@ -31,9 +31,7 @@ class FireExhaust < GameObject
     end
 
     player = scene.player
-    if @burning and player.ok? and collide? player and not player.invulnerable?
-      player.apply_status :squashed
-    end
+    player.burn if player.can_be_hurt? and collide? player
   end
 
   def draw_on(win)

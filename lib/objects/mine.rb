@@ -2,7 +2,9 @@ require_relative "dynamic_object"
 
 class Mine < DynamicObject
   ANIMATION_DURATION = 1
-  EXPLOSION_FORCE = 3 # 4px/s upwards.
+  EXPLOSION_FORCE = 4 # Speed upwards.
+
+  EXPLODED_SPRITE = [3, 0]
 
   def z_order; Player::Z_ORDER_SQUASHED - 1; end
   def to_rect; Rect.new(*(@position - [2, 1.5]), 4, 3) end
@@ -34,11 +36,10 @@ class Mine < DynamicObject
   def update
     player = scene.player
     if @active
-      if player.ok? and collide? player and not player.invulnerable?
-        player.apply_status :squashed
-        player.velocity_z = EXPLOSION_FORCE
+      if player.can_be_hurt? and collide? player
+        player.throw(Vector3[0, 0, EXPLOSION_FORCE])
         @active = false
-        @sprite.sheet_pos = [3, 0]
+        @sprite.sheet_pos = EXPLODED_SPRITE
         @explosion.play
       else
         @animation.update

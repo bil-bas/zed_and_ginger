@@ -29,9 +29,7 @@ class Barrel < DynamicObject
     self.x -= MOVE_SPEED * frame_time
 
     player = scene.player
-    if player.ok? and collide? player and not player.invulnerable?
-      player.apply_status :squashed
-    end
+    player.squash if player.can_be_hurt? and collide? player
 
     super
   end

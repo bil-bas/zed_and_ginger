@@ -12,11 +12,7 @@ class Status
   def type; @type ||= self.class.type; end
 
   def default_duration; Float::INFINITY; end
-
-  def disables_animation?; false; end
-  def disables_control?; false; end
-  def disables_physics?; false; end
-  def disables_jumping?; false; end
+  def sound_effect; nil; end # Override.
 
   public
   # If :duration option is missing, duration is indefinite.
@@ -33,6 +29,8 @@ class Status
     register(scene)
 
     raise_event :status_application, @owner, self
+
+    sound(sound_path(sound_effect)).play if sound_effect
 
     setup
 
@@ -68,6 +66,10 @@ class Status
   # Called if the status effect is already on an object.
   # Duration reset to that of the new duration, unless the remaining duration is greater.
   def reapply(options = {})
+    options = {
+        duration: default_duration,
+    }.merge! options
+
     duration_timer(options[:duration])
   end
 
@@ -89,6 +91,11 @@ class Status
   public
   def clean_up
     # Override.
+  end
+
+  def disables?(action)
+    # Override.
+    false
   end
 
   public

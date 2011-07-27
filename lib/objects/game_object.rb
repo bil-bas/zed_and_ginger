@@ -4,6 +4,11 @@ class GameObject
   
   def_delegators :@scene, :window, :frame_time
   def_delegators :@position, :x, :y
+  def_delegators :@sprite, :angle, :angle=,
+                           :color, :color=,
+                           :sheet_pos, :sheet_pos=,
+                           :sprite_width, :sprite_height,
+                           :origin, :origin=
   
   attr_reader :scene, :z
 

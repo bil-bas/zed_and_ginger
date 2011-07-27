@@ -33,9 +33,6 @@ module HasStatus
   end
 
   def apply_status(type, options = {})
-    options = {
-    }.merge! options
-
     existing_status = status(type)
     if existing_status
       existing_status.reapply(options)
@@ -51,6 +48,10 @@ module HasStatus
 
     status = @statuses.delete type
     status.remove
+  end
+
+  def disabled?(action)
+    @statuses.each_value.any? {|s| s.disables? action }
   end
 
   def update

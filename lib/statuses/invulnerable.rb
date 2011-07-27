@@ -2,13 +2,16 @@ require_relative "status"
 
 class Status
   class Invulnerable < Status
-    INVULNERABLE_COLOR = Color.new(255, 255, 255, 125)
+    ACTIVE_COLOR = Color.new(255, 255, 255, 125)
     DEFAULT_COLOR = Color.white
+    DISABLES = [:hurt]
 
-    def default_duration; 1; end
+    def disables?(action); DISABLES.include? action; end
+
+    def default_duration; 0.75; end
 
     def setup
-      owner.color = INVULNERABLE_COLOR
+      owner.color = ACTIVE_COLOR
     end
 
     def clean_up

@@ -3,6 +3,10 @@ require_relative "game_object"
 class DynamicObject < GameObject
   GRAVITY = 8
 
+  MAX_HEIGHT_FOR_SHADOW = 50.0
+  BASE_SHADOW_SCALE = 0.05
+  MINIMUM_SHADOW_SCALE = BASE_SHADOW_SCALE / 20.0
+
   attr_accessor :velocity_z
  
   def shadow_shape; Vector2[1, 1]; end
@@ -15,7 +19,9 @@ class DynamicObject < GameObject
 
     @shadow.scale *= shadow_shape
   end
-  
+
+
+
   def update
     if @velocity_z != 0 or z > 0
       @velocity_z -= GRAVITY * frame_time
@@ -26,7 +32,9 @@ class DynamicObject < GameObject
         @velocity_z = 0
       end
 
-      shadow_scale = 0.06 * ((40 - z) / 40.0)
+      shadow_scale =  BASE_SHADOW_SCALE *
+          [((MAX_HEIGHT_FOR_SHADOW - z) / MAX_HEIGHT_FOR_SHADOW), 1].max
+
       @shadow.scale = Vector2[shadow_scale, shadow_scale] * shadow_shape
     end
 

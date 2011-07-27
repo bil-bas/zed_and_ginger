@@ -1,6 +1,6 @@
 require_relative "dynamic_object"
 
-require_files 'statuses', %w[invulnerable squashed]
+require_files('statuses', %w[burnt electrocuted invulnerable squashed thrown])
 
 class Player < DynamicObject
   include HasStatus
@@ -11,7 +11,6 @@ class Player < DynamicObject
   DECELERATION = -100
   MIN_SPEED = 0
   MAX_SPEED = 64
-  RECOVERY_JUMP_SPEED = 32 # When you un-die :D
   VERTICAL_SPEED = 25
   MIN_RUN_VELOCITY = 100 # Above this, run animation; below walk.
   JUMP_SPEED = 1.5 # Z-speed of jumping.
@@ -48,6 +47,10 @@ class Player < DynamicObject
   # 1 dead frame.
   DEAD_SPRITE = [0, 4]
   SQUASHED_SPRITE = [1, 4]
+  ELECTROCUTED_SPRITE = [2, 4]
+  THROWN_SPRITE = [3, 4]
+  AFTER_THROWN_SPRITE = [4, 4]
+  BURNT_SPRITE = [5, 4]
 
   Z_ORDER_SQUASHED = -10
 
@@ -56,7 +59,6 @@ class Player < DynamicObject
   MAX_SCREEN_OFFSET = 0.4
   SCREEN_OFFSET_RANGE = MAX_SCREEN_OFFSET - MIN_SCREEN_OFFSET
 
-  def_delegators :@sprite, :color, :color=, :sheet_pos, :sheet_pos=
   attr_accessor :speed_modifier
   attr_writer :score
 
@@ -69,6 +71,7 @@ class Player < DynamicObject
   def dead?; @state == :dead; end
   def finished?; @state == :finished; end
   def score; ((x - @initial_x).div(8) * SCORE_PER_TILE) + @score; end
+  def can_be_hurt?; not disabled? :hurt; end
 
   def x=(value)
     super(value)
@@ -76,6 +79,21 @@ class Player < DynamicObject
     value
   end
 
+  def velocity_z=(velocity)
+    stop_riding if velocity != 0
+    super(velocity)
+  end
+
+  def velocity_y=(velocity)
+    @velocity.y = velocity
+  end
+
+  def velocity_x; @velocity.x; end
+  def velocity_x=(velocity)
+    @velocity.x = velocity
+  end
+
+  public
   def initialize(scene, tile, position, sprite_sheet)
     @initial_x = position.x
     sprite = sprite sprite_sheet, at: position
@@ -109,6 +127,7 @@ class Player < DynamicObject
     create_animations
   end
 
+  protected
   def read_controls
     @controls = {}
     [:left, :right, :up, :down, :jump].each do |control|
@@ -116,6 +135,7 @@ class Player < DynamicObject
     end
   end
 
+  public
   def screen_offset_x
     screen_movement = (MIN_SCREEN_OFFSET + (@velocity.x / MAX_SPEED) * SCREEN_OFFSET_RANGE) - @screen_offset_x
     max_move =  MAX_SCREEN_MOVE_PER_SECOND * frame_time
@@ -124,10 +144,12 @@ class Player < DynamicObject
     @screen_offset_x
   end
 
+  protected
   def effective_velocity
     @velocity * @speed_modifier
   end
-  
+
+  protected
   def create_animations
     @player_animations = {}
 
@@ -151,27 +173,31 @@ class Player < DynamicObject
     end
   end
 
+  public
   def ride(object)
     @riding_on = object
   end
 
+  public
   def stop_riding
     if riding?
       @riding_on.dropped
       @riding_on = nil
     end
   end
-  
+
+  public
   def register(scene)
     super(scene)
 
     read_controls
 
     on :key_press, key(@controls[:jump]) do
-      jump if ok? and not statuses.any? {|s| s.disables_jumping? }
+      jump if ok? unless disabled? :animation
     end
   end
 
+  public
   def jump
     if z == 0
       @sounds[:jump].play
@@ -180,16 +206,7 @@ class Player < DynamicObject
     end
   end
 
-  def velocity_z=(velocity)
-    stop_riding if velocity != 0
-    super(velocity)
-  end
-
-  def velocity_x; @velocity.x; end
-  def velocity_x=(velocity)
-    @velocity.x = velocity
-  end
-
+  public
   def die
     stop_riding if riding?
 
@@ -201,12 +218,14 @@ class Player < DynamicObject
     scene.game_over(score)
   end
 
+  public
   def finish
     @state = :finished
 
     scene.game_over(score)
   end
-  
+
+  public
   def update
     if @tile.is_a? FinishFloor
       stop_riding if riding?
@@ -231,9 +250,11 @@ class Player < DynamicObject
     else
       case @state
         when :ok
-          update_control unless statuses.any? {|s| s.disables_control? }
-          update_physics unless statuses.any? {|s| s.disables_physics? }
-          update_animation unless statuses.any? {|s| s.disables_animation? }
+          @speed_modifier = @tile.speed if @tile and z == 0 and not riding?
+
+          update_controls   unless disabled? :controls
+          update_physics   unless disabled? :physics
+          update_animation unless disabled? :animation
       end
 
       @tile = scene.floor_map.tile_at_coordinate(position)
@@ -244,10 +265,12 @@ class Player < DynamicObject
     super
   end
 
+  public
   def update_riding_position
     @riding_on.position = [position.x + RIDING_OFFSET_X, position.y - 0.00001]
   end
 
+  protected
   def update_animation
     if riding?
       # Move back, since our center is a bit forward on the sprite.
@@ -277,10 +300,8 @@ class Player < DynamicObject
     end
   end
 
-
-  def update_control
-    @speed_modifier = @tile.speed if @tile and z == 0 and not riding?
-
+  protected
+  def update_controls
     # Move up and down.
     @velocity.y = if holding? @controls[:up]
       -VERTICAL_SPEED
@@ -300,9 +321,31 @@ class Player < DynamicObject
     end 
   end
 
+  protected
   def update_physics
     self.position += effective_velocity * frame_time
 
     self.y = [[position.y, @rect.y].max, @rect.y + @rect.height].min
+  end
+
+  public
+  def squash(options = {})
+    apply_status :squashed, options
+  end
+
+  public
+  def electrocute(options = {})
+    apply_status :electrocuted, options
+  end
+
+  public
+  def burn(options = {})
+    apply_status :burnt, options
+  end
+
+  public
+  def throw(velocity)
+    apply_status :thrown
+    self.velocity_x, self.velocity_y, self.velocity_z = velocity.to_a
   end
 end

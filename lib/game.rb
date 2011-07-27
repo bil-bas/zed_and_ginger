@@ -19,7 +19,6 @@ def require_files(dir, files)
 end
 
 require_files('./', %w[log ray_ext user_data version])
-require_files('statuses', %w[invulnerable])
 require_files('mixins', %w[has_status])
 require_files('scenes', %w[enter_name game_over level pause pick_level ready_set_go teleporting])
 require_files('gui', %w[button progress_bar shadow_text timer])
