@@ -31,8 +31,8 @@ class FireExhaust < GameObject
     end
 
     player = scene.player
-    if @burning and player.ok? and collide? player
-      player.squash
+    if @burning and player.ok? and collide? player and not player.invulnerable?
+      player.apply_status :squashed
     end
   end
 

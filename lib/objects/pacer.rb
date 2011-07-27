@@ -46,8 +46,8 @@ class Pacer < DynamicObject
     recalculate_direction
 
     player = scene.player
-    if player.ok? and collide? player
-      player.squash
+    if player.ok? and collide? player and not player.invulnerable?
+      player.apply_status :squashed
       scene.remove_object self
     end
 

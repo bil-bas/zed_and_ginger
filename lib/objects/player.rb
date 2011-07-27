@@ -1,12 +1,17 @@
 require_relative "dynamic_object"
 
+require_files 'statuses', %w[invulnerable squashed]
+
 class Player < DynamicObject
+  include HasStatus
+
   ANIMATION_DURATION = 2
 
   ACCELERATION = 100
   DECELERATION = -100
   MIN_SPEED = 0
   MAX_SPEED = 64
+  RECOVERY_JUMP_SPEED = 32 # When you un-die :D
   VERTICAL_SPEED = 25
   MIN_RUN_VELOCITY = 100 # Above this, run animation; below walk.
   JUMP_SPEED = 1.5 # Z-speed of jumping.
@@ -43,7 +48,6 @@ class Player < DynamicObject
   # 1 dead frame.
   DEAD_SPRITE = [0, 4]
   SQUASHED_SPRITE = [1, 4]
-  KNOCKED_OUT_SPRITE = DEAD_SPRITE
 
   Z_ORDER_SQUASHED = -10
 
@@ -52,16 +56,16 @@ class Player < DynamicObject
   MAX_SCREEN_OFFSET = 0.4
   SCREEN_OFFSET_RANGE = MAX_SCREEN_OFFSET - MIN_SCREEN_OFFSET
 
+  def_delegators :@sprite, :color, :color=, :sheet_pos, :sheet_pos=
   attr_accessor :speed_modifier
   attr_writer :score
 
   def shadow_shape; Vector2[1.2, 0.6]; end
-  def casts_shadow?; @state != :squashed; end
-  def z_order; (@state == :squashed) ? Z_ORDER_SQUASHED : super; end
+  def casts_shadow?; (not squashed?); end
+  def z_order; squashed? ? Z_ORDER_SQUASHED : super; end
   def to_rect; Rect.new(*(@position - [3, 2]), 6, 4) end
   def riding?; !!@riding_on; end
   def ok?; @state == :ok; end
-  def squashed?; @state == :squashed; end
   def dead?; @state == :dead; end
   def finished?; @state == :finished; end
   def score; ((x - @initial_x).div(8) * SCORE_PER_TILE) + @score; end
@@ -97,7 +101,7 @@ class Player < DynamicObject
     @screen_offset_x = MIN_SCREEN_OFFSET
 
     @sounds = {}
-    [:died, :jump, :squashed].each do |sound|
+    [:died, :jump].each do |sound|
       @sounds[sound] = sound sound_path "player_#{sound}.ogg"
     end
     @sounds.each_value {|s| s.volume = 30 }
@@ -122,31 +126,6 @@ class Player < DynamicObject
 
   def effective_velocity
     @velocity * @speed_modifier
-  end
-
-  def squash
-    @state = :squashed
-    @sprite.sheet_pos = SQUASHED_SPRITE
-    self.z = 0
-    self.velocity_z = 0
-    self.velocity_x = 0
-    @effect_time_remaining = 2
-    self.y += SQUASH_OFFSET_Y
-    @sounds[:squashed].play
-  end
-
-  def unsquash
-    self.y -= SQUASH_OFFSET_Y
-
-    # Do a little jump!
-    self.velocity_z = JUMP_SPEED
-    self.velocity_x = 32
-  end
-
-  def knock_out
-    @state = :knocked_out
-    @sprite.sheet_pos = KNOCKED_OUT_SPRITE
-    @effect_time_remaining = 2
   end
   
   def create_animations
@@ -189,10 +168,15 @@ class Player < DynamicObject
     read_controls
 
     on :key_press, key(@controls[:jump]) do
-      if z == 0 and ok?
-        @sounds[:jump].play
-        self.velocity_z = JUMP_SPEED
-      end
+      jump if ok? and not statuses.any? {|s| s.disables_jumping? }
+    end
+  end
+
+  def jump
+    if z == 0
+      @sounds[:jump].play
+      self.velocity_z = JUMP_SPEED
+      self.z += 0.000001 # Prevent multiple jumps.
     end
   end
 
@@ -210,7 +194,6 @@ class Player < DynamicObject
     stop_riding if riding?
 
     @state = :dead
-    @effect_time_remaining = nil
     @sprite.sheet_pos = DEAD_SPRITE
 
     @sounds[:died].play
@@ -219,7 +202,6 @@ class Player < DynamicObject
   end
 
   def finish
-    @effect_time_remaining = nil
     @state = :finished
 
     scene.game_over(score)
@@ -247,19 +229,11 @@ class Player < DynamicObject
       die unless dead?
 
     else
-      if @state == :ok
-        update_physics
-        update_animations
-      elsif @effect_time_remaining
-        @effect_time_remaining -= frame_time
-        if @effect_time_remaining <= 0
-          case @state
-            when :squashed then unsquash
-            else
-              raise "Bad state: #{state.inspect}"
-          end
-          @state = :ok
-        end
+      case @state
+        when :ok
+          update_control unless statuses.any? {|s| s.disables_control? }
+          update_physics unless statuses.any? {|s| s.disables_physics? }
+          update_animation unless statuses.any? {|s| s.disables_animation? }
       end
 
       @tile = scene.floor_map.tile_at_coordinate(position)
@@ -274,7 +248,7 @@ class Player < DynamicObject
     @riding_on.position = [position.x + RIDING_OFFSET_X, position.y - 0.00001]
   end
 
-  def update_animations
+  def update_animation
     if riding?
       # Move back, since our center is a bit forward on the sprite.
       update_riding_position
@@ -303,7 +277,8 @@ class Player < DynamicObject
     end
   end
 
-  def update_physics
+
+  def update_control
     @speed_modifier = @tile.speed if @tile and z == 0 and not riding?
 
     # Move up and down.
@@ -322,8 +297,10 @@ class Player < DynamicObject
     elsif holding? @controls[:right]
       @velocity.x += ACCELERATION * frame_time
       @velocity.x = [@velocity.x, MAX_SPEED].min
-    end
+    end 
+  end
 
+  def update_physics
     self.position += effective_velocity * frame_time
 
     self.y = [[position.y, @rect.y].max, @rect.y + @rect.height].min

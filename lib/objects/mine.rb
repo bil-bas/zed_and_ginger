@@ -34,8 +34,8 @@ class Mine < DynamicObject
   def update
     player = scene.player
     if @active
-      if player.ok? and collide? player
-        player.squash
+      if player.ok? and collide? player and not player.invulnerable?
+        player.apply_status :squashed
         player.velocity_z = EXPLOSION_FORCE
         @active = false
         @sprite.sheet_pos = [3, 0]

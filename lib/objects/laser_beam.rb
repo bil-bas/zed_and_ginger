@@ -36,8 +36,8 @@ class LaserBeam < GameObject
     self.z = MIN_Z + z_offset
 
     player = scene.player
-    if player.ok? and collide? player
-      player.squash
+    if player.ok? and collide? player and not player.invulnerable?
+      player.apply_status :squashed
       # Remove all sections of the beam.
       scene.objects.grep(self.class).select {|o| o.x == x }.each do |laser|
         scene.remove_object laser
