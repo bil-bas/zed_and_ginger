@@ -5,7 +5,7 @@ class ShadowText
 
   def initialize(string, options = {})
     options = {
-        shadow_offset: [0.04, 0.04],
+        shadow_offset: [0.25, 0.25],
         shadow_color: Color.black,
     }.merge! options
 
@@ -13,7 +13,7 @@ class ShadowText
 
     @shadow = Text.new string, options # @main.dup should work here.
     @shadow.color = options[:shadow_color]
-    @shadow.pos += options[:shadow_offset].to_vector2 * Window.user_data.scaling
+    @shadow.pos += options[:shadow_offset]
   end
 
   def string=(string)
