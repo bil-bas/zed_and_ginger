@@ -38,7 +38,7 @@ class PickLevel < GuiScene
 
     # Get the numbers of all the levels defined.
     levels = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")]
-    levels.map! {|file| File.basename(file).to_i }.sort
+    levels.map! {|file| File.basename(file).to_i }.sort!
     levels -= [UserData::DEV_LEVEL]
 
     levels.each_with_index do |level, i|
