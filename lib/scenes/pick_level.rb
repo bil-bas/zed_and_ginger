@@ -1,5 +1,13 @@
 require_relative 'gui_scene'
 
+module Ginger
+  EYE_COLOR = Color.new(79, 207, 108)
+end
+module Zed
+  EYE_COLOR = Color.new(255, 0, 255)
+  SKIN_COLORS = [Color.new(70, 0, 70), Color.new(50, 0, 50), Color.new(40, 0, 40), Color.new(30, 0, 30)]
+end
+
 class PickLevel < GuiScene
   TUTORIAL_LETTER = 'T'
 
@@ -79,7 +87,7 @@ class PickLevel < GuiScene
     # Animations
     @walking_animation = sprite_animation from: Player::WALKING_ANIMATION[0],
                                       to: Player::WALKING_ANIMATION[1],
-                                      duration: Player::FOUR_FRAME_ANIMATION_DURATION
+                                      duration: Player::FOUR_FRAME_ANIMATION_DURATION * 2
     @walking_animation.loop!
 
     @sitting_animation = sprite_animation from: Player::SITTING_ANIMATION[0],
@@ -90,12 +98,16 @@ class PickLevel < GuiScene
     # Create Zed.
     unless defined? @@zed_image
       @@zed_image = @ginger_image.dup
-      skin_color = Color.black
-      @@zed_image.map! do |color|
-        if color.alpha < 50 or color.green > 150
-          color
+
+      @@zed_image.map_with_pos! do |color, x, y|
+        if color.alpha < 50
+          Color.none
+        elsif color == Ginger::EYE_COLOR
+          Zed::EYE_COLOR
         else
-          skin_color
+          column = (x.div 16) % 4 # Some animations are 4-wide.
+          x_in_sprite, y_in_sprite = x % 16, y % 16
+          Zed::SKIN_COLORS[(x_in_sprite + y_in_sprite + column) % Zed::SKIN_COLORS.size]
         end
       end
     end
