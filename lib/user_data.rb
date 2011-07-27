@@ -81,7 +81,7 @@ class UserData < BaseUserData
       when INITIAL_LEVEL then true # First (tutorial) level is always unlocked.
       else
         # If the level we are asking for exists and we've completed the previous one.
-        @data[GROUP_LEVELS].has_key?(level) and @data[GROUP_LEVELS][level - 1][FINISHED]
+        (@data[GROUP_LEVELS].has_key?(level) and @data[GROUP_LEVELS][level - 1][FINISHED]) or DEVELOPMENT_MODE
     end
   end
 
