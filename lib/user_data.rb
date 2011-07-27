@@ -53,7 +53,7 @@ class UserData < BaseUserData
   GROUP_CONTROLS_GENERAL = 'general'
 
   VALID_PLAYER_CONTROLS = [:left, :right, :up, :down, :jump]
-  VALID_CONTROLS = [:pause]
+  VALID_CONTROLS = [:pause, :screenshot]
 
   def initialize
     super DATA_FILE, DEFAULT_DATA_FILE

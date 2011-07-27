@@ -12,14 +12,17 @@ levels:
     high-score: 0
     high-scorer: ???
     finished: false
+
   1: # Tutorial track.
     high-score: 0     # Highest score, whether finished the level or not.
     high-scorer: ???  # Name of person getting the high score.
     finished: false   # Has the player ever finished the level?
+
   2:
     high-score: 0
     high-scorer: ???
     finished: false
+
   3:
     high-score: 0
     high-scorer: ???
@@ -33,6 +36,8 @@ sound: {}
 controls:
   general: # Controls that aren't specifically for either player.
     pause: p
+    screenshot: f12
+
   1: # Player one controls. Will be player2 controls when multi-player implemented.
     left: a
     right: d

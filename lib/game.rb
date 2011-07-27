@@ -45,7 +45,7 @@ Ray.game "Zed and Ginger (WASD to move; SPACE to jump, P to pause)", size: windo
       Kernel.exit
     end
 
-    on :key_press, key(:f12) do
+    on :key_press, key(window.user_data.control(:screenshot)) do
       path = File.join(ROOT_PATH, 'screenshots')
       FileUtils.mkdir_p path
       files = Dir[File.join(path, "screenshot_*.#{SCREEN_SHOT_EXTENSION}")]
