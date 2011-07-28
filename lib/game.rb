@@ -21,14 +21,14 @@ end
 
 require_files('./', %w[log ray_ext user_data version])
 require_files('mixins', %w[has_status])
-require_files('scenes', %w[confirm enter_control enter_name game_over level options_controls pause pick_level ready_set_go teleporting])
+require_files('scenes', %w[confirm enter_control enter_name game_over level options_controls pause main_menu ready_set_go teleporting])
 require_files('gui', %w[button progress_bar shadow_text timer])
 require_files('standard_ext', %w[hash])
 
 GAME_RESOLUTION = Vector2[96, 60] # Resolution of tiles, at least.
 
 class Ray::Game
-  SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, Level, OptionsControls, Pause, PickLevel, ReadySetGo, Teleporting]
+  SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, Level, OptionsControls, Pause, MainMenu, ReadySetGo, Teleporting]
 
   SCREEN_SHOT_EXTENSION = 'tga'
 end
@@ -68,6 +68,6 @@ while $create_window
     window.view = window_view
 
     SCENE_CLASSES.each {|s| s.bind(self) }
-    scenes << :pick_level unless defined? Ocra
+    scenes << :main_menu unless defined? Ocra
   end
 end

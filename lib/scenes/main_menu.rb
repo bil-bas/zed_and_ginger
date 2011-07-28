@@ -8,9 +8,7 @@ module Zed
   SKIN_COLORS = [Color.new(70, 0, 70), Color.new(50, 0, 50), Color.new(40, 0, 40), Color.new(30, 0, 30)]
 end
 
-class PickLevel < GuiScene
-  TUTORIAL_LETTER = 'T'
-
+class MainMenu < GuiScene
   TITLE_COLOR = Color.new(255, 150, 0)
   BUTTON_COLOR = Color.white
   TEXT_COLOR = Color.new(200, 200, 200)
@@ -21,7 +19,7 @@ class PickLevel < GuiScene
       "--------",
   ]
 
-  attr_reader :background, :background_camera
+  attr_reader :background
 
   public
   def setup
@@ -195,7 +193,7 @@ class PickLevel < GuiScene
     pop_scene
     window.scaling = scaling
     window.size = GAME_RESOLUTION * window.scaling
-    push_scene :pick_level
+    push_scene name
     update_screen_size
   end
 
