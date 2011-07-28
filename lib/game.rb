@@ -59,6 +59,8 @@ while $create_window
       end
     end
 
+    window.hide_cursor
+
     window_view = window.default_view
     window_view.zoom_by window.scaling
     window_view.center = window_view.size / 2

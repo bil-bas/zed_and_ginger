@@ -3,8 +3,6 @@ class GameScene < Scene
   attr_accessor :gui_controls
 
   def setup
-    window.hide_cursor
-
     @gui_controls = []
     @event_handlers = []
   end
