@@ -123,6 +123,7 @@ class Player < DynamicObject
       @sounds[sound] = sound sound_path "player_#{sound}.ogg"
     end
     @sounds.each_value {|s| s.volume = 30 }
+    @sounds[:jump].volume = 15
 
     create_animations
   end
@@ -200,6 +201,7 @@ class Player < DynamicObject
   public
   def jump
     if z == 0
+      @sounds[:jump].pitch = 0.8 + rand(3) * 0.1
       @sounds[:jump].play
       self.velocity_z = JUMP_SPEED
       self.z += 0.000001 # Prevent multiple jumps.
