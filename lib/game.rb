@@ -33,10 +33,7 @@ class Ray::Game
   SCREEN_SHOT_EXTENSION = 'tga'
 end
 
-$create_window = true
-while $create_window
-  $create_window = false
-
+def create_game
   Window.user_data = UserData.new
 
   options = if Window.user_data.fullscreen?
@@ -69,5 +66,49 @@ while $create_window
 
     SCENE_CLASSES.each {|s| s.bind(self) }
     scenes << :main_menu unless defined? Ocra
+  end
+
+end
+
+$create_window = true
+while $create_window
+  $create_window = false
+
+  begin
+    create_game
+
+  rescue => exception
+    message = <<-END
+The game suffered from a fatal error and had to go and die in a corner.
+The full error report has been written to zed_and_ginger.log
+
+#{exception.class}: #{exception.message}
+
+#{exception.backtrace.join("\n")}"
+END
+    Log.log.error { message }
+
+    Ray.game "Zed and Ginger error!", size: [640, 480] do
+      register do
+        on :quit do
+          Kernel.exit
+        end
+      end
+
+      scene :scene do
+        y = 0
+        @lines = message.split("\n").map do |line|
+          text = Text.new(line, at: [0, y], size: 16)
+          y += text.size * 0.8 / Window.user_data.scaling
+          text
+        end
+
+        def render(win)
+          @lines.each {|line| win.draw line }
+        end
+      end
+
+      scenes << :scene
+    end
   end
 end
