@@ -37,17 +37,17 @@ class OptionsControls < GuiScene
       y += gui_controls.last.height + LINE_SPACING
     end
 
-    ["Zed", "Ginger"].each_with_index do |player_name, player_number|
-      y = sub_heading(y, player_name)
+    Player::NAMES.each_with_index do |player_name|
+      y = sub_heading(y, player_name.to_s.capitalize)
 
       UserData::VALID_PLAYER_CONTROLS.each do |control|
         gui_controls << ShadowText.new(control.to_s.capitalize, at: [LABEL_X, y], size: ITEM_SIZE, color: LABEL_COLOR)
-        current = window.user_data.player_control(player_number, control)
+        current = window.user_data.player_control(player_name, control)
         gui_controls << Button.new(display_for_key(current), self,
                                    at: [BUTTON_X, y], size: ITEM_SIZE, shortcut: nil) do
-          run_scene :enter_control, self, "Press #{control} for #{player_name}", current do |new_value|
+          run_scene :enter_control, self, "Press #{control} for #{player_display_name}", current do |new_value|
             if new_value
-              window.user_data.set_player_control(player_number, control, new_value)
+              window.user_data.set_player_control(player_name, control, new_value)
               setup(@background)
             end
           end

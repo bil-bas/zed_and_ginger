@@ -14,10 +14,10 @@ class Level < GameScene
 
   attr_reader :level_number
 
-  def setup(level_number, background, player_sheet, player_number)
+  def setup(level_number, background, player_sheet, player_name)
     super()
 
-    @level_number, @background, @player_sheet, @player_number = level_number, background, player_sheet, player_number
+    @level_number, @background, @player_sheet = level_number, background, player_sheet
 
     @dynamic_objects = [] # Objects that need #update
 
@@ -26,11 +26,11 @@ class Level < GameScene
                             level_data['wall']['default_tile']
     @floor_map = FloorMap.new self, level_data['floor']['tiles'].split("\n"),
                               Kernel::const_get(level_data['floor']['default_tile'].to_sym),
-                              messages: level_data['messages'], player_number: player_number
+                              messages: level_data['messages'], player_name: player_name
 
     start_tile = @floor_map.tile_at_grid([5, 2])
 
-    @player = Player.new(self, start_tile, start_tile.position + @floor_map.tile_size / 2, @player_sheet, @player_number)
+    @player = Player.new(self, start_tile, start_tile.position + @floor_map.tile_size / 2, @player_sheet, player_name)
     @initial_player_x = player.x
     @distance_to_run = @floor_map.finish_line_x - @initial_player_x
 

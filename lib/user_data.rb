@@ -1,4 +1,6 @@
 class BaseUserData
+  include Log
+
   HEADER = <<END
 # =======================================================================
 # ------------------------- User settings file --------------------------
@@ -13,6 +15,8 @@ END
     @user_file = user_file
     @data = File.exists?(@user_file) ? YAML::load_file(@user_file) : {}
     @data = YAML::load_file(default_file).deep_merge @data
+
+    log.info { "Read and merged user data:\n#{@data}" }
 
     save
   end
@@ -56,6 +60,9 @@ class UserData < BaseUserData
 
   VALID_PLAYER_CONTROLS = [:left, :right, :up, :down, :jump]
   VALID_CONTROLS = [:pause, :screenshot]
+
+  GROUP_GAMEPLAY = 'gameplay'
+  SELECTED_CAT = 'selected_cat'
 
   def initialize
     super DATA_FILE, DEFAULT_DATA_FILE
@@ -131,15 +138,15 @@ class UserData < BaseUserData
   # Controls
 
   def player_control(player, action)
-    raise "Bad player #{player.inspect}" unless [0, 1].include? player
+    raise "Bad player #{player.inspect}" unless Player::NAMES.include? player
     raise "Bad action #{action.inspect}" unless VALID_PLAYER_CONTROLS.include? action
-    @data[GROUP_CONTROLS][GROUP_CONTROLS_PLAYERS][player][action.to_s]
+    @data[GROUP_CONTROLS][GROUP_CONTROLS_PLAYERS][player.to_s][action.to_s]
   end
 
   def set_player_control(player, action, key)
-    raise "Bad player #{player.inspect}" unless [0, 1].include? player
+    raise "Bad player #{player.inspect}" unless Player::NAMES.include? player
     raise "Bad action #{action.inspect}" unless VALID_PLAYER_CONTROLS.include? action
-    @data[GROUP_CONTROLS][GROUP_CONTROLS_PLAYERS][player][action.to_s] = key
+    @data[GROUP_CONTROLS][GROUP_CONTROLS_PLAYERS][player.to_s][action.to_s] = key
     save
   end
 
@@ -151,6 +158,17 @@ class UserData < BaseUserData
   def set_control(action, key)
     raise "Bad action #{action.inspect}" unless VALID_CONTROLS.include? action
     @data[GROUP_CONTROLS][GROUP_CONTROLS_GENERAL][action.to_s] = key
+    save
+  end
+
+  # General gameplay
+  def selected_cat
+    @data[GROUP_GAMEPLAY][SELECTED_CAT]
+  end
+
+  def selected_cat=(name)
+    raise "Bad cat name #{number.inspect}" unless Player::NAMES.include? name
+    @data[GROUP_GAMEPLAY][SELECTED_CAT] = name
     save
   end
 end

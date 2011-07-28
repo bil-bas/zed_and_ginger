@@ -24,9 +24,7 @@ class PickLevel < GuiScene
   attr_reader :background, :background_camera
 
   public
-  def setup(player_number = 0)
-    @player_number = player_number
-
+  def setup
     super()
 
     create_background
@@ -154,7 +152,7 @@ class PickLevel < GuiScene
     # Buttons
     @zed_button = Button.new('Zed', self, at: [14, 37], size: 6, color: BUTTON_COLOR,
                              disabled_color: Color.red) do
-      @player_number = 0
+      window.user_data.selected_cat = :zed
       @zed_button.enabled = false
       @ginger_button.enabled = true
       @sitting_animation.start @ginger
@@ -163,15 +161,15 @@ class PickLevel < GuiScene
 
     @ginger_button = Button.new('Ginger', self, at: [40, 37], size: 6, color: BUTTON_COLOR,
                                 disabled_color: Color.red) do
-      @player_number = 1
+      window.user_data.selected_cat = :ginger
       @zed_button.enabled = true
       @ginger_button.enabled = false
       @sitting_animation.start @zed
       @walking_animation.start @ginger
     end
 
-    @player_sheets = [@@zed_image, @ginger_image]
-    [@zed_button, @ginger_button][@player_number].activate
+    @player_sheets = { zed: @@zed_image, ginger: @ginger_image }
+    { zed: @zed_button, ginger: @ginger_button }[window.user_data.selected_cat].activate
 
     self.gui_controls += [@zed, @ginger, @zed_button, @ginger_button]
   end
@@ -197,7 +195,7 @@ class PickLevel < GuiScene
     pop_scene
     window.scaling = scaling
     window.size = GAME_RESOLUTION * window.scaling
-    push_scene :pick_level, @player_number
+    push_scene :pick_level
     update_screen_size
   end
 
@@ -253,7 +251,8 @@ class PickLevel < GuiScene
 
   protected
   def start_level(level_number)
-    push_scene :level, level_number, @background, @player_sheets[@player_number], @player_number
+    player_name = window.user_data.selected_cat
+    push_scene :level, level_number, @background, @player_sheets[player_name], player_name
   end
 
   public

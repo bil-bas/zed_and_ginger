@@ -59,6 +59,9 @@ class Player < DynamicObject
   MAX_SCREEN_OFFSET = 0.4
   SCREEN_OFFSET_RANGE = MAX_SCREEN_OFFSET - MIN_SCREEN_OFFSET
 
+  NAMES = [:zed, :ginger]
+
+  attr_reader :name
   attr_accessor :speed_modifier
   attr_writer :score
 
@@ -93,10 +96,12 @@ class Player < DynamicObject
     @velocity.x = velocity
   end
 
+  def to_s; "Player##{@name}"; end
+
   public
-  def initialize(scene, tile, position, sprite_sheet, number)
+  def initialize(scene, tile, position, sprite_sheet, name)
     @initial_x = position.x
-    @number = number
+    @name = name
 
     sprite = sprite sprite_sheet, at: position
     sprite.sheet_size = [8, 5]
@@ -134,7 +139,7 @@ class Player < DynamicObject
   def read_controls
     @controls = {}
     [:left, :right, :up, :down, :jump].each do |control|
-      @controls[control] = scene.window.user_data.player_control(@number, control)
+      @controls[control] = scene.window.user_data.player_control(@name, control)
     end
   end
 

@@ -10,11 +10,11 @@ class FloorMap < Map
   def initialize(scene, tile_data, default_tile, options = {})
     @messages = options[:messages]
 
-    if options[:player_number] and @messages
+    if options[:player_name]
       @messages.map! do |message|
         message.gsub(/%.*%/) do |replacement|
           replacement =~ /%(.*)%/
-          key_used = scene.window.user_data.player_control(options[:player_number], $1.to_sym)
+          key_used = scene.window.user_data.player_control(options[:player_name], $1.to_sym)
           display_for_key(key_used)
         end
       end

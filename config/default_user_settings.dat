@@ -34,20 +34,23 @@ graphics:
 
 sound: {}
 
+gameplay:
+  selected_cat: :zed
+
 key_controls:
   general: # Controls that aren't specifically for either player.
     pause: :p
     screenshot: :f12
 
   players:
-    0: # Player one controls.
+    zed: # Player one controls.
       left: :a
       right: :d
       up: :w
       down: :s
       jump: :space
 
-    1: # Player two controls.
+    ginger: # Player two controls.
       left: :left
       right: :right
       up: :up
