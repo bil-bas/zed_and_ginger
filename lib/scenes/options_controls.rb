@@ -38,7 +38,8 @@ class OptionsControls < GuiScene
     end
 
     Player::NAMES.each_with_index do |player_name|
-      y = sub_heading(y, player_name.to_s.capitalize)
+      player_display_name = player_name.to_s.capitalize
+      y = sub_heading(y, player_display_name)
 
       UserData::VALID_PLAYER_CONTROLS.each do |control|
         gui_controls << ShadowText.new(control.to_s.capitalize, at: [LABEL_X, y], size: ITEM_SIZE, color: LABEL_COLOR)

@@ -8,6 +8,10 @@ end
 
 class FloorMap < Map
   def initialize(scene, tile_data, default_tile, options = {})
+    options = {
+        messages: [],
+    }.merge! options
+
     @messages = options[:messages]
 
     if options[:player_name]

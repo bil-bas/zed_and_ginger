@@ -19,3 +19,5 @@ floor:
     -------^EEL--l---sssssss-}----f----------
 
   default_tile: CheckeredFloor
+
+messages: []

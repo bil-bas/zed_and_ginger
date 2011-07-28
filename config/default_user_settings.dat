@@ -55,4 +55,4 @@ key_controls:
       right: :right
       up: :up
       down: :down
-      jump: :insert
+      jump: :return
