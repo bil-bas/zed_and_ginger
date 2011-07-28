@@ -71,15 +71,10 @@ class PickLevel < GuiScene
 
     # Toggle fullscreen/window.
     title = Window.user_data.fullscreen? ? "Window" : "Fullscreen"
-    gui_controls << Button.new(title, self, at: [right_edge, 41], size: 5, color: BUTTON_COLOR,
-                               auto_center: [1, 0]) do
-      run_scene :confirm, self, "Toggling fullscreen requires reset" do |result|
-        if result
-          Window.user_data.fullscreen = (not Window.user_data.fullscreen?)
-          $create_window = true
-          pop_scene
-        end
-      end
+    gui_controls << Button.new(title, self, at: [right_edge, 41], size: 5, color: BUTTON_COLOR, auto_center: [1, 0]) do
+      Window.user_data.fullscreen = (not Window.user_data.fullscreen?)
+      $create_window = true
+      pop_scene
     end
 
     unless Window.user_data.fullscreen?
