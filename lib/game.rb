@@ -1,5 +1,6 @@
 require 'yaml'
 require 'forwardable'
+require 'fileutils'
 
 begin
   require 'bundler/setup' unless DEVELOPMENT_MODE or defined?(OSX_EXECUTABLE) or ENV['OCRA_EXECUTABLE']
@@ -20,14 +21,14 @@ end
 
 require_files('./', %w[log ray_ext user_data version])
 require_files('mixins', %w[has_status])
-require_files('scenes', %w[confirm enter_name game_over level pause pick_level ready_set_go teleporting])
+require_files('scenes', %w[confirm enter_control enter_name game_over level options_controls pause pick_level ready_set_go teleporting])
 require_files('gui', %w[button progress_bar shadow_text timer])
 require_files('standard_ext', %w[hash])
 
 GAME_RESOLUTION = Vector2[96, 60] # Resolution of tiles, at least.
 
 class Ray::Game
-  SCENE_CLASSES = [Confirm, EnterName, GameOver, Level, Pause, PickLevel, ReadySetGo, Teleporting]
+  SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, Level, OptionsControls, Pause, PickLevel, ReadySetGo, Teleporting]
 
   SCREEN_SHOT_EXTENSION = 'tga'
 end
@@ -50,7 +51,7 @@ while $create_window
         Kernel.exit
       end
 
-      on :key_press, key(window.user_data.control(:screenshot)) do
+      on :key_press, *key_or_code(window.user_data.control(:screenshot)) do
         path = File.join(ROOT_PATH, 'screenshots')
         FileUtils.mkdir_p path
         files = Dir[File.join(path, "screenshot_*.#{SCREEN_SHOT_EXTENSION}")]

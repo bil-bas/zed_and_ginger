@@ -94,8 +94,10 @@ class Player < DynamicObject
   end
 
   public
-  def initialize(scene, tile, position, sprite_sheet)
+  def initialize(scene, tile, position, sprite_sheet, number)
     @initial_x = position.x
+    @number = number
+
     sprite = sprite sprite_sheet, at: position
     sprite.sheet_size = [8, 5]
     sprite.sheet_pos = SITTING_ANIMATION.first
@@ -132,7 +134,7 @@ class Player < DynamicObject
   def read_controls
     @controls = {}
     [:left, :right, :up, :down, :jump].each do |control|
-      @controls[control] = scene.window.user_data.player_control(1, control)
+      @controls[control] = scene.window.user_data.player_control(@number, control)
     end
   end
 
@@ -193,7 +195,7 @@ class Player < DynamicObject
 
     read_controls
 
-    on :key_press, key(@controls[:jump]) do
+    on :key_press, *key_or_code(@controls[:jump]) do
       jump if ok? unless disabled? :animation
     end
   end

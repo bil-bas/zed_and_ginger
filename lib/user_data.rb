@@ -50,8 +50,9 @@ class UserData < BaseUserData
   # TODO: sound options.
 
   # Controls.
-  GROUP_CONTROLS = 'controls'
+  GROUP_CONTROLS = 'key_controls'
   GROUP_CONTROLS_GENERAL = 'general'
+  GROUP_CONTROLS_PLAYERS = 'players'
 
   VALID_PLAYER_CONTROLS = [:left, :right, :up, :down, :jump]
   VALID_CONTROLS = [:pause, :screenshot]
@@ -110,7 +111,6 @@ class UserData < BaseUserData
   end
 
   def scaling=(scaling)
-    p [@scaling, scaling, fullscreen?]
     @scaling = scaling
 
     unless fullscreen?
@@ -131,13 +131,26 @@ class UserData < BaseUserData
   # Controls
 
   def player_control(player, action)
-    raise "Bad player #{player.inspect}" unless [1, 2].include? player
+    raise "Bad player #{player.inspect}" unless [0, 1].include? player
     raise "Bad action #{action.inspect}" unless VALID_PLAYER_CONTROLS.include? action
-    @data[GROUP_CONTROLS][player][action.to_s].to_sym
+    @data[GROUP_CONTROLS][GROUP_CONTROLS_PLAYERS][player][action.to_s]
+  end
+
+  def set_player_control(player, action, key)
+    raise "Bad player #{player.inspect}" unless [0, 1].include? player
+    raise "Bad action #{action.inspect}" unless VALID_PLAYER_CONTROLS.include? action
+    @data[GROUP_CONTROLS][GROUP_CONTROLS_PLAYERS][player][action.to_s] = key
+    save
   end
 
   def control(action)
     raise "Bad action #{action.inspect}" unless VALID_CONTROLS.include? action
-    @data[GROUP_CONTROLS][GROUP_CONTROLS_GENERAL][action.to_s].to_sym
+    @data[GROUP_CONTROLS][GROUP_CONTROLS_GENERAL][action.to_s]
+  end
+
+  def set_control(action, key)
+    raise "Bad action #{action.inspect}" unless VALID_CONTROLS.include? action
+    @data[GROUP_CONTROLS][GROUP_CONTROLS_GENERAL][action.to_s] = key
+    save
   end
 end

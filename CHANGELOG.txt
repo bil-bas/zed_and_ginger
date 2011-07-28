@@ -1,4 +1,13 @@
-Zed and Ginger Changelog
+========================
+     Zed and Ginger
+       CHANGELOG
+========================
+
+---- v0.1.1 (unreleased)
+
+  * Added full-screen toggle button in menu (runs at native resolution in full-screen).
+  * Added key configuration in-game and separate key settings for each of the interplanetary cat.
+  * Now, by default, Zed uses WASD with <space> and Ginger uses the arrows with <enter>.
 
 ---- v0.1.0 (2011-07-27)
 

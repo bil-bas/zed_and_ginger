@@ -63,6 +63,12 @@ class PickLevel < GuiScene
       end
     end
 
+    # User settings - controls.
+    gui_controls << Button.new("Controls", self, at: [right_edge, 32], size: 5, color: BUTTON_COLOR,
+                                 auto_center: [1, 0]) do
+      push_scene :options_controls, @background
+    end
+
     # Toggle fullscreen/window.
     title = Window.user_data.fullscreen? ? "Window" : "Fullscreen"
     gui_controls << Button.new(title, self, at: [right_edge, 41], size: 5, color: BUTTON_COLOR,
@@ -252,7 +258,7 @@ class PickLevel < GuiScene
 
   protected
   def start_level(level_number)
-    push_scene :level, level_number, @background, @player_sheets[@player_number]
+    push_scene :level, level_number, @background, @player_sheets[@player_number], @player_number
   end
 
   public

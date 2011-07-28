@@ -1,7 +1,10 @@
 class Button
   include Helper
+  extend Forwardable
 
   attr_accessor :data
+
+  def_delegators :'@text.rect', :height, :width
 
   def enabled?; @enabled; end
 
@@ -9,6 +12,8 @@ class Button
   DISABLED_COLOR = Color.new(100, 100, 100)
 
   def initialize(text, scene, options = {}, &handler)
+    raise "Button must have handler" unless block_given?
+
     options = {
         enabled: true,
         color: COLOR.dup,
@@ -18,7 +23,8 @@ class Button
     @color = options[:color]
     @disabled_color = options[:disabled_color]
 
-    shortcut = options.has_key?(options[:shortcut]) ? options[:shortcut] : text[0].downcase.to_sym
+
+    shortcut = options.has_key?(:shortcut) ? options[:shortcut] : text[0].downcase.to_sym
     if shortcut
       scene.add_event_handler(:key_press, key(shortcut)) { activate }
     end

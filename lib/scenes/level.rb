@@ -14,10 +14,10 @@ class Level < GameScene
 
   attr_reader :level_number
 
-  def setup(level_number, background, player_sheet)
+  def setup(level_number, background, player_sheet, player_number)
     super()
 
-    @level_number, @background, @player_sheet = level_number, background, player_sheet
+    @level_number, @background, @player_sheet, @player_number = level_number, background, player_sheet, player_number
 
     @dynamic_objects = [] # Objects that need #update
 
@@ -28,7 +28,7 @@ class Level < GameScene
                               Kernel::const_get(level_data['floor']['default_tile'].to_sym), level_data['messages']
 
     start_tile = @floor_map.tile_at_grid([5, 2])
-    @player = Player.new(self, start_tile, start_tile.position + @floor_map.tile_size / 2, @player_sheet)
+    @player = Player.new(self, start_tile, start_tile.position + @floor_map.tile_size / 2, @player_sheet, @player_number)
     @initial_player_x = player.x
     @distance_to_run = @floor_map.finish_line_x - @initial_player_x
 
@@ -103,9 +103,9 @@ class Level < GameScene
         when :menu
           # Do nothing.
         when :restart
-          push_scene :level, @level_number, @background, @player_sheet
+          push_scene :level, @level_number, @background, @player_sheet, @player_number
         when :next
-          push_scene :level, @level_number + 1, @background, @player_sheet
+          push_scene :level, @level_number + 1, @background, @player_sheet, @player_number
       end
     end
   end
@@ -139,7 +139,7 @@ class Level < GameScene
       pause
     end
 
-    on :key_press, key(window.user_data.control(:pause)) do
+    on :key_press, *key_or_code(window.user_data.control(:pause)) do
       pause
     end
 

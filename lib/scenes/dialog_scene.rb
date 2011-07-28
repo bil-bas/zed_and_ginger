@@ -1,10 +1,10 @@
 require_relative "gui_scene"
 
 class DialogScene < GuiScene
-  attr_reader :run_result
+  attr_reader :run_result, :previous_scene
 
-  def setup(previous_state, options = {})
-    @previous_state = previous_state
+  def setup(previous_scene, options = {})
+    @previous_scene = previous_scene
     @run_result = nil
     super(options)
   end
@@ -15,7 +15,7 @@ class DialogScene < GuiScene
   end
 
   def render(win)
-    @previous_state.render(win)
+    @previous_scene.render(win)
 
     super(win)
   end

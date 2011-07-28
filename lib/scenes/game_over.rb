@@ -4,8 +4,8 @@ class GameOver < DialogScene
   TEXT_SIZE = 6
   BUTTON_Y = 10
 
-  def setup(previous_state, next_unlocked)
-    super(previous_state)
+  def setup(previous_scene, next_unlocked)
+    super(previous_scene)
 
     gui_controls << Polygon.rectangle([17, BUTTON_Y - 1, 66, TEXT_SIZE + 2], Color.new(0, 0, 0, 200))
 

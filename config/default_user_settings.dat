@@ -34,14 +34,22 @@ graphics:
 
 sound: {}
 
-controls:
+key_controls:
   general: # Controls that aren't specifically for either player.
-    pause: p
-    screenshot: f12
+    pause: :p
+    screenshot: :f12
 
-  1: # Player one controls. Will be player2 controls when multi-player implemented.
-    left: a
-    right: d
-    up: w
-    down: s
-    jump: space
+  players:
+    0: # Player one controls.
+      left: :a
+      right: :d
+      up: :w
+      down: :s
+      jump: :space
+
+    1: # Player two controls.
+      left: :left
+      right: :right
+      up: :up
+      down: :down
+      jump: :insert

@@ -16,7 +16,7 @@ class Pause < GameScene
       pop_scene
     end
 
-    on :key_press, key(window.user_data.control(:pause)) do
+    on :key_press, *key_or_code(window.user_data.control(:pause)) do
       pop_scene
     end
   end

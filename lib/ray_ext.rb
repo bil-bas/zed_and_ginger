@@ -39,4 +39,19 @@ module Ray
   end
 end
 
+module Ray::Helper
+  # Matchers for either a key or an unknown keycode.
+  def key_or_code(value)
+    value.is_a?(Integer) ? [key(:unknown), anything, value] : [key(value)]
+  end
+
+  def display_for_key(key)
+    if key.is_a? Symbol
+      key.to_s.tr("_", ' ').capitalize
+    else
+      "Key##{key}"
+    end
+  end
+end
+
 include Ray

@@ -1,7 +1,9 @@
 class ShadowText
   extend Forwardable
 
-  def_delegators :@main, :color, :color=, :x, :y, :pos, :x=, :y=, :pos, :pos=, :rect, :auto_center, :auto_center=
+  def_delegators :@main, :color, :color=, :x, :y, :pos, :x=, :y=, :pos, :pos=, :rect,
+                 :auto_center, :auto_center=, :size
+  def_delegators :'@main.rect', :height, :width
 
   def initialize(string, options = {})
     options = {
