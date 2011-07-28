@@ -10,7 +10,7 @@ class FloorMap < Map
   def initialize(scene, tile_data, default_tile, options = {})
     @messages = options[:messages]
 
-    if options[:player_number]
+    if options[:player_number] and @messages
       @messages.map! do |message|
         message.gsub(/%.*%/) do |replacement|
           replacement =~ /%(.*)%/
