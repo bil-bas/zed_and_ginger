@@ -7,8 +7,19 @@ end
 end
 
 class FloorMap < Map
-  def initialize(scene, tile_data, default_tile, messages)
-    @messages = messages
+  def initialize(scene, tile_data, default_tile, options = {})
+    @messages = options[:messages]
+
+    if options[:player_number]
+      @messages.map! do |message|
+        message.gsub(/%.*%/) do |replacement|
+          replacement =~ /%(.*)%/
+          key_used = scene.window.user_data.player_control(options[:player_number], $1.to_sym)
+          display_for_key(key_used)
+        end
+      end
+    end
+
     super(FloorTile.size, scene, tile_data, default_tile)
   end
 

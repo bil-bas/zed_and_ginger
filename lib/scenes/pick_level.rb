@@ -111,7 +111,7 @@ class PickLevel < GuiScene
 
   protected
   def create_floor
-    @floor_map = FloorMap.new self, FLOOR_TILES, CheckeredFloor, []
+    @floor_map = FloorMap.new self, FLOOR_TILES, CheckeredFloor
   end
 
   protected
