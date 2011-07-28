@@ -41,6 +41,7 @@ class UserData < BaseUserData
   # Graphics options.
   GROUP_GRAPHICS = 'graphics'
   SCALING = 'scaling'
+  FULLSCREEN = 'fullscreen'
 
   MIN_SCALING = 2
 
@@ -57,6 +58,12 @@ class UserData < BaseUserData
 
   def initialize
     super DATA_FILE, DEFAULT_DATA_FILE
+
+    @scaling = if fullscreen?
+      [Ray.screen_size.width / GAME_RESOLUTION.width, Ray.screen_size.height / GAME_RESOLUTION.height].min
+    else
+      [@data[GROUP_GRAPHICS][SCALING].round, MIN_SCALING].max
+    end
   end
 
   # High scores, high scorers and level unlocking.
@@ -99,12 +106,26 @@ class UserData < BaseUserData
   # Graphics options.
 
   def scaling
-    [@data[GROUP_GRAPHICS][SCALING].round, MIN_SCALING].max
+    @scaling
   end
 
   def scaling=(scaling)
-    @data[GROUP_GRAPHICS][SCALING] = scaling
+    p [@scaling, scaling, fullscreen?]
+    @scaling = scaling
+
+    unless fullscreen?
+      @data[GROUP_GRAPHICS][SCALING] = scaling
+      save
+    end
+  end
+
+  def fullscreen=(fullscreen)
+    @data[GROUP_GRAPHICS][FULLSCREEN] = fullscreen
     save
+  end
+
+  def fullscreen?
+    @data[GROUP_GRAPHICS][FULLSCREEN]
   end
 
   # Controls

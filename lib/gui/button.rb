@@ -45,6 +45,6 @@ class Button
   end
 
   def draw_on(win)
-    win.draw @text
+    @text.draw_on win
   end
 end

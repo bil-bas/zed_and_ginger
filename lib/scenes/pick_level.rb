@@ -33,8 +33,16 @@ class PickLevel < GuiScene
     create_floor
     create_cats
 
-    gui_controls << ShadowText.new("Zed and Ginger", at: [5, 0], size: 16, color: TITLE_COLOR)
-    gui_controls << ShadowText.new("Level: ", at: [5, 14], size: 6, color: TEXT_COLOR)
+    width = GAME_RESOLUTION.width
+    margin = 2
+    center = (width - 1) / 2
+    left_edge = margin
+    right_edge = width - margin
+    top_edge = margin
+
+    gui_controls << ShadowText.new("Zed and Ginger", at: [center, 0], size: 16, color: TITLE_COLOR,
+      auto_center: [0.5, 0])
+    gui_controls << ShadowText.new("Level: ", at: [left_edge, 14], size: 6, color: TEXT_COLOR)
 
     # Get the numbers of all the levels defined.
     levels = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")]
@@ -42,32 +50,52 @@ class PickLevel < GuiScene
     levels -= [UserData::DEV_LEVEL]
 
     levels.each_with_index do |level, i|
-      gui_controls << Button.new(level.to_s, self, at: [20 + i * 8, 14], size: 6, color: BUTTON_COLOR,
+      gui_controls << Button.new(level.to_s, self, at: [17 + i * 8, 14], size: 6, color: BUTTON_COLOR,
                                  enabled: window.user_data.level_unlocked?(level)) do
         start_level level
       end
     end
 
     if DEVELOPMENT_MODE
-      gui_controls << Button.new("#{UserData::DEV_LEVEL}-dev", self, at: [75, 14], size: 6, color: BUTTON_COLOR) do
+      gui_controls << Button.new("#{UserData::DEV_LEVEL}-dev", self, at: [right_edge, 14], size: 6, color: BUTTON_COLOR,
+                                 auto_center: [1, 0]) do
         start_level UserData::DEV_LEVEL
       end
     end
 
-    # Increase and reduce the size of the window.
-    gui_controls << Button.new("-", self, at: [64, 52], size: 6, color: BUTTON_COLOR) do
-      scale_down
+    # Toggle fullscreen/window.
+    title = Window.user_data.fullscreen? ? "Window" : "Fullscreen"
+    gui_controls << Button.new(title, self, at: [right_edge, 41], size: 5, color: BUTTON_COLOR,
+                               auto_center: [1, 0]) do
+      run_scene :confirm, self, "Toggling fullscreen requires reset" do |result|
+        if result
+          Window.user_data.fullscreen = (not Window.user_data.fullscreen?)
+          $create_window = true
+          pop_scene
+        end
+      end
     end
 
-    @screen_size = ShadowText.new("0000x0000", at: [71, 52.5], size: 5, color: TEXT_COLOR)
-    gui_controls << @screen_size
-    update_screen_size
-    gui_controls << Button.new("+", self, at: [88, 52], size: 6, color: BUTTON_COLOR) do
-      scale_up
+    unless Window.user_data.fullscreen?
+      # Increase and reduce the size of the window.
+      gui_controls << Button.new("-", self, at: [right_edge - 20, 36.5], size: 5, color: BUTTON_COLOR,
+                                 auto_center: [1, 0]) do
+        scale_down
+      end
+
+      @screen_size = ShadowText.new("0000x0000", at: [right_edge - 6, 37], size: 4, color: TEXT_COLOR,
+                                    auto_center: [1, 0])
+      gui_controls << @screen_size
+      update_screen_size
+      gui_controls << Button.new("+", self, at: [right_edge, 36.5], size: 5, color: BUTTON_COLOR,
+                                 auto_center: [1, 0]) do
+        scale_up
+      end
     end
 
     # Version number.
-    gui_controls << ShadowText.new("v#{ZedAndGinger::VERSION}", at: [86, 0], size: 4, color: TEXT_COLOR)
+    gui_controls << ShadowText.new("v#{ZedAndGinger::VERSION}", at: [right_edge, top_edge],
+                                   size: 4, color: TEXT_COLOR, auto_center: [1, 1])
 
     @@ambient_music ||= music music_path("Space_Cat_Ambient.ogg")
     @@ambient_music.looping = true
