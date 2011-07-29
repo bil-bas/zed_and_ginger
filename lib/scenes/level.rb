@@ -11,6 +11,7 @@ class Level < GameScene
   FLOOR_MAP_ROWS = 6
 
   FONT_SIZE = 5.625
+  START_TILE_GRID_X = 15
 
   MAX_CAMERA_ZOOM_CHANGE = 1 # Most the zoom can change in a second.
   MAX_CAMERA_X_CHANGE = 64 # Most the camera's position can change in a second.
@@ -34,9 +35,9 @@ class Level < GameScene
 
     # Create the players on the start line.
     start_grid_positions = if @player_data.size == 1
-      [[5, 2]]
+      [[START_TILE_GRID_X, 2]]
     else
-      [[5, 1], [5, 3]]
+      [[START_TILE_GRID_X, 1], [START_TILE_GRID_X, 3]]
     end
 
     @players = []
@@ -71,9 +72,10 @@ class Level < GameScene
     @frame_time = 0
 
     @camera_zoom = 1.0
-    @camera_x = FloorTile.width * 11
+    # Make the camera pan during intro, so place it near the start.
+    @camera_x = FloorTile.width * 8
 
-    move_camera
+    update_camera(0)
 
     @level_music ||= music music_path "Space_Cat_Habitat.ogg"
     @level_music.volume = 20
@@ -107,6 +109,13 @@ class Level < GameScene
 
   def update_high_score
     @high_score.string = "%s: %07d" % [high_scorer, high_score]
+  end
+
+  # Called from an overlay state.
+  def update_intro_objects(duration)
+    @frame_time = duration
+    visible_objects = @dynamic_objects.select {|o| o.x < 200 }
+    visible_objects.each {|o| o.update }
   end
 
   def game_over(score)
@@ -182,7 +191,7 @@ class Level < GameScene
       @frame_time = [@scene_time - @last_frame_started_at, 0.1].min # Time elapsed since start of last frame.
       @last_frame_started_at = @scene_time
 
-      move_camera
+      update_camera(frame_time)
 
       timer.decrease frame_time if @players.all?(&:ok?)
 
@@ -258,10 +267,10 @@ class Level < GameScene
   end
 
   def update_shaders
-    [SlowFloor, SlowSplat, Teleporter, Teleporting].each {|c| c.shader_time = timer.elapsed }
+    CLASSES_WITH_SHADERS.each {|c| c.shader_time = timer.elapsed }
   end
 
-  def move_camera
+  def update_camera(duration)
     # Move the cameras to the player position (left side, plus an amount asked for from the player).
     if players.size == 1
       player = players.first
@@ -276,14 +285,14 @@ class Level < GameScene
       @desired_camera_zoom = [[GAME_RESOLUTION.width / view_range, 0.5].max, 1.0].min
 
       # Prevent fast zooming in/out.
-      max_zoom_change = MAX_CAMERA_ZOOM_CHANGE * frame_time
+      max_zoom_change = MAX_CAMERA_ZOOM_CHANGE * duration
       @camera_zoom += [[@desired_camera_zoom - @camera_zoom, max_zoom_change].min, -max_zoom_change].max
 
       @desired_camera_x = right_edge_of_view - (GAME_RESOLUTION.width / (2 * @camera_zoom))
     end
 
     # Prevent rapid shifts as we accelerate or come to a stop.
-    max_x_change = MAX_CAMERA_X_CHANGE * frame_time
+    max_x_change = MAX_CAMERA_X_CHANGE * duration
     @camera_x += [[@desired_camera_x - @camera_x, max_x_change].min, -max_x_change].max
   end
   

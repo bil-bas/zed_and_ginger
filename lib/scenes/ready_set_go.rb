@@ -24,6 +24,8 @@ class ReadySetGo < GameScene
     end
 
     @next_event_at = Time.now + 1
+
+    @last_time = Time.now
   end
 
   def register
@@ -33,6 +35,10 @@ class ReadySetGo < GameScene
         pop_scene unless @events.alive?
         @next_event_at += 1
       end
+
+      @previous_scene.update_camera(Time.now - @last_time)
+      @previous_scene.update_intro_objects(Time.now - @last_time)
+      @last_time = Time.now
     end
   end
 

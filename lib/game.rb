@@ -33,6 +33,8 @@ class Ray::Game
   SCREEN_SHOT_EXTENSION = 'tga'
 end
 
+CLASSES_WITH_SHADERS = [SlowFloor, SlowSplat, Teleporter, Teleporting]
+
 if defined? RubyProf
   RubyProf.start
   RubyProf.pause
