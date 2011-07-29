@@ -83,9 +83,19 @@ class Level < GameScene
     run_scene :ready_set_go, self unless DEVELOPMENT_MODE
 
     @@level_music.play
+
+    if defined? RubyProf
+      RubyProf.resume
+      log.debug { "Profiling resumed" }
+    end
   end
 
   def clean_up
+    if defined? RubyProf
+      RubyProf.pause
+      log.debug { "Profiling paused" }
+    end
+
     @@level_music.stop
     @@finish_music.stop
   end

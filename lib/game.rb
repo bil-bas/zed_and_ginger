@@ -33,6 +33,12 @@ class Ray::Game
   SCREEN_SHOT_EXTENSION = 'tga'
 end
 
+if defined? RubyProf
+  RubyProf.start
+  RubyProf.pause
+  Log.log.debug { "Profiling started and paused" }
+end
+
 def create_game
   Window.user_data = UserData.new
 
@@ -45,6 +51,12 @@ def create_game
   Ray.game "Zed and Ginger (WASD to move; SPACE to jump, P to pause)", options do
     register do
       on :quit do
+        if defined? RubyProf and RubyProf.running?
+          result = RubyProf.stop
+          printer = RubyProf::FlatPrinter.new(result)
+          printer.print(STDERR, min_percent: 1)
+        end
+
         Kernel.exit
       end
 
