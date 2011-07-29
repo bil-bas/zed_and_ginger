@@ -16,10 +16,13 @@ class Level < GameScene
   MAX_CAMERA_X_CHANGE = 64 # Most the camera's position can change in a second.
 
   def setup(level_number, player_data)
+    started_at = Time.now
+
     super()
 
     @level_number, @player_data = level_number, player_data
 
+    # Create maps and objects
     @dynamic_objects = [] # Objects that need #update
 
     level_data = YAML::load_file(File.expand_path(File.join(EXTRACT_PATH, "config/levels/#{level_number}.yml")))
@@ -72,17 +75,19 @@ class Level < GameScene
 
     move_camera
 
-    @@level_music ||= music music_path "Space_Cat_Habitat.ogg"
-    @@level_music.volume = 20
+    @level_music ||= music music_path "Space_Cat_Habitat.ogg"
+    @level_music.volume = 20
 
-    @@finish_music ||= music music_path "Space_Cat_Winner.ogg"
-    @@finish_music.volume = 50
+    @finish_music ||= music music_path "Space_Cat_Winner.ogg"
+    @finish_music.volume = 50
 
     calculate_visible_objects
 
+    log.info { "#{self.class}##{level_number} loaded in #{Time.now - started_at}s" }
+
     run_scene :ready_set_go, self unless DEVELOPMENT_MODE
 
-    @@level_music.play
+    @level_music.play
 
     if defined? RubyProf
       RubyProf.resume
@@ -96,8 +101,8 @@ class Level < GameScene
       log.debug { "Profiling paused" }
     end
 
-    @@level_music.stop
-    @@finish_music.stop
+    @level_music.stop
+    @finish_music.stop
   end
 
   def update_high_score
@@ -107,8 +112,8 @@ class Level < GameScene
   def game_over(score)
     player = players.first
 
-    @@level_music.stop
-    @@finish_music.play if player.finished?
+    @level_music.stop
+    @finish_music.play if player.finished?
 
     if score > high_score
       run_scene(:enter_name, self) do |name|

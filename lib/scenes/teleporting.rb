@@ -4,10 +4,24 @@ class Teleporting < Scene
   FREQUENCY_AMPLITUDE = 0
   INTERFERENCE_AMPLITUDE = 2
 
-  def self.shader_time=(time); @@shader[:time] = time if defined? @@shader; end
+  class << self
+    def shader
+      unless defined? @shader
+        @shader = Shader.new frag: StringIO.new(read_shader("teleporter.frag"))
+        @shader[:pixel_width] = 1.0 / GAME_RESOLUTION.width
+        @shader[:pixel_height] = 1.0 / GAME_RESOLUTION.height
+        @shader[:interference_amplitude] = INTERFERENCE_AMPLITUDE
+        @shader[:frequency_amplitude] =  FREQUENCY_AMPLITUDE
+      end
+      @shader
+    end
+
+    def shader_time=(time)
+      @shader[:time] = time if defined? @shader
+    end
+  end
 
   def setup(previous_scene, position)
-
     @previous_scene, @position = previous_scene, position
     @player = @previous_scene.players.first
 
@@ -17,16 +31,9 @@ class Teleporting < Scene
 
     @animation.start(@player)
 
-    @overlay = sprite Image.new(window.scaled_size - [0, 6])
-    unless defined? @@shader
-      @@shader = Shader.new frag: StringIO.new(read_shader("teleporter.frag"))
-      @@shader[:pixel_width] = 1.0 / window.scaled_size.width
-      @@shader[:pixel_height] = 1.0 / window.scaled_size.height
-      @@shader[:interference_amplitude] = INTERFERENCE_AMPLITUDE
-      @@shader[:frequency_amplitude] =  FREQUENCY_AMPLITUDE
-    end
-
-    @overlay.shader = @@shader
+    @overlay = sprite Image.new GAME_RESOLUTION
+    @overlay.scale = window.scaling
+    @overlay.shader = self.class.shader
   end
 
   def register
@@ -41,7 +48,7 @@ class Teleporting < Scene
 
   def render(win)
     @previous_scene.render(win)
-    @@shader[:offset] = (@player.position - @position) / (window.user_data.scaling * 5)
+    @overlay.shader[:offset] = (@player.position - @position) / (window.user_data.scaling * 5)
     win.draw @overlay
   end
 end

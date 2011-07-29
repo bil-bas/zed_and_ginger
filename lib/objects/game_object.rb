@@ -15,6 +15,24 @@ class GameObject
   SHADOW_RADIUS = 64
   SHADOW_WIDTH = SHADOW_RADIUS * 2
 
+=begin
+Too slow to use in the real system, so saved to a file.
+  class << self
+    # Generates the shadow_sprite from an image.
+    def shadow_image
+      unless defined? @shadow_image
+        @shadow_image = Image.new [SHADOW_WIDTH, SHADOW_WIDTH]
+        center = @shadow_image.size / 2
+        @shadow_image.map_with_pos! do |color, x, y|
+          Color.new(0, 0, 0, (1 - (Vector2[x, y].distance(center) / SHADOW_RADIUS) ** 2) * 150)
+        end
+      end
+
+      @shadow_image
+    end
+  end
+=end
+
   def casts_shadow?; false; end
   def width; @sprite.sprite_width; end
   def pos; Vector2[x, y]; end
@@ -65,9 +83,12 @@ class GameObject
   def initialize(scene, sprite, position) 
     @sprite = sprite
     @position = Vector2[0, 0] # Will be set properly later.
-    @z = 0 
-    
-    create_shadow(position)
+    @z = 0
+
+    @shadow = sprite image_path("shadow.png")
+    @shadow.origin = @shadow.image.size / 2
+    @shadow.scale = [0.06, 0.06]
+    @shadow.position = position
     
     scene.add_object(self)
 
@@ -76,22 +97,6 @@ class GameObject
     create_debug_shapes if DEVELOPMENT_MODE
 
     self.position = position
-  end
-
-  def create_shadow(position)
-    unless defined? @@shadow
-      img = Image.new [SHADOW_WIDTH, SHADOW_WIDTH]
-      center = img.size / 2
-      img.map_with_pos! do |color, x, y|
-        Color.new(0, 0, 0, (1 - (Vector2[x, y].distance(center) / SHADOW_RADIUS) ** 2) * 150)
-      end
-      @@shadow = sprite img
-      @@shadow.origin = center
-      @@shadow.scale = [0.06, 0.06]
-    end
-    
-    @shadow = @@shadow.dup
-    @shadow.position = position
   end
   
   def register(scene)

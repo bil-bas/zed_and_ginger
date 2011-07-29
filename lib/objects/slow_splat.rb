@@ -2,9 +2,27 @@ require_relative "dynamic_object"
 require_relative "../tiles/slow_floor.rb"
 
 class SlowSplat < DynamicObject
-  def casts_shadow?; false; end
+  IMAGE_SIZE = Vector2[32, 8]
 
-  def self.shader_time=(time); @@shader[:time] = time if defined? @@shader; end
+  class << self
+    def shader
+      unless defined? @shader
+        @shader = Shader.new frag: StringIO.new(read_shader("slime.frag"))
+        @shader[:pixel_width] = 1.0 / IMAGE_SIZE.width
+        @shader[:pixel_height] = 1.0 / IMAGE_SIZE.height
+        @shader[:interference_amplitude] = SlowFloor::INTERFERENCE_AMPLITUDE
+        @shader[:frequency_amplitude] =  SlowFloor::FREQUENCY_AMPLITUDE
+      end
+
+      @shader
+    end
+
+    def shader_time=(time)
+      @shader[:time] = time if defined? @shader
+    end
+  end
+
+  def casts_shadow?; false; end
 
   def initialize(map, tile, position)
     sprite = sprite image_path("slow_splat.png")
@@ -17,15 +35,7 @@ class SlowSplat < DynamicObject
 
     @sprite.y = 0 # Move it up next to the wall.
 
-    unless defined? @@shader
-      @@shader = Shader.new frag: StringIO.new(read_shader("slime.frag"))
-      @@shader[:pixel_width] = 1.0 / (@sprite.image.width * SlowFloor::SHADER_PIXELS_PER_PIXEL)
-      @@shader[:pixel_height] = 1.0 / (@sprite.image.height * SlowFloor::SHADER_PIXELS_PER_PIXEL)
-      @@shader[:interference_amplitude] = SlowFloor::INTERFERENCE_AMPLITUDE
-      @@shader[:frequency_amplitude] =  SlowFloor::FREQUENCY_AMPLITUDE
-    end
-
-    @sprite.shader = @@shader
+    @sprite.shader = self.class.shader
 
     @shader_offset = Vector2[tile.grid_position.x, tile.grid_position.y - 1] / @sprite.sheet_size
   end

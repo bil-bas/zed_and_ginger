@@ -1,5 +1,6 @@
 require_relative 'gui_scene'
 require_relative '../starscape'
+require_relative '../preloader'
 
 module Ginger
   EYE_COLOR = Color.new(79, 207, 108)
@@ -24,11 +25,15 @@ class MainMenu < GuiScene
 
   public
   def setup
+    started_at = Time.now
+
     super()
 
     self.background ||= Starscape.new
     create_floor
     create_cats
+
+    @@preloader ||= Preloader.new
 
     width = GAME_RESOLUTION.width
     margin = 2
@@ -111,6 +116,8 @@ class MainMenu < GuiScene
     @@ambient_music.looping = true
     @@ambient_music.play
     @@ambient_music.volume = 70
+
+    log.info { "#{self.class} loaded in #{Time.now - started_at}s" }
   end
 
   protected
@@ -268,6 +275,7 @@ class MainMenu < GuiScene
 
     always do
       @cat_animations.each_value(&:update)
+      @@preloader.update
     end
   end
 

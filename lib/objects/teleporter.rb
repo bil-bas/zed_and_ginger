@@ -7,7 +7,23 @@ class Teleporter < DynamicObject
 
   def casts_shadow?; false; end
 
-  def self.shader_time=(time); @@shader[:time] = time if defined? @@shader; end
+  class << self
+    def shader
+      unless defined? @shader
+        @shader = Shader.new frag: StringIO.new(read_shader("teleporter.frag"))
+        @shader[:pixel_width] = 1.0 / 8
+        @shader[:pixel_height] = 1.0 / 8
+        @shader[:interference_amplitude] = INTERFERENCE_AMPLITUDE
+        @shader[:frequency_amplitude] =  FREQUENCY_AMPLITUDE
+      end
+
+      @shader
+    end
+
+    def shader_time=(time)
+      @shader[:time] = time if defined? @shader
+    end
+  end
 
   def to_rect; Rect.new(*(@position - [0, 1.5]), 0, 3) end
 
@@ -18,15 +34,7 @@ class Teleporter < DynamicObject
 
     super(map.scene, sprite, position)
 
-    unless defined? @@shader
-      @@shader = Shader.new frag: StringIO.new(read_shader("teleporter.frag"))
-      @@shader[:pixel_width] = 1.0 / @sprite.image.width
-      @@shader[:pixel_height] = 1.0 / @sprite.image.height
-      @@shader[:interference_amplitude] = INTERFERENCE_AMPLITUDE
-      @@shader[:frequency_amplitude] =  FREQUENCY_AMPLITUDE
-    end
-
-    @sprite.shader = @@shader
+    @sprite.shader = self.class.shader
 
     @shader_offset = Vector2[tile.grid_position.x, tile.grid_position.y - 1] / @sprite.image.width
 
