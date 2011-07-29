@@ -114,7 +114,7 @@ class Level < GameScene
   # Called from an overlay state.
   def update_intro_objects(duration)
     @frame_time = duration
-    visible_objects = @dynamic_objects.select {|o| o.x < 200 }
+    visible_objects = @dynamic_objects.select {|o| not o.is_a?(Player) and o.x < 200 }
     visible_objects.each {|o| o.update }
   end
 

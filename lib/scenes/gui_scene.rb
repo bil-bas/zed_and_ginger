@@ -16,6 +16,19 @@ class GuiScene < GameScene
     end
 
     @cursor_shown = options[:enable_cursor]
+
+    @control_under_cursor = nil
+  end
+
+  def run_scene(*args)
+
+    # Ensure that hovering is removed entering a dialog.
+    if @control_under_cursor
+      @control_under_cursor.unhover
+      @control_under_cursor = nil
+    end
+
+    super *args
   end
 
   def register
@@ -32,6 +45,14 @@ class GuiScene < GameScene
 
       on :mouse_motion do |pos|
         @@cursor.pos = pos / window.scaling
+      end
+
+      on :mouse_hover do |control|
+        @control_under_cursor = control
+      end
+
+      on :mouse_unhover do |control|
+        @control_under_cursor = nil
       end
     end
   end

@@ -1,6 +1,7 @@
 class Status
   include Log
   include Helper
+  include Registers
 
   extend Forwardable
 
@@ -39,12 +40,6 @@ class Status
       duration = (duration < Float::INFINITY) ? "for #{duration}s" : "indefinitely"
       "Applied status #{type.inspect} to #{@owner} #{duration}"
     end
-  end
-
-  public
-  def register(scene)
-    self.event_runner = scene.event_runner
-    @scene            = scene
   end
 
   protected

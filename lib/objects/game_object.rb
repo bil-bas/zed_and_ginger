@@ -2,6 +2,7 @@ class GameObject
   extend Forwardable
   include Helper
   include Log
+  include Registers
   
   def_delegators :@scene, :window, :frame_time
   def_delegators :@position, :x, :y
@@ -98,11 +99,6 @@ Too slow to use in the real system, so saved to a file.
     create_debug_shapes if DEVELOPMENT_MODE
 
     self.position = position
-  end
-  
-  def register(scene)
-    self.event_runner = scene.event_runner
-    @scene            = scene
   end
 
   def to_rect
