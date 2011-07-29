@@ -32,17 +32,21 @@ class Teleporting < Scene
     @animation.start(@player)
 
     @overlay = sprite Image.new GAME_RESOLUTION
-    @overlay.scale = window.scaling
+    @overlay.scale = [window.scaling] * 2
     @overlay.shader = self.class.shader
+
+    @last_time = Time.now
   end
 
   def register
     always do
+      frame_time = Time.now - @last_time
       @animation.update
       @player.update_riding_position if @player.riding?
-      @previous_scene.move_camera
+      @previous_scene.update_camera(frame_time)
       @previous_scene.update_shaders
       pop_scene unless @animation.running?
+      @last_time = Time.now
     end
   end
 
