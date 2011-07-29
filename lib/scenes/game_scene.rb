@@ -1,4 +1,6 @@
 class GameScene < Scene
+  include Log
+
   # List of controls, automatically drawn in order.
   attr_accessor :gui_controls
 

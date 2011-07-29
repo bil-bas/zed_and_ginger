@@ -1,4 +1,5 @@
 require_relative "dynamic_object"
+require_relative "../tiles/floor_tile"
 
 require_files('statuses', %w[burnt electrocuted invulnerable squashed thrown])
 
@@ -7,12 +8,12 @@ class Player < DynamicObject
 
   ANIMATION_DURATION = 2
 
-  ACCELERATION = 100
-  DECELERATION = -100
-  MIN_SPEED = 0
-  MAX_SPEED = 64
-  VERTICAL_SPEED = 25
-  MIN_RUN_VELOCITY = 100 # Above this, run animation; below walk.
+  ACCELERATION = 100.0
+  DECELERATION = -100.0
+  MIN_SPEED = 0.0
+  MAX_SPEED = 64.0
+  VERTICAL_SPEED = 25.0
+  MIN_RUN_VELOCITY = 100.0 # Above this, run animation; below walk.
   JUMP_SPEED = 1.5 # Z-speed of jumping.
 
   RIDING_OFFSET_X = -2 # Move ridden object back, since we have our origin far forward.
@@ -55,9 +56,10 @@ class Player < DynamicObject
   Z_ORDER_SQUASHED = -10
 
   MAX_SCREEN_MOVE_PER_SECOND = 0.5
-  MIN_SCREEN_OFFSET = 0.1
-  MAX_SCREEN_OFFSET = 0.4
-  SCREEN_OFFSET_RANGE = MAX_SCREEN_OFFSET - MIN_SCREEN_OFFSET
+  LOOK_BEHIND = FloorTile.width * 0.5
+  MIN_LOOK_AHEAD = FloorTile.width * 6
+  MAX_LOOK_AHEAD = FloorTile.width * 11.5
+  LOOK_AHEAD_RANGE = MAX_LOOK_AHEAD - MIN_LOOK_AHEAD
 
   NAMES = [:zed, :ginger]
 
@@ -123,8 +125,6 @@ class Player < DynamicObject
     @speed_modifier = 1.0
     @score = 0
 
-    @screen_offset_x = MIN_SCREEN_OFFSET
-
     @sounds = {}
     [:died, :jump].each do |sound|
       @sounds[sound] = sound sound_path "player_#{sound}.ogg"
@@ -144,12 +144,9 @@ class Player < DynamicObject
   end
 
   public
-  def screen_offset_x
-    screen_movement = (MIN_SCREEN_OFFSET + (@velocity.x / MAX_SPEED) * SCREEN_OFFSET_RANGE) - @screen_offset_x
-    max_move =  MAX_SCREEN_MOVE_PER_SECOND * frame_time
-    @screen_offset_x += [[screen_movement, max_move].min, -max_move].max
-
-    @screen_offset_x
+  # Range of the world that _must_ be visible for the player.
+  def view_range_x
+    (x - LOOK_BEHIND)..(x + MIN_LOOK_AHEAD + LOOK_AHEAD_RANGE * (1 - velocity_x / MAX_SPEED) )
   end
 
   protected

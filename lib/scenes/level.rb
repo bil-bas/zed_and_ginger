@@ -12,6 +12,9 @@ class Level < GameScene
 
   FONT_SIZE = 5.625
 
+  MAX_CAMERA_ZOOM_CHANGE = 1 # Most the zoom can change in a second.
+  MAX_CAMERA_X_CHANGE = 64 # Most the camera's position can change in a second.
+
   def setup(level_number, background, player_data)
     super()
 
@@ -63,6 +66,9 @@ class Level < GameScene
     @progress.progress = 0
     @visible_objects = @players.dup
     @frame_time = 0
+
+    @camera_zoom = 1.0
+    @camera_x = FloorTile.width * 11
 
     move_camera
 
@@ -203,18 +209,25 @@ class Level < GameScene
 
     win.draw @background
 
+    view = window.view
+    # Expand the view of the world.
+    view.size /= [@camera_zoom, 1]
+
+    # Clip on the screen.
+    viewport = view.viewport
+    viewport.y += viewport.height * (1.0 / @camera_zoom - 1) * 0.25
+    viewport.height *= @camera_zoom
+    view.viewport = viewport
+
     # Create a camera for displaying the wall map
-    wall_camera = window.default_view
-    wall_camera.zoom_by window.scaling
-    wall_camera.center = [@camera_x, wall_camera.rect.height / 2]
-    win.with_view wall_camera do
+    view.center = [@camera_x, view.rect.height / 2.0]
+    win.with_view view do
       @wall_map.draw_on(win)
     end
 
     # Create a camera for displaying the floor map (which has origin set in the view)
-    floor_camera = wall_camera.dup
-    floor_camera.y -= @wall_map.to_rect.height
-    win.with_view floor_camera do
+    view.y -= @wall_map.to_rect.height
+    win.with_view view do
       @floor_map.draw_on(win)
 
       @visible_objects.each {|obj| obj.draw_shadow_on win }
@@ -235,12 +248,28 @@ class Level < GameScene
 
   def move_camera
     # Move the cameras to the player position (left side, plus an amount asked for from the player).
-    camera_positions = @players.map do |player|
-      player.x + (window.scaled_size.width / 2) -
-         (window.scaled_size.width * player.screen_offset_x)
+    if players.size == 1
+      player = players.first
+      @desired_camera_x = player.view_range_x.max - GAME_RESOLUTION.width / 2
+    else
+      view_ranges = @players.map {|p| p.view_range_x }
+      left_edge_of_view = view_ranges.map {|r| r.min }.min
+      right_edge_of_view = view_ranges.map {|r| r.max }.max
+      view_range = right_edge_of_view - left_edge_of_view
+
+      # Zoom out if necessary to fit everything in.
+      @desired_camera_zoom = [[GAME_RESOLUTION.width / view_range, 0.5].max, 1.0].min
+
+      # Prevent fast zooming in/out.
+      max_zoom_change = MAX_CAMERA_ZOOM_CHANGE * frame_time
+      @camera_zoom += [[@desired_camera_zoom - @camera_zoom, max_zoom_change].min, -max_zoom_change].max
+
+      @desired_camera_x = right_edge_of_view - (GAME_RESOLUTION.width / (2 * @camera_zoom))
     end
 
-    @camera_x = camera_positions.max
+    # Prevent rapid shifts as we accelerate or come to a stop.
+    max_x_change = MAX_CAMERA_X_CHANGE * frame_time
+    @camera_x += [[@desired_camera_x - @camera_x, max_x_change].min, -max_x_change].max
   end
   
   def init_fps
