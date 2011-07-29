@@ -10,10 +10,8 @@ class OptionsControls < GuiScene
   LABEL_X = 6
   BUTTON_X = 35
 
-  def setup(background)
+  def setup
     super()
-
-    @background = background
 
     y = 0
 
@@ -29,7 +27,8 @@ class OptionsControls < GuiScene
         run_scene :enter_control, self, "Press key for #{control}", current do |new_value|
           if new_value
             window.user_data.set_control(control, new_value)
-            setup @background
+            pop_scene
+            push_scene name
           end
         end
       end
@@ -49,7 +48,8 @@ class OptionsControls < GuiScene
           run_scene :enter_control, self, "Press #{control} for #{player_display_name}", current do |new_value|
             if new_value
               window.user_data.set_player_control(player_name, control, new_value)
-              setup(@background)
+              pop_scene
+              push_scene name
             end
           end
         end
@@ -89,7 +89,7 @@ class OptionsControls < GuiScene
   end
 
   def render(win)
-    win.draw @background
+    background.draw_on win
     super
   end
 end

@@ -15,10 +15,10 @@ class Level < GameScene
   MAX_CAMERA_ZOOM_CHANGE = 1 # Most the zoom can change in a second.
   MAX_CAMERA_X_CHANGE = 64 # Most the camera's position can change in a second.
 
-  def setup(level_number, background, player_data)
+  def setup(level_number, player_data)
     super()
 
-    @level_number, @background, @player_data = level_number, background, player_data
+    @level_number, @player_data = level_number, player_data
 
     @dynamic_objects = [] # Objects that need #update
 
@@ -131,9 +131,9 @@ class Level < GameScene
         when :menu
           # Do nothing.
         when :restart
-          push_scene :level, @level_number, @background, @player_data
+          push_scene :level, @level_number, @player_data
         when :next
-          push_scene :level, @level_number + 1, @background, @player_data
+          push_scene :level, @level_number + 1, @player_data
       end
     end
   end
@@ -217,7 +217,7 @@ class Level < GameScene
   def render(win)
     start_at = Time.now
 
-    win.draw @background
+    background.draw_on win
 
     view = window.view
     # Expand the view of the world.

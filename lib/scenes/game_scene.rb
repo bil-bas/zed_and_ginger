@@ -4,6 +4,13 @@ class GameScene < Scene
   # List of controls, automatically drawn in order.
   attr_accessor :gui_controls
 
+  class << self
+    attr_accessor :background
+  end
+
+  def background; GameScene.background; end
+  def background=(background); GameScene.background = background; end
+
   def setup
     @gui_controls = []
     @event_handlers = []

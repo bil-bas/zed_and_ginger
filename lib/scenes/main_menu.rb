@@ -1,4 +1,5 @@
 require_relative 'gui_scene'
+require_relative '../starscape'
 
 module Ginger
   EYE_COLOR = Color.new(79, 207, 108)
@@ -14,18 +15,18 @@ class MainMenu < GuiScene
   TEXT_COLOR = Color.new(200, 200, 200)
   DISABLED_COLOR = Color.new(100, 100, 100)
 
+  BUTTON_SPACING = 0.5
+
   FLOOR_TILES = [
       "--------",
       "--------",
   ]
 
-  attr_reader :background
-
   public
   def setup
     super()
 
-    create_background
+    self.background ||= Starscape.new
     create_floor
     create_cats
 
@@ -59,38 +60,50 @@ class MainMenu < GuiScene
       end
     end
 
+    # Buttons in a column on the right hand side of the screen.
+    y = 28
     # User settings - controls.
-    gui_controls << Button.new("Controls", self, at: [right_edge, 32], size: 5, color: BUTTON_COLOR,
+    gui_controls << Button.new("Controls", self, at: [right_edge, y], size: 5, color: BUTTON_COLOR,
                                  auto_center: [1, 0]) do
-      push_scene :options_controls, @background
+      push_scene :options_controls
     end
+
+    y += gui_controls.last.height + BUTTON_SPACING
 
     # Toggle fullscreen/window.
     title = Window.user_data.fullscreen? ? "Window" : "Fullscreen"
-    gui_controls << Button.new(title, self, at: [right_edge, 41], size: 5, color: BUTTON_COLOR, auto_center: [1, 0]) do
+    gui_controls << Button.new(title, self, at: [right_edge, y], size: 5, color: BUTTON_COLOR, auto_center: [1, 0]) do
       Window.user_data.fullscreen = (not Window.user_data.fullscreen?)
       $create_window = true
       pop_scene
     end
 
+    y += gui_controls.last.height + BUTTON_SPACING
+
     unless Window.user_data.fullscreen?
       # Increase and reduce the size of the window.
-      gui_controls << Button.new("-", self, at: [right_edge - 20, 36.5], size: 5, color: BUTTON_COLOR,
+      gui_controls << Button.new("-", self, at: [right_edge - 20, y], size: 5, color: BUTTON_COLOR,
                                  auto_center: [1, 0]) do
         scale_down
       end
 
-      @screen_size = ShadowText.new("0000x0000", at: [right_edge - 6, 37], size: 4, color: TEXT_COLOR,
+      @screen_size = ShadowText.new("0000x0000", at: [right_edge - 6, y + 0.5], size: 4, color: TEXT_COLOR,
                                     auto_center: [1, 0])
       gui_controls << @screen_size
       update_screen_size
-      gui_controls << Button.new("+", self, at: [right_edge, 36.5], size: 5, color: BUTTON_COLOR,
+      gui_controls << Button.new("+", self, at: [right_edge, y], size: 5, color: BUTTON_COLOR,
                                  auto_center: [1, 0]) do
         scale_up
       end
     end
 
-    # Version number.
+    y += gui_controls.last.height + BUTTON_SPACING
+
+    gui_controls << Button.new("Quit", self, at: [right_edge, y], size: 5, color: BUTTON_COLOR, auto_center: [1, 0]) do
+      raise_event :quit
+    end
+
+    # Version number (top right).
     gui_controls << ShadowText.new("v#{ZedAndGinger::VERSION}", at: [right_edge, top_edge],
                                    size: 4, color: TEXT_COLOR, auto_center: [1, 1])
 
@@ -222,46 +235,6 @@ class MainMenu < GuiScene
     @screen_size.string = ("%dx%d" % (GAME_RESOLUTION * window.scaling).to_a).rjust(9)
   end
 
-  protected
-  def create_background
-    unless defined? @@background_image
-      @@background_image = Image.new GAME_RESOLUTION * 4
-      image_target @@background_image do |target|
-        target.clear Color.new(0, 0, 25)
-        target.update
-      end
-
-      # Draw on some stars.
-      400.times do
-        star_pos = [rand(@@background_image.size.width), rand(@@background_image.size.height)]
-        @@background_image[*star_pos] = Color.new(*([55 + rand(200)] * 3))
-      end
-
-      # Add the moon and a sprinkling of asteroids.
-      moon = sprite image(image_path("moon.png")),
-                  at: [310, 18],
-                  scale: Vector2[4, 4]
-
-      asteroid = sprite image(image_path("asteroid.png"))
-      image_target @@background_image do |target|
-        target.draw moon
-        20.times do
-          rock_pos = Vector2[150 + rand(100), rand(@@background_image.size.height)]
-          rock_pos.x += rock_pos.y / 3.0
-          asteroid.pos = rock_pos
-          asteroid.scale = [0.5 + rand() * 0.3] * 2
-          brightness = 50 + rand(100)
-          asteroid.color = Color.new(*[brightness] * 3)
-          target.draw asteroid
-        end
-        target.update
-      end
-    end
-
-    @background = sprite @@background_image
-    @background.scale = [0.25] * 2
-  end
-
   public
   def clean_up
     @@ambient_music.pause
@@ -276,7 +249,7 @@ class MainMenu < GuiScene
       { cat => @player_sheets[cat] }
     end
 
-    push_scene :level, level_number, @background, player_data
+    push_scene :level, level_number, player_data
   end
 
   public
@@ -300,7 +273,7 @@ class MainMenu < GuiScene
 
   public
   def render(win)
-    win.draw @background
+    background.draw_on win
 
     floor_camera = win.view
     floor_camera.size = GAME_RESOLUTION * window.scaling
