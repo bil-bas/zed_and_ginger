@@ -133,6 +133,8 @@ class Player < DynamicObject
     @sounds[:jump].volume = 15
 
     create_animations
+
+    log.info { "#{self} playing with controls: #{@controls}" }
   end
 
   protected
@@ -309,7 +311,7 @@ class Player < DynamicObject
     # Move up and down.
     @velocity.y = if holding? @controls[:up]
       -VERTICAL_SPEED
-    elsif holding? :s or holding? @controls[:down]
+    elsif holding? @controls[:down]
       +VERTICAL_SPEED
     else
       0
