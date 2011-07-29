@@ -9,7 +9,7 @@ class Teleporting < Scene
   def setup(previous_scene, position)
 
     @previous_scene, @position = previous_scene, position
-    @player = @previous_scene.player
+    @player = @previous_scene.players.first
 
     @animation = translation from: @player.position,
                              to: position,

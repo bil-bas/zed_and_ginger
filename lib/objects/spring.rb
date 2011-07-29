@@ -37,18 +37,18 @@ class Spring < DynamicObject
   end
 
   def update
-    player = scene.player
+    scene.players.each do |player|
+      if player.ok? and not @activated and collide? player
+        @sprite_flat.matrix = nil
+        @sprite_flat.position += [-1.5, -4]
+        @sprite_flat.skew_x(FloorTile::SKEW * 0.75)
 
-    if player.ok? and not @activated and collide? player
-      @sprite_flat.matrix = nil
-      @sprite_flat.position += [-1.5, -4]
-      @sprite_flat.skew_x(FloorTile::SKEW * 0.75)
-
-      player.z += 0.000001 # Just so we only collide with ONE spring.
-      player.velocity_z = JUMP_Z_SPEED
-      @bounce_sound.play
-      player.speed_modifier = JUMP_SPEED_MODIFIER
-      @activated = true
+        player.z += 0.000001 # Just so we only collide with ONE spring.
+        player.velocity_z = JUMP_Z_SPEED
+        @bounce_sound.play
+        player.speed_modifier = JUMP_SPEED_MODIFIER
+        @activated = true
+      end
     end
   end
 

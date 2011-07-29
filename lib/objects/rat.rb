@@ -39,21 +39,24 @@ class Rat < DynamicObject
   end
 
   def update
-    player = scene.player
-    if player.ok? and collide? player and @state == :ok
-      if player.velocity_z < 0
-        @sprite.sheet_pos = SQUASHED_SPRITE
-        scene.timer.increase SQUASHED_EXTRA_TIME
-        @state = :squashed
-        @sprite.y += 2
-        @sounds[:squashed].play
-        FloatIcon.new(:extra_time, player)
-      else
-        @sprite.sheet_pos = CHASED_SPRITE
-        player.score += TOUCHED_SCORE
-        @state = :chased
-        @sounds[:chased].play
-        @speed = RUN_SPEED
+    scene.players.each do |player|
+      if player.ok? and collide? player and @state == :ok
+        if player.velocity_z < 0
+          @sprite.sheet_pos = SQUASHED_SPRITE
+          scene.timer.increase SQUASHED_EXTRA_TIME
+          @state = :squashed
+          @sprite.y += 2
+          @sounds[:squashed].play
+          FloatIcon.new(:extra_time, player)
+        else
+          @sprite.sheet_pos = CHASED_SPRITE
+          player.score += TOUCHED_SCORE
+          @state = :chased
+          @sounds[:chased].play
+          @speed = RUN_SPEED
+        end
+
+        break
       end
     end
 

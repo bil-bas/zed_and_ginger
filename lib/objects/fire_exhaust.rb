@@ -30,8 +30,9 @@ class FireExhaust < GameObject
       @burning = false
     end
 
-    player = scene.player
-    player.burn if player.can_be_hurt? and collide? player
+    scene.players.each do |player|
+      player.burn if player.can_be_hurt? and collide? player
+    end
   end
 
   def draw_on(win)

@@ -28,11 +28,11 @@ class Conveyor < DynamicObject
     next_frame = [((scene.timer.elapsed * SPEED) % NUM_FRAMES).floor, 0]
     @sprite.sheet_pos = next_frame
 
-    player = scene.player
-
-    if collide? player
-      pos = player.pos
-      player.pos = pos + (direction * SPEED * frame_time)
+    scene.players.each do |player|
+      if collide? player
+        pos = player.pos
+        player.pos = pos + (direction * SPEED * frame_time)
+      end
     end
   end
 end

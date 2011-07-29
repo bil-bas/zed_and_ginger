@@ -103,10 +103,10 @@ class Player < DynamicObject
     @initial_x = position.x
     @name = name
 
-    sprite = sprite sprite_sheet, at: position
+    sprite = sprite sprite_sheet
     sprite.sheet_size = [8, 5]
     sprite.sheet_pos = SITTING_ANIMATION.first
-    sprite.origin = [sprite.sprite_width * 0.75, sprite.sprite_height]
+    sprite.origin = [sprite.sprite_width * 2.0 / 3.0, sprite.sprite_height]
 
     super(scene, sprite, position)
 
@@ -261,14 +261,12 @@ class Player < DynamicObject
         when :ok
           @speed_modifier = @tile.speed if @tile and z == 0 and not riding?
 
-          update_controls   unless disabled? :controls
+          update_controls  unless disabled? :controls
           update_physics   unless disabled? :physics
           update_animation unless disabled? :animation
       end
 
       @tile = scene.floor_map.tile_at_coordinate(position)
-
-      scene.timer.decrease frame_time
     end
     
     super

@@ -28,8 +28,9 @@ class Barrel < DynamicObject
   def update
     self.x -= MOVE_SPEED * frame_time
 
-    player = scene.player
-    player.squash if player.can_be_hurt? and collide? player
+    scene.players.each do |player|
+      player.squash if player.can_be_hurt? and collide? player
+    end
 
     super
   end

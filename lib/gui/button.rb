@@ -4,7 +4,7 @@ class Button
 
   attr_accessor :data
 
-  def_delegators :'@text.rect', :height, :width
+  def_delegators :'@text.rect', :x, :y, :height, :width
 
   def enabled?; @enabled; end
 

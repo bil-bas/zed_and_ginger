@@ -110,15 +110,16 @@ class MainMenu < GuiScene
     @ginger_image = Image.new image_path("player.png")
 
     # Animations
-    @walking_animation = sprite_animation from: Player::WALKING_ANIMATION[0],
+    @cat_animations = {}
+    @cat_animations[:walking1] = sprite_animation from: Player::WALKING_ANIMATION[0],
                                       to: Player::WALKING_ANIMATION[1],
                                       duration: Player::FOUR_FRAME_ANIMATION_DURATION * 2
-    @walking_animation.loop!
+    @cat_animations[:walking2] = @cat_animations[:walking1].dup
 
-    @sitting_animation = sprite_animation from: Player::SITTING_ANIMATION[0],
+    @cat_animations[:sitting] = sprite_animation from: Player::SITTING_ANIMATION[0],
                                          to: Player::SITTING_ANIMATION[1],
                                          duration: Player::FOUR_FRAME_ANIMATION_DURATION
-    @sitting_animation.loop!
+    @cat_animations.each_value(&:loop!)
 
     # Create Zed.
     unless defined? @@zed_image
@@ -147,29 +148,48 @@ class MainMenu < GuiScene
     @zed.sheet_size = @ginger.sheet_size = [8, 5]
     @zed.origin = @ginger.origin = [@zed.sprite_width / 2, @zed.sprite_height]
 
-    # Buttons
-    @zed_button = Button.new('Zed', self, at: [14, 37], size: 6, color: BUTTON_COLOR,
+    # Buttons to choose to play one or both cats.
+    @cat_buttons = {}
+    @cat_buttons[:zed] = Button.new('Zed', self, at: [13, 32], size: 6, color: BUTTON_COLOR,
                              disabled_color: Color.red) do
-      window.user_data.selected_cat = :zed
-      @zed_button.enabled = false
-      @ginger_button.enabled = true
-      @sitting_animation.start @ginger
-      @walking_animation.start @zed
+      enable_cat_buttons(:zed)
+      @cat_animations[:walking1].start @zed
+      @cat_animations[:sitting].start @ginger
+      @cat_animations[:walking2].pause
     end
 
-    @ginger_button = Button.new('Ginger', self, at: [40, 37], size: 6, color: BUTTON_COLOR,
+    x = @cat_buttons[:zed].x + @cat_buttons[:zed].width + 2
+    @cat_buttons[:both] = Button.new('Both', self, at: [x, 32], size: 6, color: BUTTON_COLOR,
                                 disabled_color: Color.red) do
-      window.user_data.selected_cat = :ginger
-      @zed_button.enabled = true
-      @ginger_button.enabled = false
-      @sitting_animation.start @zed
-      @walking_animation.start @ginger
+      enable_cat_buttons(:both)
+      @cat_animations[:walking1].start @zed
+      @cat_animations[:walking2].start @ginger
+      @cat_animations[:sitting].pause
     end
 
-    @player_sheets = { zed: @@zed_image, ginger: @ginger_image }
-    { zed: @zed_button, ginger: @ginger_button }[window.user_data.selected_cat].activate
+    x = @cat_buttons[:both].x + @cat_buttons[:both].width + 2
+    @cat_buttons[:ginger] = Button.new('Ginger', self, at: [x, 32], size: 6, color: BUTTON_COLOR,
+                                disabled_color: Color.red) do
+      enable_cat_buttons(:ginger)
+      @cat_animations[:sitting].start @zed
+      @cat_animations[:walking1].start @ginger
+      @cat_animations[:walking2].pause
+    end
 
-    self.gui_controls += [@zed, @ginger, @zed_button, @ginger_button]
+    @player_sheets = {
+        zed: @@zed_image,
+        ginger: @ginger_image,
+    }
+
+    @cat_buttons[window.user_data.selected_cat].activate
+
+    self.gui_controls += [@zed, @ginger] + @cat_buttons.values
+  end
+
+  protected
+  def enable_cat_buttons(name)
+    window.user_data.selected_cat = name
+    @cat_buttons.each_key {|key| @cat_buttons[key].enabled = (key != name) }
   end
 
   protected
@@ -249,8 +269,14 @@ class MainMenu < GuiScene
 
   protected
   def start_level(level_number)
-    player_name = window.user_data.selected_cat
-    push_scene :level, level_number, @background, @player_sheets[player_name], player_name
+    cat = window.user_data.selected_cat
+    player_data = if cat == :both
+      @player_sheets
+    else
+      { cat => @player_sheets[cat] }
+    end
+
+    push_scene :level, level_number, @background, player_data
   end
 
   public
@@ -268,8 +294,7 @@ class MainMenu < GuiScene
     end
 
     always do
-      @sitting_animation.update
-      @walking_animation.update
+      @cat_animations.each_value(&:update)
     end
   end
 

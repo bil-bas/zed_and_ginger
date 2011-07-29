@@ -35,8 +35,9 @@ class LaserBeam < GameObject
     z_offset = Z_DIFFERENCE * 2 - z_offset if z_offset > Z_DIFFERENCE
     self.z = MIN_Z + z_offset
 
-    player = scene.player
-    player.burn if player.can_be_hurt? and collide? player
+    scene.players.each do |player|
+      player.burn if player.can_be_hurt? and collide? player
+    end
   end
 end
 

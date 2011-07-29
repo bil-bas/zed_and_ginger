@@ -5,19 +5,17 @@ require_relative '../floor_map'
 require_relative 'game_scene'
 
 class Level < GameScene
-  attr_reader :frame_time, :floor_map, :player, :timer, :scene_time
+  attr_reader :frame_time, :floor_map, :players, :timer, :scene_time, :level_number
 
   WALL_MAP_ROWS = 3
   FLOOR_MAP_ROWS = 6
 
   FONT_SIZE = 5.625
 
-  attr_reader :level_number
-
-  def setup(level_number, background, player_sheet, player_name)
+  def setup(level_number, background, player_data)
     super()
 
-    @level_number, @background, @player_sheet = level_number, background, player_sheet
+    @level_number, @background, @player_data = level_number, background, player_data
 
     @dynamic_objects = [] # Objects that need #update
 
@@ -26,12 +24,22 @@ class Level < GameScene
                             level_data['wall']['default_tile']
     @floor_map = FloorMap.new self, level_data['floor']['tiles'].split("\n"),
                               Kernel::const_get(level_data['floor']['default_tile'].to_sym),
-                              messages: level_data['messages'], player_name: player_name
+                              messages: level_data['messages'], player_name: @player_data.keys.first
 
-    start_tile = @floor_map.tile_at_grid([5, 2])
+    # Create the players on the start line.
+    start_grid_positions = if @player_data.size == 1
+      [[5, 2]]
+    else
+      [[5, 1], [5, 3]]
+    end
 
-    @player = Player.new(self, start_tile, start_tile.position + @floor_map.tile_size / 2, @player_sheet, player_name)
-    @initial_player_x = player.x
+    @players = []
+    @player_data.each_pair.with_index do |(name, sheet), i|
+      position = (start_grid_positions[i].to_vector2 + [0.5, 0.5]) * FloorTile.size
+      @players << Player.new(self, @floor_map.tile_at_grid(start_grid_positions[i]), position, sheet, name)
+    end
+
+    @initial_player_x = players.first.x
     @distance_to_run = @floor_map.finish_line_x - @initial_player_x
 
     # Player's score, time remaining and progress through the level.
@@ -53,7 +61,7 @@ class Level < GameScene
 
     # Setup a few things, so we can show a countdown before playing.
     @progress.progress = 0
-    @visible_objects = [@player]
+    @visible_objects = @players.dup
     @frame_time = 0
 
     move_camera
@@ -81,6 +89,8 @@ class Level < GameScene
   end
 
   def game_over(score)
+    player = players.first
+
     @@level_music.stop
     @@finish_music.play if player.finished?
 
@@ -105,9 +115,9 @@ class Level < GameScene
         when :menu
           # Do nothing.
         when :restart
-          push_scene :level, @level_number, @background, @player_sheet, @player_number
+          push_scene :level, @level_number, @background, @player_data
         when :next
-          push_scene :level, @level_number + 1, @background, @player_sheet, @player_number
+          push_scene :level, @level_number + 1, @background, @player_data
       end
     end
   end
@@ -153,17 +163,19 @@ class Level < GameScene
 
       move_camera
 
+      timer.decrease frame_time if @players.all?(&:ok?)
+
       calculate_visible_objects
       @visible_objects.each(&:update)
 
-      @progress.progress = (@player.position.x.to_f - @initial_player_x) / @distance_to_run
-      @score.string = "%07d" % player.score
+      @progress.progress = (@players.first.position.x.to_f - @initial_player_x) / @distance_to_run
+      @score.string = "%07d" % players.first.score
 
       @used_time += Time.now.to_f - started_at
       recalculate_fps
 
       if DEVELOPMENT_MODE
-        window.title = "Pos: (#{@player.x.round}, #{@player.y.round}), FPS: #{@fps.round} [#{@potential_fps.round}]"
+        window.title = "FPS: #{@fps.round} [#{@potential_fps.round}]"
       end
 
       update_shaders
@@ -172,9 +184,17 @@ class Level < GameScene
 
   def calculate_visible_objects
     # Update visible dynamic objects and stop them moving off the map. Others will just sleep off the side of the map.
-    min_x = @player.x - window.scaled_size.width * 0.75 # Look behind.
-    max_x = @player.x + window.scaled_size.width * 1.25 # Look ahead a bit more to wake things up.
-    @visible_objects = @dynamic_objects.select {|o| o.x >= min_x and o.x <= max_x }
+    x_positions = @players.map do |player|
+      [
+          player.x - window.scaled_size.width * 0.75, # Look behind.
+          player.x + window.scaled_size.width * 1 # Look ahead a bit more to wake things up.
+      ]
+    end
+
+    @visible_objects = @dynamic_objects.select do |o|
+      x_positions.any? {|min, max| o.x.between?(min, max) }
+    end
+
     @visible_objects.sort_by!(&:z_order)
   end
     
@@ -215,8 +235,12 @@ class Level < GameScene
 
   def move_camera
     # Move the cameras to the player position (left side, plus an amount asked for from the player).
+    camera_positions = @players.map do |player|
+      player.x + (window.scaled_size.width / 2) -
+         (window.scaled_size.width * player.screen_offset_x)
+    end
 
-    @camera_x = @player.x + (window.scaled_size.width / 2) - (window.scaled_size.width * @player.screen_offset_x)
+    @camera_x = camera_positions.max
   end
   
   def init_fps

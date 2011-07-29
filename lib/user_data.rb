@@ -144,7 +144,7 @@ class UserData < BaseUserData
   end
 
   def set_player_control(player, action, key)
-    raise "Bad player #{player.inspect}" unless Player::NAMES.include? player
+    raise "Bad player #{player.inspect}" unless Player::NAMES.include? player or name == :both
     raise "Bad action #{action.inspect}" unless VALID_PLAYER_CONTROLS.include? action
     @data[GROUP_CONTROLS][GROUP_CONTROLS_PLAYERS][player.to_s][action.to_s] = key
     save
@@ -167,7 +167,7 @@ class UserData < BaseUserData
   end
 
   def selected_cat=(name)
-    raise "Bad cat name #{number.inspect}" unless Player::NAMES.include? name
+    raise "Bad cat name #{number.inspect}" unless Player::NAMES.include? name or name == :both
     @data[GROUP_GAMEPLAY][SELECTED_CAT] = name
     save
   end

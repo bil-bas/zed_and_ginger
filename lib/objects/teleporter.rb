@@ -36,13 +36,14 @@ class Teleporter < DynamicObject
 
   # Doesn't move or anything like that.
   def update
-    player = scene.player
-    if player.z < 4 and collide? player
-      # Find the next teleporter on the map.
-      partner = find_partner
-      if partner
-        position = partner.pos + [player.to_rect.width, 0]
-        scene.run_scene :teleporting, scene, position
+    scene.players.each do |player|
+      if player.z < 4 and collide? player
+        # Find the next teleporter on the map.
+        partner = find_partner
+        if partner
+          position = partner.pos + [player.to_rect.width, 0]
+          scene.run_scene :teleporting, scene, position
+        end
       end
     end
   end

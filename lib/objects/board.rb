@@ -36,14 +36,17 @@ class Board < DynamicObject
   end
 
   def update
-    player = scene.player
-
-    if not @ridden and not @dropped and collide? player
-      player.ride self
-      @ridden = true
+    if @dropped
+      self.x -= DROPPED_SPEED * frame_time
+    else
+      scene.players.each do |player|
+        if not @ridden and not @dropped and collide? player
+          player.ride self
+          @ridden = true
+          break
+        end
+      end
     end
-
-    self.x -= DROPPED_SPEED * frame_time if @dropped
 
     super
   end
