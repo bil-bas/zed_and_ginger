@@ -47,28 +47,25 @@ class MainMenu < GuiScene
     gui_controls << ShadowText.new("Level: ", at: [left_edge, 14], size: 6, color: TEXT_COLOR)
 
     # Get the numbers of all the levels defined.
-    levels = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")]
-    levels.map! {|file| File.basename(file).to_i }.sort!
-    levels -= [UserData::DEV_LEVEL]
+    level_files = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")]
+    @level_numbers = level_files.map {|file| File.basename(file).to_i }.sort
+    @level_numbers -= [UserData::DEV_LEVEL]
 
-    levels.each_with_index do |level, i|
-      gui_controls << Button.new(level.to_s, self, at: [17 + i * 8, 14], size: 6, color: BUTTON_COLOR,
-                                 enabled: window.user_data.level_unlocked?(level)) do
-        start_level level
-      end
+    # Buttons in a column on the left.
+    @hardcore = CheckButton.new("Hardcore", self, at: [left_edge, 25], size: 5,
+                                 checked: user_data.hardcore?) do |button, checked|
+      user_data.hardcore = checked
+      create_level_buttons
     end
 
-    if DEVELOPMENT_MODE
-      gui_controls << Button.new("#{UserData::DEV_LEVEL}-dev", self, at: [right_edge, 14], size: 6, color: BUTTON_COLOR,
-                                 auto_center: [1, 0]) do
-        start_level UserData::DEV_LEVEL
-      end
-    end
+    gui_controls << @hardcore
+
+    create_level_buttons # Creates the list of level buttons based on whether hardcore is toggled.
 
     # Buttons in a column on the right hand side of the screen.
     y = 28
     # User settings - controls.
-    gui_controls << Button.new("Controls", self, at: [right_edge, y], size: 5, color: BUTTON_COLOR,
+    gui_controls << Button.new("Controls", self, at: [right_edge, y], size: 5,
                                  auto_center: [1, 0]) do
       push_scene :options_controls
     end
@@ -76,18 +73,18 @@ class MainMenu < GuiScene
     y += gui_controls.last.height + BUTTON_SPACING
 
     # Toggle fullscreen/window.
-    title = Window.user_data.fullscreen? ? "Window" : "Fullscreen"
-    gui_controls << Button.new(title, self, at: [right_edge, y], size: 5, color: BUTTON_COLOR, auto_center: [1, 0]) do
-      Window.user_data.fullscreen = (not Window.user_data.fullscreen?)
+    title = user_data.fullscreen? ? "Window" : "Fullscreen"
+    gui_controls << Button.new(title, self, at: [right_edge, y], size: 5, auto_center: [1, 0]) do
+      user_data.fullscreen = (not user_data.fullscreen?)
       $create_window = true
       pop_scene
     end
 
     y += gui_controls.last.height + BUTTON_SPACING
 
-    unless Window.user_data.fullscreen?
+    unless user_data.fullscreen?
       # Increase and reduce the size of the window.
-      gui_controls << Button.new("-", self, at: [right_edge - 20, y], size: 5, color: BUTTON_COLOR,
+      gui_controls << Button.new("-", self, at: [right_edge - 20, y], size: 5,
                                  auto_center: [1, 0]) do
         scale_down
       end
@@ -96,7 +93,7 @@ class MainMenu < GuiScene
                                     auto_center: [1, 0])
       gui_controls << @screen_size
       update_screen_size
-      gui_controls << Button.new("+", self, at: [right_edge, y], size: 5, color: BUTTON_COLOR,
+      gui_controls << Button.new("+", self, at: [right_edge, y], size: 5,
                                  auto_center: [1, 0]) do
         scale_up
       end
@@ -104,7 +101,7 @@ class MainMenu < GuiScene
 
     y += gui_controls.last.height + BUTTON_SPACING
 
-    gui_controls << Button.new("Quit", self, at: [right_edge, y], size: 5, color: BUTTON_COLOR, auto_center: [1, 0]) do
+    gui_controls << Button.new("Quit", self, at: [right_edge, y], size: 5, auto_center: [1, 0]) do
       raise_event :quit
     end
 
@@ -118,6 +115,32 @@ class MainMenu < GuiScene
     @@ambient_music.volume = 70
 
     log.info { "#{self.class} loaded in #{Time.now - started_at}s" }
+  end
+
+  protected
+  def create_level_buttons
+    @level_buttons = []
+    @level_numbers.each_with_index do |level, i|
+      @level_buttons << Button.new(level.to_s, self, at: [17 + i * 8, 14], size: 6,
+                                 enabled: user_data.level_unlocked?(level, mode: user_data.mode)) do
+        start_level level
+      end
+    end
+
+    if DEVELOPMENT_MODE
+      @level_buttons << Button.new("#{UserData::DEV_LEVEL}-dev", self, at: [90, 14], size: 6,
+                                 auto_center: [1, 0]) do
+        start_level UserData::DEV_LEVEL
+      end
+    end
+
+    add_level_button_events
+  end
+
+  def add_level_button_events
+    remove_event_group :level_buttons
+
+    @level_buttons.each {|b| b.register(self, group: :level_buttons) }
   end
 
   protected
@@ -170,7 +193,7 @@ class MainMenu < GuiScene
 
     # Buttons to choose to play one or both cats.
     @cat_buttons = {}
-    @cat_buttons[:zed] = Button.new('Zed', self, at: [13, 32], size: 6, color: BUTTON_COLOR,
+    @cat_buttons[:zed] = Button.new('Zed', self, at: [13, 32], size: 6,
                              disabled_color: Color.red) do
       enable_cat_buttons(:zed)
       @cat_animations[:walking1].start @zed
@@ -179,7 +202,7 @@ class MainMenu < GuiScene
     end
 
     x = @cat_buttons[:zed].x + @cat_buttons[:zed].width + 2
-    @cat_buttons[:both] = Button.new('Both', self, at: [x, 32], size: 6, color: BUTTON_COLOR,
+    @cat_buttons[:both] = Button.new('Both', self, at: [x, 32], size: 6,
                                 disabled_color: Color.red) do
       enable_cat_buttons(:both)
       @cat_animations[:walking1].start @zed
@@ -188,7 +211,7 @@ class MainMenu < GuiScene
     end
 
     x = @cat_buttons[:both].x + @cat_buttons[:both].width + 2
-    @cat_buttons[:ginger] = Button.new('Ginger', self, at: [x, 32], size: 6, color: BUTTON_COLOR,
+    @cat_buttons[:ginger] = Button.new('Ginger', self, at: [x, 32], size: 6,
                                 disabled_color: Color.red) do
       enable_cat_buttons(:ginger)
       @cat_animations[:sitting].start @zed
@@ -201,20 +224,20 @@ class MainMenu < GuiScene
         ginger: @ginger_image,
     }
 
-    @cat_buttons[window.user_data.selected_cat].activate
+    @cat_buttons[user_data.selected_cat].activate
 
     self.gui_controls += [@zed, @ginger] + @cat_buttons.values
   end
 
   protected
   def enable_cat_buttons(name)
-    window.user_data.selected_cat = name
+    user_data.selected_cat = name
     @cat_buttons.each_key {|key| @cat_buttons[key].enabled = (key != name) }
   end
 
   protected
   def scale_up
-    new_size = GAME_RESOLUTION * (window.user_data.scaling + 2)
+    new_size = GAME_RESOLUTION * (user_data.scaling + 2)
     if new_size.x <= Ray.screen_size.width * 0.95 and
        new_size.y <= Ray.screen_size.height * 0.95
       self.scaling = window.scaling + 2
@@ -223,7 +246,7 @@ class MainMenu < GuiScene
 
   protected
   def scale_down
-    if window.user_data.scaling >= 4
+    if user_data.scaling >= 4
       self.scaling = window.scaling - 2
     end
   end
@@ -249,14 +272,14 @@ class MainMenu < GuiScene
 
   protected
   def start_level(level_number)
-    cat = window.user_data.selected_cat
+    cat = user_data.selected_cat
     player_data = if cat == :both
       @player_sheets
     else
       { cat => @player_sheets[cat] }
     end
 
-    push_scene :level, level_number, player_data
+    push_scene :level, level_number, player_data, user_data.hardcore?
   end
 
   public
@@ -264,6 +287,8 @@ class MainMenu < GuiScene
     super
 
     window.icon = image image_path("window_icon.png")
+
+    add_level_button_events
 
     on :focus_gain do
       @@ambient_music.play
@@ -291,6 +316,8 @@ class MainMenu < GuiScene
     win.with_view floor_camera do
       @floor_map.draw_on win
     end
+
+    @level_buttons.each {|b| b.draw_on win }
 
     super(win)
   end

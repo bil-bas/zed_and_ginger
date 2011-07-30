@@ -141,7 +141,7 @@ class Player < DynamicObject
   def read_controls
     @controls = {}
     [:left, :right, :up, :down, :jump].each do |control|
-      @controls[control] = scene.window.user_data.player_control(@name, control)
+      @controls[control] = scene.user_data.player_control(@name, control)
     end
   end
 
@@ -336,21 +336,29 @@ class Player < DynamicObject
 
   public
   def squash(options = {})
+    die if scene.hardcore?
+
     apply_status :squashed, options
   end
 
   public
   def electrocute(options = {})
+    die if scene.hardcore?
+
     apply_status :electrocuted, options
   end
 
   public
   def burn(options = {})
+    die if scene.hardcore?
+
     apply_status :burnt, options
   end
 
   public
   def throw(velocity)
+    die if scene.hardcore?
+
     apply_status :thrown
     self.velocity_x, self.velocity_y, self.velocity_z = velocity.to_a
   end

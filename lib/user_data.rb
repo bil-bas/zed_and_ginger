@@ -30,7 +30,7 @@ END
 end
 
 class UserData < BaseUserData
-  DEFAULT_DATA_FILE = File.join(EXTRACT_PATH, 'config/default_user_settings.dat')
+  DEFAULT_DATA_FILE = File.join(EXTRACT_PATH, 'config/default_user_settings.yml')
   DATA_FILE = File.join(ROOT_PATH, 'zed_and_ginger.dat')
 
   # High scores, high scorers and level unlocking.
@@ -63,6 +63,7 @@ class UserData < BaseUserData
 
   GROUP_GAMEPLAY = 'gameplay'
   SELECTED_CAT = 'selected_cat'
+  HARDCORE = 'hardcore'
 
   def initialize
     super DATA_FILE, DEFAULT_DATA_FILE
@@ -77,37 +78,43 @@ class UserData < BaseUserData
   # High scores, high scorers and level unlocking.
 
   def high_scorer(level)
-    @data[GROUP_LEVELS][level][HIGH_SCORER]
+    @data[GROUP_LEVELS][level][mode.to_s][HIGH_SCORER]
   end
 
   def high_score(level)
-    @data[GROUP_LEVELS][level][HIGH_SCORE]
+    @data[GROUP_LEVELS][level][mode.to_s][HIGH_SCORE]
   end
 
   def set_high_score(level, player, score)
-    @data[GROUP_LEVELS][level][HIGH_SCORER] = player
-    @data[GROUP_LEVELS][level][HIGH_SCORE] = score
+    @data[GROUP_LEVELS][level][mode.to_s][HIGH_SCORER] = player
+    @data[GROUP_LEVELS][level][mode.to_s][HIGH_SCORE] = score
     save
   end
 
-  def level_unlocked?(level)
+  def level_unlocked?(level, options = {})
+    options = {
+        mode: mode,
+    }.merge! options
+
     case level
       when DEV_LEVEL     then DEVELOPMENT_MODE
       when INITIAL_LEVEL then true # First (tutorial) level is always unlocked.
       else
         # If the level we are asking for exists and we've completed the previous one.
         @data[GROUP_LEVELS].has_key?(level) and
-            (@data[GROUP_LEVELS][level - 1][FINISHED] or DEVELOPMENT_MODE)
+            ((@data[GROUP_LEVELS].has_key?(level - 1) and
+              @data[GROUP_LEVELS][level - 1][options[:mode].to_s][FINISHED]) or
+                DEVELOPMENT_MODE)
     end
   end
 
   def finished_level?(level)
-    @data[GROUP_LEVELS][level][FINISHED]
+    @data[GROUP_LEVELS][level][mode.to_s][FINISHED]
   end
 
   # Possible to finish a level without having made a high score.
   def finish_level(level)
-    @data[GROUP_LEVELS][level][FINISHED] = true
+    @data[GROUP_LEVELS][level][mode.to_s][FINISHED] = true
     save
   end
 
@@ -170,5 +177,18 @@ class UserData < BaseUserData
     raise "Bad cat name #{number.inspect}" unless Player::NAMES.include? name or name == :both
     @data[GROUP_GAMEPLAY][SELECTED_CAT] = name
     save
+  end
+
+  def hardcore=(fullscreen)
+    @data[GROUP_GAMEPLAY][HARDCORE] = fullscreen
+    save
+  end
+
+  def hardcore?
+    @data[GROUP_GAMEPLAY][HARDCORE]
+  end
+
+  def mode
+    hardcore? ? :hardcore : :normal
   end
 end

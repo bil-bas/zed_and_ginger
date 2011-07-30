@@ -6,6 +6,7 @@ require_relative 'game_scene'
 
 class Level < GameScene
   attr_reader :frame_time, :floor_map, :players, :timer, :scene_time, :level_number
+  def hardcore?; @hardcore; end
 
   WALL_MAP_ROWS = 3
   FLOOR_MAP_ROWS = 6
@@ -19,12 +20,12 @@ class Level < GameScene
   TEXT_COLOR = Color.new(190, 190, 255)
   GUI_BACKGROUND_COLOR = Color.new(80, 80, 80)
 
-  def setup(level_number, player_data)
+  def setup(level_number, player_data, hardcore)
     started_at = Time.now
 
     super()
 
-    @level_number, @player_data = level_number, player_data
+    @level_number, @player_data, @hardcore = level_number, player_data, hardcore
 
     # Create maps and objects
     @dynamic_objects = [] # Objects that need #update
@@ -135,37 +136,37 @@ class Level < GameScene
     if player.score > high_score
       run_scene(:enter_name, self) do |name|
         if name
-          window.user_data.set_high_score(level_number, name, player.score)
+          user_data.set_high_score(level_number, name, player.score)
           update_high_score
         end
       end
     end
 
     # It is possible to get a high score without finishing and vice versa.
-    if player.finished? and not window.user_data.finished_level?(level_number)
-      window.user_data.finish_level(level_number)
+    if player.finished? and not user_data.finished_level?(level_number)
+      user_data.finish_level(level_number)
     end
 
-    run_scene :game_over, self, window.user_data.level_unlocked?(@level_number + 1) do |choice|
+    run_scene :game_over, self, user_data.level_unlocked?(@level_number + 1) do |choice|
       pop_scene
 
       case choice
         when :menu
           # Do nothing.
         when :restart
-          push_scene :level, @level_number, @player_data
+          push_scene :level, @level_number, @player_data, @hardcore
         when :next
-          push_scene :level, @level_number + 1, @player_data
+          push_scene :level, @level_number + 1, @player_data, @hardcore
       end
     end
   end
 
   def high_score
-    window.user_data.high_score(level_number)
+    user_data.high_score(level_number)
   end
 
   def high_scorer
-    window.user_data.high_scorer(level_number)
+    user_data.high_scorer(level_number)
   end
   
   def add_object(object)
@@ -189,7 +190,7 @@ class Level < GameScene
       pause
     end
 
-    on :key_press, *key_or_code(window.user_data.control(:pause)) do
+    on :key_press, *key_or_code(user_data.control(:pause)) do
       pause
     end
 

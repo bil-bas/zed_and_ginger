@@ -7,6 +7,7 @@ class Button
 
   def_delegators :'@text.rect', :x, :y, :height, :width
 
+  def under_mouse?; @under_mouse; end
   def enabled?; @enabled; end
 
   COLOR = Color.white
@@ -14,7 +15,7 @@ class Button
   HOVER_COLOR =  Color.new(175, 175, 255)
 
   def initialize(text, scene, options = {}, &handler)
-    raise "Button must have handler" unless block_given?
+    raise "#{self.class} must have handler" unless block_given?
 
     options = {
         enabled: true,
@@ -27,61 +28,76 @@ class Button
     @disabled_color = options[:disabled_color]
     @hover_color = options[:hover_color]
 
-    register(scene)
-
-    shortcut = options.has_key?(:shortcut) ? options[:shortcut] : text[0].downcase.to_sym
-    if shortcut
-      scene.add_event_handler(:key_press, key(shortcut)) { activate }
-    end
+    @shortcut = options.has_key?(:shortcut) ? options[:shortcut] : text[0].downcase.to_sym
 
     @data = options[:data]
     @text = Text.new "[#{text}]", options
     @handler = handler
 
-    scene.add_event_handler(:mouse_press) do |button, pos|
-      activate if button == :left and enabled? and @text.to_rect.contain?(pos / Window.scaling)
-    end
+    self.enabled = options[:enabled]
 
-    # Handle mouse hovering.
-    @under_mouse = false
-    scene.add_event_handler(:mouse_motion) do |pos|
-      if enabled? and @text.to_rect.contain?(pos / Window.scaling)
-        unless @under_mouse
-          @under_mouse = true
-          raise_event :mouse_hover, self
-          update_color
-        end
-      else
-        if @under_mouse
-          @under_mouse = false
-          update_color
-          raise_event :mouse_unhover, self
+    update_contents
+  end
+
+  def register(scene, options = {})
+    options = {
+        group: :default,
+    }.merge! options
+
+    super(scene)
+
+    event_group options[:group] do
+      if @shortcut
+        on(:key_press, key(@shortcut)) { activate }
+      end
+
+      on :mouse_press do |button, pos|
+        activate if button == :left and enabled? and @text.to_rect.contain?(pos / Window.scaling)
+      end
+
+      # Handle mouse hovering.
+      @under_mouse = false
+      on :mouse_motion do |pos|
+        if enabled? and @text.to_rect.contain?(pos / Window.scaling)
+          unless @under_mouse
+            @under_mouse = true
+            raise_event :mouse_hover, self
+            update_contents
+          end
+        else
+          if @under_mouse
+            @under_mouse = false
+            update_contents
+            raise_event :mouse_unhover, self
+          end
         end
       end
-    end
 
-    scene.add_event_handler(:mouse_unhover, self) do |pos|
-      @under_mouse = false
-      update_color
+      on :mouse_unhover, self do |pos|
+        @under_mouse = false
+        update_contents
+      end
     end
+  end
 
-    self.enabled = options[:enabled]
+  def update_contents
+    @text.color = current_color
   end
 
   def unhover
     @under_mouse = false
-    update_color
+    update_contents
   end
 
   def enabled=(enabled)
     @enabled = enabled
     @under_mouse = false unless @enabled
-    update_color
+    update_contents
     @enabled
   end
 
-  def update_color
-    @text.color =  @enabled ? (@under_mouse ? @hover_color : @color) : @disabled_color
+  def current_color
+    @enabled ? (@under_mouse ? @hover_color : @color) : @disabled_color
   end
 
   def activate

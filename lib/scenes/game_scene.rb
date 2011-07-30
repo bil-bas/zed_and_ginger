@@ -1,5 +1,8 @@
 class GameScene < Scene
+  extend Forwardable
   include Log
+
+  def_delegators :window, :user_data
 
   # List of controls, automatically drawn in order.
   attr_accessor :gui_controls
@@ -8,22 +11,16 @@ class GameScene < Scene
     attr_accessor :background
   end
 
+
   def background; GameScene.background; end
   def background=(background); GameScene.background = background; end
 
   def setup
     @gui_controls = []
-    @event_handlers = []
-  end
-
-  def add_event_handler(*args, &handler)
-    @event_handlers << [args, handler]
   end
 
   def register
-    @event_handlers.each do |args, handler|
-      on *args, &handler
-    end
+    @gui_controls.each {|c| c.register(self) if c.respond_to? :register }
   end
 
   def render(win)
