@@ -5,12 +5,6 @@ require_relative '../floor_map'
 require_relative 'game_scene'
 
 class Level < GameScene
-  attr_reader :frame_time, :floor_map, :players, :timer, :scene_time, :level_number
-  def hardcore?; @hardcore; end
-
-  WALL_MAP_ROWS = 3
-  FLOOR_MAP_ROWS = 6
-
   FONT_SIZE = 5.25
   START_TILE_GRID_X = 15
 
@@ -20,12 +14,19 @@ class Level < GameScene
   TEXT_COLOR = Color.new(190, 190, 255)
   GUI_BACKGROUND_COLOR = Color.new(80, 80, 80)
 
-  def setup(level_number, player_data, hardcore)
+  SCORE_BAR_HEIGHT = 6.625
+
+  attr_reader :frame_time, :floor_map, :players, :timer, :scene_time, :level_number
+
+  def hardcore?; @hardcore; end
+  def inversion?; @inversion; end
+
+  def setup(level_number, player_data, hardcore, inversion)
     started_at = Time.now
 
     super()
 
-    @level_number, @player_data, @hardcore = level_number, player_data, hardcore
+    @level_number, @player_data, @hardcore, @inversion = level_number, player_data, hardcore, inversion
 
     # Create maps and objects
     @dynamic_objects = [] # Objects that need #update
@@ -36,6 +37,8 @@ class Level < GameScene
     @floor_map = FloorMap.new self, level_data['floor']['tiles'].split("\n"),
                               Kernel::const_get(level_data['floor']['default_tile'].to_sym),
                               messages: level_data['messages'], player_name: @player_data.keys.first
+    # Fraction of screen covered by game world, not gui.
+    @maps_height_factor = (@wall_map.to_rect.height.to_f + @floor_map.to_rect.height.to_f)  / GAME_RESOLUTION.height
 
     # Create the players on the start line.
     start_grid_positions = if @player_data.size == 1
@@ -54,7 +57,7 @@ class Level < GameScene
     @distance_to_run = @floor_map.finish_line_x - @initial_player_x
 
     # Player's score, time remaining and progress through the level.
-    score_y = window.scaled_size.height - 6.625
+    score_y = window.scaled_size.height - SCORE_BAR_HEIGHT
     width, height = window.scaled_size.width, window.scaled_size.height
     gui_controls << Polygon.rectangle([0, height - 6, width, 6], GUI_BACKGROUND_COLOR)
     main_left = width / 3.0 + 2
@@ -242,23 +245,28 @@ class Level < GameScene
     background.draw_on win
 
     view = window.view
+
+    view.size *= [1, @maps_height_factor] # Clip off the score bar.
+    view.zoom_by [1, -1] if @inversion
+
     # Expand the view of the world.
     view.size /= [@camera_zoom, 1]
 
     # Clip on the screen.
     viewport = view.viewport
+    viewport.height *= @maps_height_factor # Clip off the score bar.
     viewport.y += viewport.height * (1.0 / @camera_zoom - 1) * 0.25
     viewport.height *= @camera_zoom
     view.viewport = viewport
 
     # Create a camera for displaying the wall map
-    view.center = [@camera_x, view.rect.height / 2.0]
+    view.center = [@camera_x, view.rect.height / (@inversion ? -2.0 : 2.0)]
     win.with_view view do
       @wall_map.draw_on(win)
     end
 
     # Create a camera for displaying the floor map (which has origin set in the view)
-    view.y -= @wall_map.to_rect.height
+    view.y -= @wall_map.to_rect.height# * (@inversion ? -1 : 1)
     win.with_view view do
       @floor_map.draw_on(win)
 

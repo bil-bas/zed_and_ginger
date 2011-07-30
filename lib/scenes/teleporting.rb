@@ -1,4 +1,6 @@
-class Teleporting < Scene
+require_relative 'game_scene'
+
+class Teleporting < GameScene
   SPEED = 128.0
 
   FREQUENCY_AMPLITUDE = 0

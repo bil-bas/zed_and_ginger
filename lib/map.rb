@@ -36,9 +36,15 @@ class Map
   
   # Yields every tile visible to the view (also more to the left edge, to allow for skewing).
   def each_visible(view, &block)
-    top_left = view.center - view.size / 2
-    y_range = ((top_left.y - tile_size.height) / tile_size.height).floor..((top_left.y + view.size.height) / tile_size.height).ceil
-    x_range = ((top_left.x - tile_size.width * 2) / tile_size.width).floor..((top_left.x + view.size.width) / tile_size.width).ceil
+    rect = view.rect
+    if rect.height < 0
+      rect.height *= -1
+      rect.y -= rect.height
+    end
+
+    top_left = rect.center - rect.size / 2
+    y_range = ((top_left.y - tile_size.height) / tile_size.height).floor..((top_left.y + rect.size.height) / tile_size.height).ceil
+    x_range = ((top_left.x - tile_size.width * 2) / tile_size.width).floor..((top_left.x + rect.size.width) / tile_size.width).ceil
     y_range.each do |y|
       x_range.each do |x|       
         tile = tile_at_grid([x, y])

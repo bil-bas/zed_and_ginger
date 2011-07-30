@@ -64,6 +64,7 @@ class UserData < BaseUserData
   GROUP_GAMEPLAY = 'gameplay'
   SELECTED_CAT = 'selected_cat'
   HARDCORE = 'hardcore'
+  INVERSION = 'inversion'
 
   def initialize
     super DATA_FILE, DEFAULT_DATA_FILE
@@ -153,6 +154,7 @@ class UserData < BaseUserData
   def set_player_control(player, action, key)
     raise "Bad player #{player.inspect}" unless Player::NAMES.include? player or name == :both
     raise "Bad action #{action.inspect}" unless VALID_PLAYER_CONTROLS.include? action
+
     @data[GROUP_CONTROLS][GROUP_CONTROLS_PLAYERS][player.to_s][action.to_s] = key
     save
   end
@@ -188,7 +190,26 @@ class UserData < BaseUserData
     @data[GROUP_GAMEPLAY][HARDCORE]
   end
 
+  def inversion=(inversion)
+    @data[GROUP_GAMEPLAY][INVERSION] = inversion
+    save
+  end
+
+  def inversion?
+    @data[GROUP_GAMEPLAY][INVERSION]
+  end
+
   def mode
-    hardcore? ? :hardcore : :normal
+    if hardcore?
+      if inversion?
+        :hardcore_inversion
+      else
+        :hardcore
+      end
+    elsif inversion?
+      :inversion
+    else
+      :normal
+    end
   end
 end

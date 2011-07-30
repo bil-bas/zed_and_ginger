@@ -143,6 +143,10 @@ class Player < DynamicObject
     [:left, :right, :up, :down, :jump].each do |control|
       @controls[control] = scene.user_data.player_control(@name, control)
     end
+
+    if scene.inversion?
+      @controls[:up], @controls[:down] = @controls[:down], @controls[:up]
+    end
   end
 
   public

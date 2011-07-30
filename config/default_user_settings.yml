@@ -17,6 +17,14 @@ levels:
       high-score: 0
       high-scorer: ???
       finished: false
+    hardcore_inversion:
+      high-score: 0
+      high-scorer: ???
+      finished: false
+    inversion:
+      high-score: 0
+      high-scorer: ???
+      finished: false
 
   1: # Tutorial track.
     normal:
@@ -27,6 +35,14 @@ levels:
       high-score: 0     # Highest score, whether finished the level or not.
       high-scorer: ???  # Name of person getting the high score.
       finished: false   # Has the player ever finished the level?
+    hardcore_inversion:
+      high-score: 0
+      high-scorer: ???
+      finished: false
+    inversion:
+      high-score: 0
+      high-scorer: ???
+      finished: false
 
   2:
     normal:
@@ -34,6 +50,14 @@ levels:
       high-scorer: ???
       finished: false
     hardcore:
+      high-score: 0
+      high-scorer: ???
+      finished: false
+    hardcore_inversion:
+      high-score: 0
+      high-scorer: ???
+      finished: false
+    inversion:
       high-score: 0
       high-scorer: ???
       finished: false
@@ -47,6 +71,14 @@ levels:
       high-score: 0
       high-scorer: ???
       finished: false
+    hardcore_inversion:
+      high-score: 0
+      high-scorer: ???
+      finished: false
+    inversion:
+      high-score: 0
+      high-scorer: ???
+      finished: false
 
 graphics:
   scaling: 8 # Multiple of the underlying window size (Game sort of runs at 96x60, though some things are at a different scale)
@@ -57,6 +89,7 @@ sound: {}
 gameplay:
   selected_cat: :zed
   hardcore: false
+  inversion: false
 
 key_controls:
   general: # Controls that aren't specifically for either player.

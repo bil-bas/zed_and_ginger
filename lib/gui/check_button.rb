@@ -12,7 +12,7 @@ class CheckButton < Button
     super('X', scene, options, &handler)
 
     spacing = (@text.size / scene.window.scaling) / 5
-    @label = ShadowText.new(text, options.merge(at: options[:at].to_vector2 + [width + spacing, 0]))
+    @label = text
 
     @checked = options[:checked]
 
@@ -21,7 +21,7 @@ class CheckButton < Button
 
   def update_contents
     super
-    @text.string = checked? ? '[X]' : '[ ]'
+    @text.string = "#{(checked? ? '[X]' : '[ ]')} #{@label}"
   end
 
   def activate
@@ -33,6 +33,5 @@ class CheckButton < Button
 
   def draw_on(win)
     super(win)
-    @label.draw_on win
   end
 end

@@ -8,8 +8,9 @@
   * Added full-screen toggle button in menu (runs at native resolution in full-screen).
   * Added key configuration in-game and separate key settings for each of the interplanetary cat.
   * Now, by default, Zed uses WASD with <space> and Ginger uses the arrows with <enter>.
-  * Reduced level loading time by over half (thanks Fowl).
-  * Added Hardcore mode (one life per level, rather than unlimited)
+  * Reduced level loading time by over half, which stops the game freezing at start of level (thanks Fowl).
+  * Added Hardcore mutator (one life per level, rather than unlimited).
+  * Added Inversion mutator (world upside down).
 
 ---- v0.1.0 (2011-07-27)
 

@@ -16,7 +16,21 @@ class MainMenu < GuiScene
   TEXT_COLOR = Color.new(200, 200, 200)
   DISABLED_COLOR = Color.new(100, 100, 100)
 
-  BUTTON_SPACING = 0.5
+  BUTTON_SPACING = 1
+  
+  TITLE_FONT_SIZE = 16
+  LEVEL_FONT_SIZE = 5.5
+  FONT_SIZE = 4.5
+  MUTATOR_FONT_SIZE = 3.5
+  SMALL_FONT_SIZE = 3.5
+  LEVELS_Y = 14
+
+  MARGIN = 2
+  width = GAME_RESOLUTION.width
+  CENTER = (width - 1) / 2
+  LEFT_EDGE = MARGIN
+  RIGHT_EDGE = width - MARGIN
+  TOP_EDGE = MARGIN * 1.5  # (since text is tall)
 
   FLOOR_TILES = [
       "--------",
@@ -35,37 +49,43 @@ class MainMenu < GuiScene
 
     @@preloader ||= Preloader.new
 
-    width = GAME_RESOLUTION.width
-    margin = 2
-    center = (width - 1) / 2
-    left_edge = margin
-    right_edge = width - margin
-    top_edge = margin
 
-    gui_controls << ShadowText.new("Zed and Ginger", at: [center, 0], size: 16, color: TITLE_COLOR,
+    gui_controls << ShadowText.new("Zed and Ginger", at: [CENTER, 0], size: TITLE_FONT_SIZE, color: TITLE_COLOR,
       auto_center: [0.5, 0])
-    gui_controls << ShadowText.new("Level: ", at: [left_edge, 14], size: 6, color: TEXT_COLOR)
+
+    y = LEVELS_Y
+    gui_controls << ShadowText.new("Level: ", at: [LEFT_EDGE, y], size: LEVEL_FONT_SIZE, color: TEXT_COLOR)
 
     # Get the numbers of all the levels defined.
     level_files = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")]
     @level_numbers = level_files.map {|file| File.basename(file).to_i }.sort
     @level_numbers -= [UserData::DEV_LEVEL]
 
-    # Buttons in a column on the left.
-    @hardcore = CheckButton.new("Hardcore", self, at: [left_edge, 25], size: 5,
+    create_level_buttons # Creates the list of level buttons based on whether hardcore is toggled.
+
+    y += gui_controls.last.height + BUTTON_SPACING * 2
+
+    # Mutators on left hand margin.
+    @hardcore = CheckButton.new("Hardcore", self, at: [LEFT_EDGE, y], size: MUTATOR_FONT_SIZE,
                                  checked: user_data.hardcore?) do |button, checked|
       user_data.hardcore = checked
       create_level_buttons
     end
 
-    gui_controls << @hardcore
+    y += @hardcore.height + BUTTON_SPACING
 
-    create_level_buttons # Creates the list of level buttons based on whether hardcore is toggled.
+    @inversion = CheckButton.new("Inversion", self, at: [LEFT_EDGE, y], size: MUTATOR_FONT_SIZE,
+                                 checked: user_data.inversion?) do |button, checked|
+      user_data.inversion = checked
+      create_level_buttons
+    end
+
+    self.gui_controls += [@hardcore, @inversion]
 
     # Buttons in a column on the right hand side of the screen.
     y = 28
     # User settings - controls.
-    gui_controls << Button.new("Controls", self, at: [right_edge, y], size: 5,
+    gui_controls << Button.new("Controls", self, at: [RIGHT_EDGE, y], size: FONT_SIZE,
                                  auto_center: [1, 0]) do
       push_scene :options_controls
     end
@@ -73,9 +93,9 @@ class MainMenu < GuiScene
     y += gui_controls.last.height + BUTTON_SPACING
 
     # Toggle fullscreen/window.
-    title = user_data.fullscreen? ? "Window" : "Fullscreen"
-    gui_controls << Button.new(title, self, at: [right_edge, y], size: 5, auto_center: [1, 0]) do
-      user_data.fullscreen = (not user_data.fullscreen?)
+    gui_controls << CheckButton.new('Fullscreen', self, at: [RIGHT_EDGE, y], size: FONT_SIZE, auto_center: [1, 0],
+                                    checked: user_data.fullscreen?) do |button, checked|
+      user_data.fullscreen = checked
       $create_window = true
       pop_scene
     end
@@ -84,30 +104,36 @@ class MainMenu < GuiScene
 
     unless user_data.fullscreen?
       # Increase and reduce the size of the window.
-      gui_controls << Button.new("-", self, at: [right_edge - 20, y], size: 5,
+      x = RIGHT_EDGE
+      gui_controls << Button.new("+", self, at: [RIGHT_EDGE, y], size: FONT_SIZE,
+                                 auto_center: [1, 0]) do
+        scale_up
+      end
+      x -= gui_controls.last.width - BUTTON_SPACING
+
+      @screen_size = ShadowText.new("0000x0000", at: [RIGHT_EDGE - 6, y + (FONT_SIZE - SMALL_FONT_SIZE) / 2.0],
+                                    size: SMALL_FONT_SIZE, color: TEXT_COLOR, auto_center: [1, 0])
+      gui_controls << @screen_size
+
+      x -= gui_controls.last.width - BUTTON_SPACING
+
+      gui_controls << Button.new("-", self, at: [RIGHT_EDGE - 20, y], size: FONT_SIZE,
                                  auto_center: [1, 0]) do
         scale_down
       end
 
-      @screen_size = ShadowText.new("0000x0000", at: [right_edge - 6, y + 0.5], size: 4, color: TEXT_COLOR,
-                                    auto_center: [1, 0])
-      gui_controls << @screen_size
       update_screen_size
-      gui_controls << Button.new("+", self, at: [right_edge, y], size: 5,
-                                 auto_center: [1, 0]) do
-        scale_up
-      end
     end
 
     y += gui_controls.last.height + BUTTON_SPACING
 
-    gui_controls << Button.new("Quit", self, at: [right_edge, y], size: 5, auto_center: [1, 0]) do
+    gui_controls << Button.new("Quit", self, at: [RIGHT_EDGE, y], size: FONT_SIZE, auto_center: [1, 0]) do
       raise_event :quit
     end
 
     # Version number (top right).
-    gui_controls << ShadowText.new("v#{ZedAndGinger::VERSION}", at: [right_edge, top_edge],
-                                   size: 4, color: TEXT_COLOR, auto_center: [1, 1])
+    gui_controls << ShadowText.new("v#{ZedAndGinger::VERSION}", at: [RIGHT_EDGE, TOP_EDGE],
+                                   size: SMALL_FONT_SIZE, color: TEXT_COLOR, auto_center: [1, 1])
 
     @@ambient_music ||= music music_path("Space_Cat_Ambient.ogg")
     @@ambient_music.looping = true
@@ -121,14 +147,14 @@ class MainMenu < GuiScene
   def create_level_buttons
     @level_buttons = []
     @level_numbers.each_with_index do |level, i|
-      @level_buttons << Button.new(level.to_s, self, at: [17 + i * 8, 14], size: 6,
-                                 enabled: user_data.level_unlocked?(level, mode: user_data.mode)) do
+      @level_buttons << Button.new(level.to_s, self, at: [LEFT_EDGE + 17 + i * (LEVEL_FONT_SIZE + BUTTON_SPACING), LEVELS_Y],
+                                   size: LEVEL_FONT_SIZE, enabled: user_data.level_unlocked?(level, mode: user_data.mode)) do
         start_level level
       end
     end
 
     if DEVELOPMENT_MODE
-      @level_buttons << Button.new("#{UserData::DEV_LEVEL}-dev", self, at: [90, 14], size: 6,
+      @level_buttons << Button.new("#{UserData::DEV_LEVEL}-dev", self, at: [RIGHT_EDGE, LEVELS_Y], size: LEVEL_FONT_SIZE,
                                  auto_center: [1, 0]) do
         start_level UserData::DEV_LEVEL
       end
@@ -193,7 +219,7 @@ class MainMenu < GuiScene
 
     # Buttons to choose to play one or both cats.
     @cat_buttons = {}
-    @cat_buttons[:zed] = Button.new('Zed', self, at: [13, 32], size: 6,
+    @cat_buttons[:zed] = Button.new('Zed', self, at: [13, 32], size: FONT_SIZE,
                              disabled_color: Color.red) do
       enable_cat_buttons(:zed)
       @cat_animations[:walking1].start @zed
@@ -202,7 +228,7 @@ class MainMenu < GuiScene
     end
 
     x = @cat_buttons[:zed].x + @cat_buttons[:zed].width + 2
-    @cat_buttons[:both] = Button.new('Both', self, at: [x, 32], size: 6,
+    @cat_buttons[:both] = Button.new('Both', self, at: [x, 32], size: FONT_SIZE,
                                 disabled_color: Color.red) do
       enable_cat_buttons(:both)
       @cat_animations[:walking1].start @zed
@@ -211,7 +237,7 @@ class MainMenu < GuiScene
     end
 
     x = @cat_buttons[:both].x + @cat_buttons[:both].width + 2
-    @cat_buttons[:ginger] = Button.new('Ginger', self, at: [x, 32], size: 6,
+    @cat_buttons[:ginger] = Button.new('Ginger', self, at: [x, 32], size: FONT_SIZE,
                                 disabled_color: Color.red) do
       enable_cat_buttons(:ginger)
       @cat_animations[:sitting].start @zed
@@ -279,7 +305,7 @@ class MainMenu < GuiScene
       { cat => @player_sheets[cat] }
     end
 
-    push_scene :level, level_number, player_data, user_data.hardcore?
+    push_scene :level, level_number, player_data, user_data.hardcore?, user_data.inversion?
   end
 
   public
