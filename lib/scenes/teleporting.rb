@@ -21,15 +21,14 @@ class Teleporting < Scene
     end
   end
 
-  def setup(previous_scene, position)
-    @previous_scene, @position = previous_scene, position
-    @player = @previous_scene.players.first
+  def setup(previous_scene, teleportee, position)
+    @previous_scene, @teleportee, @position = previous_scene, teleportee, position
 
-    @animation = translation from: @player.position,
+    @animation = translation from: @teleportee.position,
                              to: position,
-                             duration: @player.position.distance(position) / SPEED
+                             duration: @teleportee.position.distance(position) / SPEED
 
-    @animation.start(@player)
+    @animation.start(@teleportee)
 
     @overlay = sprite Image.new GAME_RESOLUTION
     @overlay.scale = [window.scaling] * 2
@@ -42,7 +41,7 @@ class Teleporting < Scene
     always do
       frame_time = Time.now - @last_time
       @animation.update
-      @player.update_riding_position if @player.riding?
+      @teleportee.update_riding_position if @teleportee.riding?
       @previous_scene.update_camera(frame_time)
       @previous_scene.update_shaders
       pop_scene unless @animation.running?
@@ -52,7 +51,7 @@ class Teleporting < Scene
 
   def render(win)
     @previous_scene.render(win)
-    @overlay.shader[:offset] = (@player.position - @position) / (window.user_data.scaling * 5)
+    @overlay.shader[:offset] = (@teleportee.position - @position) / (window.user_data.scaling * 5)
     win.draw @overlay
   end
 end

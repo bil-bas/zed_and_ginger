@@ -50,7 +50,7 @@ class Teleporter < DynamicObject
         partner = find_partner
         if partner
           position = partner.pos + [player.to_rect.width, 0]
-          scene.run_scene :teleporting, scene, position
+          scene.run_scene :teleporting, scene, player, position
         end
       end
     end
