@@ -157,9 +157,9 @@ class Level < GameScene
         when :menu
           # Do nothing.
         when :restart
-          push_scene :level, @level_number, @player_data, @hardcore
+          push_scene :level, @level_number, @player_data, @hardcore, @inversion
         when :next
-          push_scene :level, @level_number + 1, @player_data, @hardcore
+          push_scene :level, @level_number + 1, @player_data, @hardcore, @inversion
       end
     end
   end

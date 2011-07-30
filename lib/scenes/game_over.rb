@@ -22,5 +22,12 @@ class GameOver < DialogScene
       pop_scene :next
     end
   end
+
+  def register
+    super
+    on :key_press, key(:escape) do
+      pop_scene :menu
+    end
+  end
 end
 
