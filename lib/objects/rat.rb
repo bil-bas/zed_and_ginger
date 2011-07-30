@@ -12,13 +12,13 @@ class Rat < DynamicObject
 
   def casts_shadow?; @state != :squashed; end
   def z_order; @state == :squashed ? Player::Z_ORDER_SQUASHED - 1 : super; end
-  def to_rect; Rect.new(*(@position - [1.5, 1.5]), 3, 3) end
+  def to_rect; Rect.new(*(@position - [2, 1.5]), 4, 3) end
 
   def initialize(map, tile, position)
     sprite = sprite image_path("rat.png"), at: position
     sprite.sheet_size = [3, 1]
     sprite.origin = Vector2[sprite.sprite_width / 2, sprite.sprite_height]
-    sprite.scale = [0.5, 0.5]
+    sprite.scale = [0.75, 0.75]
 
     @state = :ok
     @speed = 0
@@ -35,7 +35,7 @@ class Rat < DynamicObject
   end
 
   def collide?(other)
-    other.z <= 2 and super(other)
+    other.z <= 4 and super(other)
   end
 
   def update
@@ -45,7 +45,8 @@ class Rat < DynamicObject
           @sprite.sheet_pos = SQUASHED_SPRITE
           scene.timer.increase SQUASHED_EXTRA_TIME
           @state = :squashed
-          @sprite.y += 2
+          @sprite.y += 3
+          @sprite.scale_x *= -1 if rand() < 0.5
           @sounds[:squashed].play
           FloatIcon.new(:extra_time, player)
         else
