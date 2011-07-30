@@ -9,7 +9,8 @@ class DynamicObject < GameObject
 
   attr_accessor :velocity_z
  
-  def shadow_shape; Vector2[1, 1]; end
+  def shadow_width; 1; end
+  def shadow_height; 1; end
  
   def initialize(scene, sprite, position)
     @velocity_z = 0
@@ -17,10 +18,8 @@ class DynamicObject < GameObject
     
     super(scene, sprite, position)
 
-    @shadow.scale *= shadow_shape
+    @shadow.scale *= [shadow_width, shadow_height]
   end
-
-
 
   def update
     if @velocity_z != 0 or z > 0
@@ -32,10 +31,12 @@ class DynamicObject < GameObject
         @velocity_z = 0
       end
 
-      shadow_scale =  BASE_SHADOW_SCALE *
-          [((MAX_HEIGHT_FOR_SHADOW - z) / MAX_HEIGHT_FOR_SHADOW), 1].max
+      if casts_shadow?
+        shadow_scale =  BASE_SHADOW_SCALE *
+            [((MAX_HEIGHT_FOR_SHADOW - z) / MAX_HEIGHT_FOR_SHADOW), 1].min
 
-      @shadow.scale = Vector2[shadow_scale, shadow_scale] * shadow_shape
+        @shadow.scale = [shadow_scale * shadow_width, shadow_scale * shadow_height]
+      end
     end
 
     @animations.each(&:update)

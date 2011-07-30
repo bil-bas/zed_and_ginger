@@ -17,7 +17,6 @@ class Player < DynamicObject
   JUMP_SPEED = 1.5 # Z-speed of jumping.
 
   RIDING_OFFSET_X = -2 # Move ridden object back, since we have our origin far forward.
-  SHADOW_OFFSET_X = -2
   SQUASH_OFFSET_Y = 3 # Distance moved when squashed.
 
   FOUR_FRAME_ANIMATION_DURATION = 1
@@ -67,7 +66,9 @@ class Player < DynamicObject
   attr_accessor :speed_modifier
   attr_writer :score
 
-  def shadow_shape; Vector2[1.2, 0.6]; end
+  def shadow_width; 1.2; end
+  def shadow_height; 0.6; end
+
   def casts_shadow?; (not squashed?); end
   def z_order; squashed? ? Z_ORDER_SQUASHED : super; end
   def to_rect; Rect.new(*(@position - [3, 2]), 6, 4) end
@@ -77,12 +78,6 @@ class Player < DynamicObject
   def finished?; @state == :finished; end
   def score; ((x - @initial_x).div(8) * SCORE_PER_TILE) + @score; end
   def can_be_hurt?; not disabled? :hurt; end
-
-  def x=(value)
-    super(value)
-    @shadow.x += SHADOW_OFFSET_X
-    value
-  end
 
   def velocity_z=(velocity)
     stop_riding if velocity != 0
