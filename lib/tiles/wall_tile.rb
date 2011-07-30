@@ -9,6 +9,6 @@ class WallTile < Tile
   end
 
   def initialize(sprite_position, grid_position, offset)
-    super(image_path("wall_tiles.png"), sprite_position, grid_position, offset)
+    super(image_path("tiles.png"), sprite_position, grid_position, offset)
   end
 end

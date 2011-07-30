@@ -9,11 +9,11 @@ class WallMap < Map
   def create_tile(char, grid_position)
     sprite_pos = case char
                    when '-' then default_tile # Std wall.
-                   when 'x' then [1, 0] # Tech panel
-                   when 'o' then [2, 0] # Round window
-                   when '#' then [3, 0] # Square window
-                   when 'f' then [4, 0] # Finish line
-                   when 'L' then [5, 0] # Laser groove
+                   when 'x' then [5, 1] # Tech panel
+                   when 'o' then [6, 1] # Round window
+                   when '#' then [7, 1] # Square window
+                   when 'f' then [5, 0] # Finish line
+                   when 'L' then [3, 1] # Laser groove
                  else
                      raise "unknown wall tile: '#{char}'"
                  end

@@ -16,10 +16,7 @@ class Tile
   def initialize(image, sprite_pos, grid_position, offset)
     @grid_position = grid_position
     @sprite = sprite image
-    @sprite.sheet_size = [
-        (@sprite.image.width / self.class.width.to_f).to_i,
-        (@sprite.image.height / self.class.height.to_f).to_i
-    ]
+    @sprite.sheet_size = [8, 8]
     @sprite.sheet_pos = sprite_pos
     @sprite.position = @grid_position.to_vector2 * self.class.size + offset
   end

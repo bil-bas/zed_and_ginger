@@ -4,7 +4,7 @@ class SlowFloor < FloorTile
   SHADER_PIXELS_PER_PIXEL = 1
   FREQUENCY_AMPLITUDE = 0.8
   INTERFERENCE_AMPLITUDE = 10
-  IMAGE_SIZE = Vector2[64, 16]
+  IMAGE_SIZE = Vector2[64, 64]
 
   class << self
     def shader
