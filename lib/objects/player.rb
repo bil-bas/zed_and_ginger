@@ -223,14 +223,14 @@ class Player < DynamicObject
 
     @sounds[:died].play
 
-    scene.game_over(score)
+    scene.game_over(self)
   end
 
   public
   def finish
     @state = :finished
 
-    scene.game_over(score)
+    scene.game_over(self)
   end
 
   public

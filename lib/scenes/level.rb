@@ -118,16 +118,14 @@ class Level < GameScene
     visible_objects.each {|o| o.update }
   end
 
-  def game_over(score)
-    player = players.first
-
+  def game_over(player)
     @level_music.stop
     @finish_music.play if player.finished?
 
-    if score > high_score
+    if player.score > high_score
       run_scene(:enter_name, self) do |name|
         if name
-          window.user_data.set_high_score(level_number, name, score)
+          window.user_data.set_high_score(level_number, name, player.score)
           update_high_score
         end
       end
