@@ -10,11 +10,14 @@ class Level < GameScene
   WALL_MAP_ROWS = 3
   FLOOR_MAP_ROWS = 6
 
-  FONT_SIZE = 5.625
+  FONT_SIZE = 5.25
   START_TILE_GRID_X = 15
 
   MAX_CAMERA_ZOOM_CHANGE = 1 # Most the zoom can change in a second.
   MAX_CAMERA_X_CHANGE = 64 # Most the camera's position can change in a second.
+
+  TEXT_COLOR = Color.new(190, 190, 255)
+  GUI_BACKGROUND_COLOR = Color.new(80, 80, 80)
 
   def setup(level_number, player_data)
     started_at = Time.now
@@ -50,16 +53,24 @@ class Level < GameScene
     @distance_to_run = @floor_map.finish_line_x - @initial_player_x
 
     # Player's score, time remaining and progress through the level.
-    text_color = Color.new(190, 190, 255)
-    score_height = window.scaled_size.height - 6.625
-    gui_controls << Polygon.rectangle([0, window.scaled_size.height - 6, window.scaled_size.width, 6], Color.new(80, 80, 80))
-    gui_controls << ShadowText.new("L%02d" % level_number, at: [3, score_height], size: FONT_SIZE, color: text_color)
-    @high_score = ShadowText.new "XXX: 0000000", at: [15.5, score_height], size: FONT_SIZE, color: text_color
-    @score = ShadowText.new "0000000", at: [53, score_height], size: FONT_SIZE, color: text_color
-    @timer = Timer.new level_data['time_limit'], at: [76, score_height], size: FONT_SIZE, color: text_color
-    @progress = ProgressBar.new(Rect.new(0, window.scaled_size.height - 2, window.scaled_size.width, 2))
+    score_y = window.scaled_size.height - 6.625
+    width, height = window.scaled_size.width, window.scaled_size.height
+    gui_controls << Polygon.rectangle([0, height - 6, width, 6], GUI_BACKGROUND_COLOR)
+    main_left = width / 3.0 + 2
+    main_right = width * 2 / 3.0 - 2
+    gui_controls << ShadowText.new("L%02d" % level_number, at: [main_left, score_y], size: FONT_SIZE, color: TEXT_COLOR)
+    @timer = Timer.new level_data['time_limit'], at: [main_right, score_y], size: FONT_SIZE, color: TEXT_COLOR, auto_center: [1, 0]
+    @high_score = ShadowText.new "XXX: 000000", at: [width / 2, score_y + FONT_SIZE * 0.7], size: FONT_SIZE * 0.75,
+                                 color: TEXT_COLOR, auto_center: [0.5, 0]
 
-    self.gui_controls += [@high_score, @score, @timer, @progress]
+    self.gui_controls += [@high_score, @timer]
+
+    @player_score_cards = @players.map do |player|
+      x = (player.name == :zed) ? 0 : (width * 2.0 / 3.0)
+      ScoreCard.new(player, x, score_y, FONT_SIZE, TEXT_COLOR, @distance_to_run)
+    end
+
+    self.gui_controls += @player_score_cards
 
     init_fps
     update_high_score
@@ -67,7 +78,6 @@ class Level < GameScene
     @game_over = false
 
     # Setup a few things, so we can show a countdown before playing.
-    @progress.progress = 0
     @visible_objects = @players.dup
     @frame_time = 0
 
@@ -196,8 +206,7 @@ class Level < GameScene
       calculate_visible_objects
       @visible_objects.each(&:update)
 
-      @progress.progress = (@players.first.position.x.to_f - @initial_player_x) / @distance_to_run
-      @score.string = "%07d" % players.first.score
+      @player_score_cards.each(&:update)
 
       @used_time += Time.now.to_f - started_at
       recalculate_fps

@@ -5,15 +5,18 @@ class ProgressBar
     @background.outlined = true
     @background.outline_width /= Window.user_data.scaling
 
-    @progress = Polygon.rectangle(rect)
-    @progress.color = Color.new(50, 50, 200)
+    @rect = rect
+    @progress = 0
   end
 
-  def progress; @progress.scale_x; end
-  def progress=(progress); @progress.scale_x = progress; end
+  def progress; @progress; end
+  def progress=(progress); @progress = progress; end
 
   def draw_on(window)
     window.draw @background
-    window.draw @progress
+
+    current_rect = @rect.dup
+    current_rect.width *= @progress
+    window.draw Polygon.rectangle(current_rect, Color.new(50, 50, 200))
   end
 end

@@ -22,7 +22,7 @@ end
 require_files('./', %w[log ray_ext user_data version])
 require_files('mixins', %w[has_status registers])
 require_files('scenes', %w[confirm enter_control enter_name game_over level options_controls pause main_menu ready_set_go teleporting])
-require_files('gui', %w[button progress_bar shadow_text timer])
+require_files('gui', %w[button progress_bar score_card shadow_text timer])
 require_files('standard_ext', %w[hash])
 
 GAME_RESOLUTION = Vector2[96, 60] # Resolution of tiles, at least.

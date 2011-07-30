@@ -1,10 +1,9 @@
 class GameObject
-  extend Forwardable
   include Helper
+  extend Forwardable
   include Log
   include Registers
-  
-  def_delegators :@scene, :window, :frame_time
+
   def_delegators :@position, :x, :y
   def_delegators :@sprite, :angle, :angle=,
                            :color, :color=,

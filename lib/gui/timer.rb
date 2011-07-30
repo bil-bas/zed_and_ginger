@@ -38,6 +38,6 @@ class Timer
   def recalculate
     minutes, seconds = @remaining.divmod 60
     seconds, milliseconds = seconds.divmod 1
-    @text.string = "%01d'%02d\"%s" % [minutes, seconds, milliseconds.to_s[2]]
+    @text.string = "%01d:%02d.%s" % [minutes, seconds, milliseconds.to_s[2]]
   end
 end

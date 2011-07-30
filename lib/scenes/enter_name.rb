@@ -9,11 +9,12 @@ class EnterName < DialogScene
   def setup(previous_scene)
     super(previous_scene, enable_cursor: false)
 
-    gui_controls << ShadowText.new("HIGH SCORE!", at: [21.25, 1.25], size: 12, color: Color.red)
+    gui_controls << ShadowText.new("HIGH SCORE!", at: [GAME_RESOLUTION.width / 2, 1.25], size: 12, color: Color.red,
+                                  auto_center: [0.5, 0])
+    @entry = text BLANK_CHAR * MAX_CHARS, at: [GAME_RESOLUTION.width / 2, 11.875], size: 11.25, auto_center: [0.5, 0]
 
-    gui_controls << Polygon.rectangle([30, 12.5, 25, 9.375], Color.new(0, 0, 0, 200))
-
-    @entry = text BLANK_CHAR * MAX_CHARS, at: [35.625, 11.875], size: 11.25
+    width, height = @entry.rect.width + 4, @entry.rect.height
+    gui_controls << Polygon.rectangle([@entry.x - width / 2.0, @entry.y + 1.5, width, height], Color.new(0, 0, 0, 200))
     gui_controls << @entry
 
     @key_press_sound = sound sound_path("key_press.ogg")
