@@ -35,7 +35,7 @@ class Teleporting < GameScene
     @animation.start(@teleportee)
 
     @overlay = sprite Image.new GAME_RESOLUTION
-    @overlay.scale = [window.scaling] * 2
+    @overlay.scale = [user_data.scaling] * 2
     @overlay.shader = self.class.shader
 
     @last_time = Time.now

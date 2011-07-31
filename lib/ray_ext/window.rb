@@ -1,21 +1,15 @@
 module Ray
   class Window
-    extend Forwardable
-
-    def_delegators :'self.class.user_data', :scaling, :scaling=
-
     class << self
-      attr_accessor :user_data
+      attr_reader :scaling
 
-      def scaling; user_data.scaling; end
+      protected
+      def scaling=(scaling); @scaling = scaling; end
     end
 
-    def user_data
-      self.class.user_data
-    end
-
+    public
     def scaled_size
-      size / user_data.scaling
+      size / self.class.scaling
     end
   end
 end

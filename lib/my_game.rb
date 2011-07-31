@@ -1,22 +1,40 @@
 class MyGame < Ray::Game
+  include Log
+  extend Forwardable
+
   SCREEN_SHOT_EXTENSION = 'tga'
 
-  attr_reader :fps_monitor
+  attr_reader :fps_monitor, :user_data
 
-  def initialize(*args)
-    super(*args)
+  def initialize(title, scene_classes, options = {})
+    @user_data = UserData.new
+
+    options = if user_data.fullscreen?
+      { size: Ray.screen_size, fullscreen: true }
+    else
+      { size: GAME_RESOLUTION * user_data.scaling }
+    end
+
+    super(title, options)
 
     @fps_monitor = FpsMonitor.new
 
     window.hide_cursor
 
     window_view = window.default_view
-    window_view.zoom_by window.scaling
+    window_view.zoom_by user_data.scaling
     window_view.center = window_view.size / 2
     window.view = window_view
 
-    SCENE_CLASSES.each {|s| s.bind(self) }
+    scene_classes.each {|s| s.bind(self) }
+
     scenes << :main_menu unless defined? Ocra
+
+    if defined? RubyProf
+      RubyProf.start
+      RubyProf.pause
+      Log.log.debug { "Profiling started and paused" }
+    end
   end
 
   def register
@@ -32,11 +50,11 @@ class MyGame < Ray::Game
       Kernel.exit
     end
 
-    on :key_press, *key_or_code(window.user_data.control(:show_fps)) do
+    on :key_press, *key_or_code(user_data.control(:show_fps)) do
       @fps_monitor.toggle
     end
 
-    on :key_press, *key_or_code(window.user_data.control(:screenshot)) do
+    on :key_press, *key_or_code(user_data.control(:screenshot)) do
       path = File.join(ROOT_PATH, 'screenshots')
       FileUtils.mkdir_p path
       files = Dir[File.join(path, "screenshot_*.#{SCREEN_SHOT_EXTENSION}")]

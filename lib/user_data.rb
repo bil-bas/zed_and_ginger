@@ -74,6 +74,8 @@ class UserData < BaseUserData
     else
       [@data[GROUP_GRAPHICS][SCALING].round, MIN_SCALING].max
     end
+
+    Window.send :scaling=, @scaling
   end
 
   # High scores, high scorers and level unlocking.
@@ -127,6 +129,8 @@ class UserData < BaseUserData
 
   def scaling=(scaling)
     @scaling = scaling
+
+    Window.send :scaling=, @scaling
 
     unless fullscreen?
       @data[GROUP_GRAPHICS][SCALING] = scaling

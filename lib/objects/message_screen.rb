@@ -15,7 +15,6 @@ class MessageScreen < DynamicObject
 
     num_tiles = 5
     pos = Vector2[@sprite.x + 0.5 - (num_tiles * tile.width / 2.0), -tile.width * 2 + 1]
-    scaling = window.scaling
     @text = text message, size: FONT_SIZE, color: Color.green, at: pos
 
     # Move the sprite behind the text and make it wide enough to show it all.

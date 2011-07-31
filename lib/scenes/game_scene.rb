@@ -2,9 +2,7 @@ class GameScene < Scene
   extend Forwardable
   include Log
 
-  def_delegators :window, :user_data
-
-  def_delegators :game, :fps_monitor
+  def_delegators :game, :fps_monitor, :user_data
   def_delegators :"game.fps_monitor", :frame_time
 
   # List of controls, automatically drawn in order.

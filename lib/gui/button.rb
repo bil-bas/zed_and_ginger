@@ -52,13 +52,13 @@ class Button
       end
 
       on :mouse_press do |button, pos|
-        activate if button == :left and enabled? and @text.to_rect.contain?(pos / Window.scaling)
+        activate if button == :left and enabled? and @text.to_rect.contain?(pos / scene.user_data.scaling)
       end
 
       # Handle mouse hovering.
       @under_mouse = false
       on :mouse_motion do |pos|
-        if enabled? and @text.to_rect.contain?(pos / Window.scaling)
+        if enabled? and @text.to_rect.contain?(pos / scene.user_data.scaling)
           unless @under_mouse
             @under_mouse = true
             raise_event :mouse_hover, self

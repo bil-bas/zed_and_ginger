@@ -18,7 +18,7 @@ class FloorMap < Map
       @messages.map! do |message|
         message.gsub(/%.*%/) do |replacement|
           replacement =~ /%(.*)%/
-          key_used = scene.user_data.player_control(options[:player_name], $1.to_sym)
+          key_used = game.user_data.player_control(options[:player_name], $1.to_sym)
           display_for_key(key_used)
         end
       end

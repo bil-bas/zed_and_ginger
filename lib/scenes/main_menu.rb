@@ -268,29 +268,29 @@ class MainMenu < GuiScene
     new_size = GAME_RESOLUTION * (user_data.scaling + 2)
     if new_size.x <= Ray.screen_size.width * 0.95 and
        new_size.y <= Ray.screen_sifze.height * 0.95
-      self.scaling = window.scaling + 2
+      user_data.scaling = user_data.scaling + 2
     end
   end
 
   protected
   def scale_down
     if user_data.scaling >= 4
-      self.scaling = window.scaling - 2
+      user_data.scaling = user_data.scaling - 2
     end
   end
 
   protected
   def scaling=(scaling)
     pop_scene
-    window.scaling = scaling
-    window.size = GAME_RESOLUTION * window.scaling
+    user_data.scaling = scaling
+    window.size = GAME_RESOLUTION * user_data.scaling
     push_scene name
     update_screen_size
   end
 
   protected
   def update_screen_size
-    @screen_size.string = ("%dx%d" % (GAME_RESOLUTION * window.scaling).to_a).rjust(9)
+    @screen_size.string = ("%dx%d" % (GAME_RESOLUTION * user_data.scaling).to_a).rjust(9)
   end
 
   public
@@ -337,8 +337,8 @@ class MainMenu < GuiScene
     background.draw_on win
 
     floor_camera = win.view
-    floor_camera.size = GAME_RESOLUTION * window.scaling
-    floor_camera.zoom_by window.scaling * 2
+    floor_camera.size = GAME_RESOLUTION * user_data.scaling
+    floor_camera.zoom_by user_data.scaling * 2
     floor_camera.x = 30.5
     floor_camera.y = -8
     win.with_view floor_camera do

@@ -12,7 +12,7 @@ class GuiScene < GameScene
     unless defined? @@cursor
       cursor_image = image(image_path("cursor.png"))
       @@cursor = sprite cursor_image, scale: [0.5, 0.5]
-      @@cursor.pos = mouse_pos / window.scaling
+      @@cursor.pos = mouse_pos / user_data.scaling
     end
 
     @cursor_shown = options[:enable_cursor]
@@ -44,7 +44,7 @@ class GuiScene < GameScene
       end
 
       on :mouse_motion do |pos|
-        @@cursor.pos = pos / window.scaling
+        @@cursor.pos = pos / user_data.scaling
       end
 
       on :mouse_hover do |control|

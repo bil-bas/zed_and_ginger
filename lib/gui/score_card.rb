@@ -14,7 +14,7 @@ class ScoreCard
     @name = ShadowText.new player.name.to_s.capitalize + ': ', at: [x + 1, y], size: font_size, color: text_color
     @score = ShadowText.new "", at: [x + @name.width + 1, y], size: font_size, color: text_color
     window_size = @player.scene.window.scaled_size
-    @progress = ProgressBar.new(Rect.new(x, y + font_size - 0.5, window_size.width / 3.0, 2))
+    @progress = ProgressBar.new(player.scene, Rect.new(x, y + font_size - 0.5, window_size.width / 3.0, 2))
     @progress.progress = 0
 
     register(player.scene)

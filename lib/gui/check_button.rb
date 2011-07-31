@@ -11,7 +11,6 @@ class CheckButton < Button
 
     super('X', scene, options, &handler)
 
-    spacing = (@text.size / scene.window.scaling) / 5
     @label = text
 
     @checked = options[:checked]
