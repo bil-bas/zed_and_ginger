@@ -16,7 +16,7 @@ class Level < GameScene
 
   SCORE_BAR_HEIGHT = 6.625
 
-  attr_reader :frame_time, :floor_map, :players, :timer, :scene_time, :level_number
+  attr_reader :floor_map, :players, :timer, :level_number
 
   def hardcore?; @hardcore; end
   def inversion?; @inversion; end
@@ -76,14 +76,12 @@ class Level < GameScene
 
     self.gui_controls += @player_score_cards
 
-    init_fps
     update_high_score
 
     @game_over = false
 
     # Setup a few things, so we can show a countdown before playing.
     @visible_objects = @players.dup
-    @frame_time = 0
 
     @camera_zoom = 1.0
     # Make the camera pan during intro, so place it near the start.
@@ -126,8 +124,7 @@ class Level < GameScene
   end
 
   # Called from an overlay state.
-  def update_intro_objects(duration)
-    @frame_time = duration
+  def update_intro_objects
     visible_objects = @dynamic_objects.select {|o| not o.is_a?(Player) and o.x < 200 }
     visible_objects.each {|o| o.update }
   end
@@ -185,6 +182,8 @@ class Level < GameScene
   def pause; run_scene :pause, self unless @game_over; end
 
   def register
+    super
+
     on :key_press, key(:escape) do
       pop_scene
     end
@@ -196,31 +195,19 @@ class Level < GameScene
     on :key_press, *key_or_code(user_data.control(:pause)) do
       pause
     end
+  end
 
-    always do
-      started_at = Time.now.to_f
-      @scene_time = started_at - @level_started_at # Time elapsed since start of level.
-      @frame_time = [@scene_time - @last_frame_started_at, 0.1].min # Time elapsed since start of last frame.
-      @last_frame_started_at = @scene_time
+  def update
+    update_camera(frame_time)
 
-      update_camera(frame_time)
+    timer.decrease frame_time if @players.all?(&:ok?)
 
-      timer.decrease frame_time if @players.all?(&:ok?)
+    calculate_visible_objects
+    @visible_objects.each(&:update)
 
-      calculate_visible_objects
-      @visible_objects.each(&:update)
+    @player_score_cards.each(&:update)
 
-      @player_score_cards.each(&:update)
-
-      @used_time += Time.now.to_f - started_at
-      recalculate_fps
-
-      if DEVELOPMENT_MODE
-        window.title = "FPS: #{@fps.round} [#{@potential_fps.round}]"
-      end
-
-      update_shaders
-    end
+    update_shaders
   end
 
   def calculate_visible_objects
@@ -240,8 +227,6 @@ class Level < GameScene
   end
     
   def render(win)
-    start_at = Time.now
-
     background.draw_on win
 
     view = window.view
@@ -278,8 +263,6 @@ class Level < GameScene
     end
 
     super
-
-    @used_time += (Time.now - start_at).to_f
   end
 
   def update_shaders
@@ -310,28 +293,5 @@ class Level < GameScene
     # Prevent rapid shifts as we accelerate or come to a stop.
     max_x_change = MAX_CAMERA_X_CHANGE * duration
     @camera_x += [[@desired_camera_x - @camera_x, max_x_change].min, -max_x_change].max
-  end
-  
-  def init_fps
-    @level_started_at = Time.now.to_f
-    @last_frame_started_at = 0
-    @fps_next_calculated_at = @level_started_at + 1
-    @fps = @potential_fps = 0
-    @num_frames = 0
-    @used_time = 0
-  end
-  
-  def recalculate_fps
-    @num_frames += 1
-
-    if Time.now.to_f >= @fps_next_calculated_at     
-      elapsed_time = @fps_next_calculated_at - Time.now.to_f + 1
-      @fps = @num_frames / elapsed_time
-      @potential_fps = @num_frames / [@used_time, 0.0001].max
-       
-      @num_frames = 0
-      @fps_next_calculated_at = Time.now.to_f + 1
-      @used_time = 0
-    end
   end
 end

@@ -1,9 +1,9 @@
 class OptionsControls < GuiScene
   LABEL_COLOR = Color.new(200, 200, 200)
 
-  LINE_SPACING = 0.35
+  LINE_SPACING = 0.3
   HEADING_SIZE = 6
-  SUB_HEADING_SIZE = 5
+  SUB_HEADING_SIZE = 4.5
   ITEM_SIZE = 4
 
   TITLE_X = 4
@@ -21,10 +21,11 @@ class OptionsControls < GuiScene
     y = sub_heading(y, "General")
 
     UserData::VALID_CONTROLS.each do |control|
-      gui_controls << ShadowText.new(control.to_s.capitalize, at: [LABEL_X, y], size: ITEM_SIZE, color: LABEL_COLOR)
+      control_name = control.to_s.tr('_', ' ').capitalize
+      gui_controls << ShadowText.new(control_name, at: [LABEL_X, y], size: ITEM_SIZE, color: LABEL_COLOR)
       current = user_data.control(control)
       gui_controls << Button.new(display_for_key(current), self, at: [BUTTON_X, y], size: ITEM_SIZE, shortcut: nil) do
-        run_scene :enter_control, self, "Press key for #{control}", current do |new_value|
+        run_scene :enter_control, self, "Press key to: #{control_name}", current do |new_value|
           if new_value
             user_data.set_control(control, new_value)
             pop_scene

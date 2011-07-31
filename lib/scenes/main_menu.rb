@@ -109,15 +109,15 @@ class MainMenu < GuiScene
                                  auto_center: [1, 0]) do
         scale_up
       end
-      x -= gui_controls.last.width - BUTTON_SPACING
+      x -= gui_controls.last.width + BUTTON_SPACING
 
-      @screen_size = ShadowText.new("0000x0000", at: [RIGHT_EDGE - 6, y + (FONT_SIZE - SMALL_FONT_SIZE) / 2.0],
+      @screen_size = ShadowText.new("0000x0000", at: [x, y + (FONT_SIZE - SMALL_FONT_SIZE) / 2.0],
                                     size: SMALL_FONT_SIZE, color: TEXT_COLOR, auto_center: [1, 0])
       gui_controls << @screen_size
 
-      x -= gui_controls.last.width - BUTTON_SPACING
+      x -= gui_controls.last.width + BUTTON_SPACING
 
-      gui_controls << Button.new("-", self, at: [RIGHT_EDGE - 20, y], size: FONT_SIZE,
+      gui_controls << Button.new("-", self, at: [x, y], size: FONT_SIZE,
                                  auto_center: [1, 0]) do
         scale_down
       end
@@ -139,6 +139,8 @@ class MainMenu < GuiScene
     @@ambient_music.looping = true
     @@ambient_music.play
     @@ambient_music.volume = 70
+
+    window.icon = image image_path("window_icon.png")
 
     log.info { "#{self.class} loaded in #{Time.now - started_at}s" }
   end
@@ -265,7 +267,7 @@ class MainMenu < GuiScene
   def scale_up
     new_size = GAME_RESOLUTION * (user_data.scaling + 2)
     if new_size.x <= Ray.screen_size.width * 0.95 and
-       new_size.y <= Ray.screen_size.height * 0.95
+       new_size.y <= Ray.screen_sifze.height * 0.95
       self.scaling = window.scaling + 2
     end
   end
@@ -312,8 +314,6 @@ class MainMenu < GuiScene
   def register
     super
 
-    window.icon = image image_path("window_icon.png")
-
     add_level_button_events
 
     on :focus_gain do
@@ -323,11 +323,13 @@ class MainMenu < GuiScene
     on :focus_loss do
       @@ambient_music.pause
     end
+  end
 
-    always do
-      @cat_animations.each_value(&:update)
-      @@preloader.update
-    end
+  def update
+    super
+
+    @cat_animations.each_value(&:update)
+    @@preloader.update
   end
 
   public

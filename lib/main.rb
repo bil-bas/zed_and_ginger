@@ -23,10 +23,10 @@ require_relative 'ray_ext'
 
 GAME_RESOLUTION = Vector2[96, 60] # Resolution of tiles, at least.
 
-require_files('./', %w[log user_data version])
+require_files('./', %w[log my_game user_data version])
 require_files('mixins', %w[has_status registers])
 require_files('scenes', %w[confirm enter_control enter_name game_over level options_controls pause main_menu ready_set_go teleporting])
-require_files('gui', %w[button check_button progress_bar score_card shadow_text timer])
+require_files('gui', %w[button check_button fps_monitor progress_bar score_card shadow_text timer])
 require_files('standard_ext', %w[hash])
 
 
@@ -37,12 +37,8 @@ if defined? RubyProf
 end
 
 CLASSES_WITH_SHADERS = [SlowFloor, SlowSplat, Teleporter, Teleporting]
+SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, Level, OptionsControls, Pause, MainMenu, ReadySetGo, Teleporting]
 
-class Ray::Game
-  SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, Level, OptionsControls, Pause, MainMenu, ReadySetGo, Teleporting]
-
-  SCREEN_SHOT_EXTENSION = 'tga'
-end
 
 def create_game
   Window.user_data = UserData.new
@@ -53,37 +49,7 @@ def create_game
     { size: GAME_RESOLUTION * Window.scaling }
   end
 
-  Ray.game "Zed and Ginger", options do
-    register do
-      on :quit do
-        if defined? RubyProf and RubyProf.running?
-          result = RubyProf.stop
-          printer = RubyProf::FlatPrinter.new(result)
-          printer.print(STDERR, min_percent: 0.5)
-        end
-
-        Kernel.exit
-      end
-
-      on :key_press, *key_or_code(window.user_data.control(:screenshot)) do
-        path = File.join(ROOT_PATH, 'screenshots')
-        FileUtils.mkdir_p path
-        files = Dir[File.join(path, "screenshot_*.#{SCREEN_SHOT_EXTENSION}")]
-        last_number = files.map {|f| f =~ /(\d+)\.#{SCREEN_SHOT_EXTENSION}$/; $1.to_i }.sort.last || 0
-        window.to_image.write(File.join(path, "screenshot_#{(last_number + 1).to_s.rjust(3, '0')}.#{SCREEN_SHOT_EXTENSION}"))
-      end
-    end
-
-    window.hide_cursor
-
-    window_view = window.default_view
-    window_view.zoom_by window.scaling
-    window_view.center = window_view.size / 2
-    window.view = window_view
-
-    SCENE_CLASSES.each {|s| s.bind(self) }
-    scenes << :main_menu unless defined? Ocra
-  end
+  MyGame.new("Zed and Ginger", options).run
 end
 
 $create_window = true
@@ -105,12 +71,6 @@ END
     Log.log.error { message }
 
     Ray.game "Zed and Ginger error!", size: [640, 480] do
-      register do
-        on :quit do
-          Kernel.exit
-        end
-      end
-
       scene :scene do
         y = 0
         @lines = message.split("\n").map do |line|

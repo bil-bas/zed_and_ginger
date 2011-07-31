@@ -95,6 +95,7 @@ key_controls:
   general: # Controls that aren't specifically for either player.
     pause: :p
     screenshot: :f12
+    show_fps: :f11
 
   players:
     zed: # Player one controls.

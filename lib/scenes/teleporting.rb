@@ -24,6 +24,8 @@ class Teleporting < GameScene
   end
 
   def setup(previous_scene, teleportee, position)
+    super()
+
     @previous_scene, @teleportee, @position = previous_scene, teleportee, position
 
     @animation = translation from: @teleportee.position,
@@ -39,16 +41,14 @@ class Teleporting < GameScene
     @last_time = Time.now
   end
 
-  def register
-    always do
-      frame_time = Time.now - @last_time
-      @animation.update
-      @teleportee.update_riding_position if @teleportee.riding?
-      @previous_scene.update_camera(frame_time)
-      @previous_scene.update_shaders
-      pop_scene unless @animation.running?
-      @last_time = Time.now
-    end
+  def update
+    frame_time = Time.now - @last_time
+    @animation.update
+    @teleportee.update_riding_position if @teleportee.riding?
+    @previous_scene.update_camera(frame_time)
+    @previous_scene.update_shaders
+    pop_scene unless @animation.running?
+    @last_time = Time.now
   end
 
   def render(win)

@@ -59,7 +59,7 @@ class UserData < BaseUserData
   GROUP_CONTROLS_PLAYERS = 'players'
 
   VALID_PLAYER_CONTROLS = [:left, :right, :up, :down, :jump]
-  VALID_CONTROLS = [:pause, :screenshot]
+  VALID_CONTROLS = [:pause, :show_fps, :screenshot]
 
   GROUP_GAMEPLAY = 'gameplay'
   SELECTED_CAT = 'selected_cat'

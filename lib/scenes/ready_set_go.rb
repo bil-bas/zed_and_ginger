@@ -28,18 +28,16 @@ class ReadySetGo < GameScene
     @last_time = Time.now
   end
 
-  def register
-    always do
-      if Time.now >= @next_event_at
-        @events.resume
-        pop_scene unless @events.alive?
-        @next_event_at += 1
-      end
-
-      @previous_scene.update_camera(Time.now - @last_time)
-      @previous_scene.update_intro_objects(Time.now - @last_time)
-      @last_time = Time.now
+  def update
+    if Time.now >= @next_event_at
+      @events.resume
+      pop_scene unless @events.alive?
+      @next_event_at += 1
     end
+
+    @previous_scene.update_camera(Time.now - @last_time)
+    @previous_scene.update_intro_objects
+    @last_time = Time.now
   end
 
   def render(win)

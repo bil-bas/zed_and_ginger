@@ -4,13 +4,15 @@ class GameScene < Scene
 
   def_delegators :window, :user_data
 
+  def_delegators :game, :fps_monitor
+  def_delegators :"game.fps_monitor", :frame_time
+
   # List of controls, automatically drawn in order.
   attr_accessor :gui_controls
 
   class << self
     attr_accessor :background
   end
-
 
   def background; GameScene.background; end
   def background=(background); GameScene.background = background; end
@@ -21,10 +23,22 @@ class GameScene < Scene
 
   def register
     @gui_controls.each {|c| c.register(self) if c.respond_to? :register }
+
+    always { update }
+  end
+
+  alias_method :original_run_tick, :run_tick
+  def run_tick(check_events = true)
+    fps_monitor.run_frame { original_run_tick }
   end
 
   def render(win)
     @gui_controls.each {|c| c.draw_on win }
+    fps_monitor.draw_on win if fps_monitor.shown?
+  end
+
+  def update
+    #override
   end
 
   # Patched to return the scene that was run after run_scene

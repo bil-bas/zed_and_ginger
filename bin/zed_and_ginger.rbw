@@ -95,7 +95,7 @@ TEXT
     $stdout.sync = true
   end
 
-  require_relative "../lib/game"
+  require_relative "../lib/main"
 
   exit_message = ""
 
