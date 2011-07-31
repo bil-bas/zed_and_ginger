@@ -45,10 +45,11 @@ class Pacer < DynamicObject
 
     recalculate_direction
 
-    scene.players.each do |player|
+    scene.players.shuffle.each do |player|
       if player.can_be_hurt? and collide? player
         player.electrocute
         scene.remove_object self
+        break
       end
     end
 

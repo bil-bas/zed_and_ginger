@@ -35,16 +35,17 @@ class Mine < DynamicObject
 
   def update
     if @active
-      scene.players.each do |player|
+      scene.players.shuffle.each do |player|
         if player.can_be_hurt? and collide? player
           player.throw(Vector3[0, 0, EXPLOSION_FORCE])
-          @active = false
+
           @sprite.sheet_pos = EXPLODED_SPRITE
           @explosion.play
-        else
-          @animation.update
+          @active = false
         end
       end
+
+      @animation.update if @active
     end
   end
 end

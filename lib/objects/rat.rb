@@ -39,7 +39,7 @@ class Rat < DynamicObject
   end
 
   def update
-    scene.players.each do |player|
+    scene.players.shuffle.each do |player|
       if player.ok? and collide? player and @state == :ok
         if player.velocity_z < 0
           @sprite.sheet_pos = SQUASHED_SPRITE

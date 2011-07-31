@@ -37,7 +37,7 @@ class Spring < DynamicObject
   end
 
   def update
-    scene.players.each do |player|
+    scene.players.shuffle.each do |player|
       if player.ok? and not @activated and collide? player
         @sprite_flat.matrix = nil
         @sprite_flat.position += [-1.5, -4]
@@ -48,6 +48,7 @@ class Spring < DynamicObject
         @bounce_sound.play
         player.speed_modifier = JUMP_SPEED_MODIFIER
         @activated = true
+        break
       end
     end
   end

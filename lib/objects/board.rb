@@ -39,7 +39,7 @@ class Board < DynamicObject
     if @dropped
       self.x -= DROPPED_SPEED * frame_time
     else
-      scene.players.each do |player|
+      scene.players.shuffle.each do |player|
         if not @ridden and not @dropped and collide? player
           player.ride self
           @ridden = true
