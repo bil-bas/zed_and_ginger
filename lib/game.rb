@@ -53,7 +53,7 @@ def create_game
     { size: GAME_RESOLUTION * Window.scaling }
   end
 
-  Ray.game "Zed and Ginger (WASD to move; SPACE to jump, P to pause)", options do
+  Ray.game "Zed and Ginger", options do
     register do
       on :quit do
         if defined? RubyProf and RubyProf.running?
@@ -84,7 +84,6 @@ def create_game
     SCENE_CLASSES.each {|s| s.bind(self) }
     scenes << :main_menu unless defined? Ocra
   end
-
 end
 
 $create_window = true
