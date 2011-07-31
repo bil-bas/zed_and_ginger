@@ -59,7 +59,7 @@ def create_game
         if defined? RubyProf and RubyProf.running?
           result = RubyProf.stop
           printer = RubyProf::FlatPrinter.new(result)
-          printer.print(STDERR, min_percent: 1)
+          printer.print(STDERR, min_percent: 0.5)
         end
 
         Kernel.exit
