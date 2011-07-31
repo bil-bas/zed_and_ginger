@@ -30,6 +30,12 @@ class EnterControl < DialogScene
     @key_press_sound = sound sound_path("key_press.ogg")
 
     @key = nil
+
+    disable_event_group :game_keys
+  end
+
+  def clean_up
+    enable_event_group :game_keys
   end
 
   def register
