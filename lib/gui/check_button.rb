@@ -2,6 +2,11 @@ require_relative "button"
 
 class CheckButton < Button
   def checked?; @checked; end
+  def checked=(checked)
+    @checked = checked
+    update_contents
+    @checked
+  end
 
   def initialize(text, scene, options = {}, &handler)
     options = {
@@ -13,9 +18,7 @@ class CheckButton < Button
 
     @label = text
 
-    @checked = options[:checked]
-
-    update_contents
+    self.checked = options[:checked]
   end
 
   def update_contents
