@@ -14,7 +14,7 @@ class EnterName < DialogScene
     @entry = text BLANK_CHAR * MAX_CHARS, at: [GAME_RESOLUTION.width / 2, 11.875], size: 11.25, auto_center: [0.5, 0]
 
     width, height = @entry.rect.width + 4, @entry.rect.height
-    gui_controls << Polygon.rectangle([@entry.x - width / 2.0, @entry.y + 1.5, width, height], Color.new(0, 0, 0, 200))
+    gui_controls << Polygon.rectangle([@entry.x - width / 2.0, @entry.y + 1.5, width, height], Color.new(0, 0, 0, 100))
     gui_controls << @entry
 
     @key_press_sound = sound sound_path("key_press.ogg")

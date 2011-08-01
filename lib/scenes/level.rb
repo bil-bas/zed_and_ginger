@@ -130,25 +130,18 @@ class Level < GameScene
     visible_objects.each {|o| o.update }
   end
 
+  # The game has completed, but score still needs to be calculated.
   def game_over(player)
     @level_music.stop
-    @finish_music.play if player.finished?
 
-    if player.score > high_score
-      run_scene(:enter_name, self) do |name|
-        if name
-          user_data.set_high_score(level_number, name, player.score)
-          update_high_score
-        end
-      end
+    if player.finished?
+      @finish_music.play
     end
 
-    # It is possible to get a high score without finishing and vice versa.
-    if player.finished? and not user_data.finished_level?(level_number)
-      user_data.finish_level(level_number)
-    end
+    other_player = (@players - [player]).first
+    other_player.lose if other_player
 
-    run_scene :game_over, self, user_data.level_unlocked?(@level_number + 1) do |choice|
+    run_scene :game_over, self, player, user_data.level_unlocked?(@level_number + 1) do |choice|
       pop_scene
 
       case choice

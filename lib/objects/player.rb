@@ -21,7 +21,6 @@ class Player < DynamicObject
 
   FOUR_FRAME_ANIMATION_DURATION = 1
 
-  SCORE_PER_100_MS = 100
   SCORE_PER_TILE = 10
 
   # 8 frames of walking.
@@ -214,11 +213,8 @@ class Player < DynamicObject
   end
 
   public
-  def die
-    stop_riding if riding?
-
-    @state = :dead
-    @sprite.sheet_pos = DEAD_SPRITE
+  def die(options = {})
+    lose
 
     @sounds[:died].play
 
@@ -226,30 +222,27 @@ class Player < DynamicObject
   end
 
   public
-  def finish
-    @state = :finished
+  # Called directly, the other player finished first.
+  def lose
+    stop_riding if riding?
 
-    scene.game_over(self)
+    @state = :dead
+    @sprite.sheet_pos = DEAD_SPRITE
   end
 
   public
   def update
-    if @tile.is_a? FinishFloor
-      stop_riding if riding?
-
+    if finished?
       if z > 0
         @sprite.sheet_pos = JUMP_DOWN_SPRITE
       else
         @player_animations[:dancing].update
       end
 
-      # Empty out all the remaining time in the timer and convert to points, before finishing.
-      if scene.timer.out_of_time?
-        finish unless finished?
-      else
-        scene.timer.decrease 0.1, finished: true
-        @score += SCORE_PER_100_MS
-      end
+    elsif @tile.is_a? FinishFloor
+      stop_riding if riding?
+      @state = :finished
+      scene.game_over(self)
 
     elsif scene.timer.out_of_time?
       die unless dead?
