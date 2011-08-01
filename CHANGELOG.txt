@@ -11,6 +11,8 @@
   * Reduced level loading time by over half, which stops the game freezing at start of level (thanks Fowl).
   * Added Hardcore mutator (one life per level, rather than unlimited).
   * Added Inversion mutator (world upside down).
+  * Added 2-player racing mode (same screen, but splits if you are very far apart)!
+  * Reduced down-time when "killed", so that someone being disabled for a little while doesn't guarantee a loss.
 
 ---- v0.1.0 (2011-07-27)
 
