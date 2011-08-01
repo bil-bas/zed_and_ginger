@@ -25,6 +25,14 @@ class LaserBeam < GameObject
     color.alpha = 150
     sprite.color = color
 
+    # Add an eye if we are in the position nearest the wall.
+    if tile.grid_position.y == 0
+      @laser_eye = sprite image_path("laser_eye.png"), at: [position.x, 0]
+      @laser_eye.origin = @laser_eye.image.size / 2
+    else
+      @laser_eye = nil
+    end
+
     super(map.scene, sprite, position)
   end
 
@@ -38,9 +46,16 @@ class LaserBeam < GameObject
     z_offset = Z_DIFFERENCE * 2 - z_offset if z_offset > Z_DIFFERENCE
     self.z = [[z_offset, MIN_Z].max, MAX_Z].min
 
+    @laser_eye.y = -self.z if @laser_eye
+
     scene.players.each do |player|
       player.burn if player.can_be_hurt? and collide? player
     end
+  end
+
+  def draw_on(win)
+    win.draw @laser_eye if @laser_eye
+    super(win)
   end
 end
 
