@@ -267,7 +267,7 @@ class MainMenu < GuiScene
   def scale_up
     new_size = GAME_RESOLUTION * (user_data.scaling + 2)
     if new_size.x <= Ray.screen_size.width * 0.95 and
-       new_size.y <= Ray.screen_sifze.height * 0.95
+       new_size.y <= Ray.screen_size.height * 0.95
       user_data.scaling = user_data.scaling + 2
     end
   end
