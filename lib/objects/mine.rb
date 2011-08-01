@@ -2,7 +2,7 @@ require_relative "dynamic_object"
 
 class Mine < DynamicObject
   ANIMATION_DURATION = 1
-  EXPLOSION_FORCE = 4 # Speed upwards.
+  EXPLOSION_FORCE = 2.5 # Speed upwards.
 
   EXPLODED_SPRITE = [3, 0]
 
