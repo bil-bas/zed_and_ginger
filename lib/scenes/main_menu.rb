@@ -98,6 +98,7 @@ class MainMenu < GuiScene
       user_data.fullscreen = checked
       $create_window = true
       pop_scene
+      window.close
     end
 
     y += gui_controls.last.height + BUTTON_SPACING
