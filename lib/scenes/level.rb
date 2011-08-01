@@ -8,9 +8,6 @@ class Level < GameScene
   FONT_SIZE = 5.25
   START_TILE_GRID_X = 15
 
-  MAX_CAMERA_ZOOM_CHANGE = 1 # Most the zoom can change in a second.
-  MAX_CAMERA_X_CHANGE = 64 # Most the camera's position can change in a second.
-
   TEXT_COLOR = Color.new(190, 190, 255)
   GUI_BACKGROUND_COLOR = Color.new(80, 80, 80)
 
@@ -83,10 +80,9 @@ class Level < GameScene
     # Setup a few things, so we can show a countdown before playing.
     @visible_objects = @players.dup
 
-    @camera_zoom = 1.0
     # Make the camera pan during intro, so place it near the start.
-    @camera_x = FloorTile.width * 8
-
+    @cameras = [Camera.new(FloorTile.width * 8)]
+    @screen_splitter = Polygon.rectangle([GAME_RESOLUTION.width / 2, 0, 1, GAME_RESOLUTION.height], Color.new(50, 50, 50))
     update_camera(0)
 
     @level_music ||= music music_path "Space_Cat_Habitat.ogg"
@@ -229,38 +225,38 @@ class Level < GameScene
   def render(win)
     background.draw_on win
 
-    view = window.view
-
-    view.size *= [1, @maps_height_factor] # Clip off the score bar.
-    view.zoom_by [1, -1] if @inversion
-
-    # Expand the view of the world.
-    view.size /= [@camera_zoom, 1]
+    world_view = win.view
+    world_view.size *= [1, @maps_height_factor] # Clip off the score bar.
+    world_view.zoom_by [1, -1] if @inversion
 
     # Clip on the screen.
-    viewport = view.viewport
+    viewport = world_view.viewport
     viewport.height *= @maps_height_factor # Clip off the score bar.
-    viewport.y += viewport.height * (1.0 / @camera_zoom - 1) * 0.25
-    viewport.height *= @camera_zoom
-    view.viewport = viewport
+    world_view.viewport = viewport
 
-    # Create a camera for displaying the wall map
-    view.center = [@camera_x, view.rect.height / (@inversion ? -2.0 : 2.0)]
-    win.with_view view do
-      @wall_map.draw_on(win)
-    end
+    @cameras.each do |camera|
+      camera_view = camera.view_for(world_view)
 
-    # Create a camera for displaying the floor map (which has origin set in the view)
-    view.y -= @wall_map.to_rect.height# * (@inversion ? -1 : 1)
-    win.with_view view do
-      @floor_map.draw_on(win)
+      # Create a camera for displaying the wall map
+      camera_view.y = camera_view.rect.height / (@inversion ? -2.0 : 2.0)
+      win.with_view camera_view do
+        @wall_map.draw_on(win)
+      end
 
-      @visible_objects.each {|obj| obj.draw_shadow_on win }
-      @visible_objects.each {|obj| obj.draw_on win }
-      if DEVELOPMENT_MODE
-        @visible_objects.each {|obj| obj.draw_debug_on win }
+      # Create a camera for displaying the floor map (which has origin set in the view)
+      camera_view.y -= @wall_map.to_rect.height
+      win.with_view camera_view do
+        @floor_map.draw_on(win)
+
+        @visible_objects.each {|obj| obj.draw_shadow_on win }
+        @visible_objects.each {|obj| obj.draw_on win }
+        if DEVELOPMENT_MODE
+          @visible_objects.each {|obj| obj.draw_debug_on win }
+        end
       end
     end
+
+    win.draw @screen_splitter if @cameras.size == 2
 
     super
   end
@@ -272,26 +268,38 @@ class Level < GameScene
   def update_camera(duration)
     # Move the cameras to the player position (left side, plus an amount asked for from the player).
     if players.size == 1
-      player = players.first
-      @desired_camera_x = player.view_range_x.max - GAME_RESOLUTION.width / 2
+      @cameras.first.pan_to(players.first.view_range_x.max - GAME_RESOLUTION.width / 2, duration)
     else
       view_ranges = @players.map {|p| p.view_range_x }
       left_edge_of_view = view_ranges.map {|r| r.min }.min
       right_edge_of_view = view_ranges.map {|r| r.max }.max
       view_range = right_edge_of_view - left_edge_of_view
 
-      # Zoom out if necessary to fit everything in.
-      @desired_camera_zoom = [[GAME_RESOLUTION.width / view_range, 0.5].max, 1.0].min
+      if view_range <= GAME_RESOLUTION.width * 2
+        # Return to a single camera if we were in split screen.
+        if @cameras.size == 2
+          @cameras = [Camera.new((@cameras.first.x + @cameras.last.x) / 2.0, zoom: 0.5)]
+        end
 
-      # Prevent fast zooming in/out.
-      max_zoom_change = MAX_CAMERA_ZOOM_CHANGE * duration
-      @camera_zoom += [[@desired_camera_zoom - @camera_zoom, max_zoom_change].min, -max_zoom_change].max
+        # Players are close, but zoom out if necessary to fit everything in.
+        # Prevent fast zooming in/out.
+        @cameras.first.zoom_to([[GAME_RESOLUTION.width / view_range, 0.5].max, 1.0].min, duration)
+        @cameras.first.pan_to(right_edge_of_view - GAME_RESOLUTION.width / (2 * @cameras.first.zoom), duration)
+      else
+        # Split into two independent cameras if we were just zoomed in.
+        if @cameras.size == 1
+          current_x = @cameras.first.x
+          @cameras = [
+              Camera.new(current_x - GAME_RESOLUTION.width / 2, zoom: 0.5, width: 0.5),
+              Camera.new(current_x + GAME_RESOLUTION.width / 2, zoom: 0.5, width: 0.5, offset_x: 0.5),
+          ]
+        end
 
-      @desired_camera_x = right_edge_of_view - (GAME_RESOLUTION.width / (2 * @camera_zoom))
+        loser, winner = @players.sort_by(&:x)
+
+        @cameras.first.pan_to(loser.view_range_x.max - GAME_RESOLUTION.width * 0.5, duration)
+        @cameras.last.pan_to(winner.view_range_x.max - GAME_RESOLUTION.width * 0.5, duration)
+      end
     end
-
-    # Prevent rapid shifts as we accelerate or come to a stop.
-    max_x_change = MAX_CAMERA_X_CHANGE * duration
-    @camera_x += [[@desired_camera_x - @camera_x, max_x_change].min, -max_x_change].max
   end
 end

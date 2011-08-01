@@ -7,7 +7,7 @@ class Status
     DISABLES = [:animation, :controls, :jumping, :hurt, :physics]
     def disables?(action); DISABLES.include? action; end
 
-    def default_duration; 1.5; end
+    def default_duration; 1.0; end
 
     def setup
       owner.velocity_x = owner.velocity_y = owner.velocity_z = 0
