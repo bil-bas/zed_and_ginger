@@ -1,10 +1,10 @@
 require_relative 'game_object'
 
 class LaserBeam < GameObject
-  MIN_Z = 1.0
-  MAX_Z = 23.0
-  Z_DIFFERENCE = MAX_Z - MIN_Z
-  SPEED = 5.0
+  MIN_Z = 3.0
+  MAX_Z = 21.0
+  Z_DIFFERENCE = 24 # Moves from 0..24 at linear speed, but limited at 3..21 (stops at the ends)
+  SPEED = 10.0
 
   def to_rect; Rect.new(*(@position - [0, 3]), 0, 6) end
   def z_order; super - 3; end # So it appear behind the player.
@@ -36,7 +36,7 @@ class LaserBeam < GameObject
     # Can't use an animation, since we want all animations to synchronize (even if not animated).
     z_offset = ((scene.timer.elapsed * SPEED) + phase_shift) % (Z_DIFFERENCE * 2) # 0..(2*height)
     z_offset = Z_DIFFERENCE * 2 - z_offset if z_offset > Z_DIFFERENCE
-    self.z = MIN_Z + z_offset
+    self.z = [[z_offset, MIN_Z].max, MAX_Z].min
 
     scene.players.each do |player|
       player.burn if player.can_be_hurt? and collide? player
