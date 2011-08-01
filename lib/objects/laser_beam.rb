@@ -21,6 +21,9 @@ class LaserBeam < GameObject
     sprite.sheet_size = [1, 1]
     sprite.origin = Vector2[sprite.sprite_width / 2 + 1.5, sprite.sprite_height / 2]
     sprite.scale_y = 0.75
+    color = sprite.color
+    color.alpha = 150
+    sprite.color = color
 
     super(map.scene, sprite, position)
   end

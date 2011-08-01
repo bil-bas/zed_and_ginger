@@ -16,7 +16,10 @@ class Pacer < DynamicObject
 
     super(map.scene, sprite, position)
 
-    @shadow.scale *= 0.75
+    @shadow.image = image image_path("glow.png")
+    @shadow.color = Color.new(200, 200, 255, 150)
+
+    @base_shadow_scale = @shadow.scale
     @animations << sprite_animation(from: [0, 0], to: [3, 0],
                                     duration: ANIMATION_DURATION).start(@sprite)
     @animations.last.loop!
@@ -45,6 +48,8 @@ class Pacer < DynamicObject
     self.y += @velocity_y * frame_time
 
     recalculate_direction
+
+    @shadow.scale = @base_shadow_scale * (0.75 + rand() * 0.5)
 
     scene.players.shuffle.each do |player|
       if player.can_be_hurt? and collide? player
