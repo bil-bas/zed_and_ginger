@@ -18,6 +18,7 @@ class Pacer < DynamicObject
 
     @shadow.image = image image_path("glow.png")
     @shadow.color = Color.new(200, 200, 255, 150)
+    @shadow.blend_mode = :add
 
     @base_shadow_scale = @shadow.scale
     @animations << sprite_animation(from: [0, 0], to: [3, 0],

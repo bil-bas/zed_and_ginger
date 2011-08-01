@@ -23,7 +23,8 @@ class FireExhaust < DynamicObject
     super(map.scene, sprite, position)
 
     @shadow.image = image image_path("glow.png")
-    @shadow.color = Color.new(255, 200, 100, 150)
+    @shadow.color = Color.new(255, 200, 100, 100)
+    @shadow.blend_mode = :add
   end
 
   def update
