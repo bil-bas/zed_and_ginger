@@ -7,14 +7,17 @@ class EnterName < DialogScene
   MAX_CHARS = 3
 
   def setup(previous_scene)
-    super(previous_scene, enable_cursor: false)
+    super(previous_scene, cursor_shown: false)
 
     gui_controls << ShadowText.new("HIGH SCORE!", at: [GAME_RESOLUTION.width / 2, 1.25], size: 12, color: Color.red,
                                   auto_center: [0.5, 0])
-    @entry = text BLANK_CHAR * MAX_CHARS, at: [GAME_RESOLUTION.width / 2, 11.875], size: 11.25, auto_center: [0.5, 0]
+
+    gui_controls << ShadowText.new("Enter name:", at: [GAME_RESOLUTION.width / 2, 12], size: 6,
+                                  auto_center: [0.5, 0])
+    @entry = text BLANK_CHAR * MAX_CHARS, at: [GAME_RESOLUTION.width / 2, 18], size: 11.25, auto_center: [0.5, 0]
 
     width, height = @entry.rect.width + 4, @entry.rect.height
-    gui_controls << Polygon.rectangle([@entry.x - width / 2.0, @entry.y + 1.5, width, height], Color.new(0, 0, 0, 100))
+    gui_controls << Polygon.rectangle([@entry.x - width / 2.0, @entry.y + 1.5, width, height], Color.new(0, 0, 0, 150))
     gui_controls << @entry
 
     @key_press_sound = sound sound_path("key_press.ogg")

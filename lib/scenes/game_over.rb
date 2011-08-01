@@ -7,8 +7,8 @@ class GameOver < DialogScene
   TIME_MULTIPLIER = 10 # Speed of counting off time.
   SCORE_PER_S = 1000 # Score you get for each remaining second.
 
-  def setup(previous_scene, winner, next_unlocked)
-    super(previous_scene)
+  def setup(previous_scene, winner)
+    super(previous_scene, cursor_shown: false)
 
     @winner = winner
 
@@ -23,10 +23,11 @@ class GameOver < DialogScene
       pop_scene :restart
     end
 
-    @buttons << Button.new("Next", self, at: [GAME_RESOLUTION.width * 0.7, BUTTON_Y], size: TEXT_SIZE, auto_center: [0.5, 0],
-                               enabled: next_unlocked) do
+    @next_button = Button.new("Next", self, at: [GAME_RESOLUTION.width * 0.7, BUTTON_Y], size: TEXT_SIZE, auto_center: [0.5, 0]) do
       pop_scene :next
     end
+
+    @buttons << @next_button
 
     @button_background = Polygon.rectangle([0, @buttons.last.y - 1, GAME_RESOLUTION.width, @buttons.last.height + 2],
                                            Color.new(0, 0, 0, 100))
@@ -37,8 +38,7 @@ class GameOver < DialogScene
   def register
     super
     on :key_press, key(:escape) do
-      remove_all_time
-      pop_scene :menu
+      pop_scene :menu if previous_scene.timer.out_of_time?
     end
 
     event_group :buttons do
@@ -55,12 +55,11 @@ class GameOver < DialogScene
   def remove_time(duration)
     previous_scene.timer.decrease duration, finished: true
     @winner.score += SCORE_PER_S * duration
+    previous_scene.update_score_cards
   end
 
   def update
     super
-
-    previous_scene.update
 
     # Empty out all the remaining time in the timer and convert to points, before finishing.
     if previous_scene.timer.out_of_time?
@@ -81,6 +80,9 @@ class GameOver < DialogScene
           user_data.finish_level(previous_scene.level_number)
         end
 
+        @next_button.enabled = user_data.level_unlocked?(previous_scene.level_number + 1)
+
+        self.cursor_shown = true
         gui_controls << @button_background
         self.gui_controls += @buttons
 

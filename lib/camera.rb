@@ -1,6 +1,6 @@
 class Camera
   MAX_ZOOM_CHANGE = 1 # Most the zoom can change in a second.
-  MAX_X_CHANGE = 64 # Most the camera's position can change in a second.
+  MAX_X_CHANGE = 100 # Most the camera's position can change in a second.
 
   attr_accessor :zoom, :x
 

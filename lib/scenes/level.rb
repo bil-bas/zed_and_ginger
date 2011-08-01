@@ -141,7 +141,7 @@ class Level < GameScene
     other_player = (@players - [player]).first
     other_player.lose if other_player
 
-    run_scene :game_over, self, player, user_data.level_unlocked?(@level_number + 1) do |choice|
+    run_scene :game_over, self, player do |choice|
       pop_scene
 
       case choice
@@ -199,9 +199,13 @@ class Level < GameScene
     calculate_visible_objects
     @visible_objects.each(&:update)
 
-    @player_score_cards.each(&:update)
+    update_score_cards
 
     update_shaders
+  end
+
+  def update_score_cards
+    @player_score_cards.each(&:update)
   end
 
   def calculate_visible_objects

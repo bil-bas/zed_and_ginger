@@ -11,7 +11,11 @@ class DialogScene < GuiScene
 
   def pop_scene(return_value)
     @run_result = return_value
-    exit!
+
+    # Just ensure it is placed correctly, in case we don't show it and it has moved.
+    @@cursor.pos = mouse_pos / user_data.scaling
+
+    super()
   end
 
   def render(win)

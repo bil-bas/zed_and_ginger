@@ -3,15 +3,15 @@
        CHANGELOG
 ========================
 
----- v0.1.1 (unreleased)
+---- v0.2.0 (2011-08-01)
 
   * Added full-screen toggle button in menu (runs at native resolution in full-screen).
-  * Added key configuration in-game and separate key settings for each of the interplanetary cat.
+  * Added key configuration in-game and separate key settings for each of the interplanetary felines.
   * Now, by default, Zed uses WASD with <space> and Ginger uses the arrows with <enter>.
   * Reduced level loading time by over half, which stops the game freezing at start of level (thanks Fowl).
   * Added Hardcore mutator (one life per level, rather than unlimited).
-  * Added Inversion mutator (world upside down).
-  * Added 2-player racing mode (same screen, but splits if you are very far apart)!
+  * Added Inversion mutator (space ship is upside down).
+  * Added 2-player local racing mode (same screen, but zooms and then splits if you are far apart)!
   * Reduced down-time when "killed", so that someone being disabled for a little while doesn't guarantee a loss.
 
 ---- v0.1.0 (2011-07-27)
