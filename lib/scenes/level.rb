@@ -138,19 +138,37 @@ class Level < GameScene
       @finish_music.play
     end
 
+    # If in hardcore mode, then one player dying doesn't stop the game; they just get cut out.
     other_player = (@players - [player]).first
-    other_player.lose if other_player
+    if player.dead? and hardcore? and @players.size == 2
+      log.info "#{player} died in hardcore mode. Continuing with #{other_player}"
 
-    run_scene :game_over, self, player do |choice|
-      pop_scene
+      if @cameras.size == 2
+        camera_index = @players.index player
+        camera = @cameras[camera_index]
+        camera_offset = GAME_RESOLUTION.width / 4.0 * (camera_index == 0 ? 1 : -1)
+        @cameras = [Camera.new(camera.x + camera_offset, zoom: 0.5)]
+      end
 
-      case choice
-        when :menu
-          # Do nothing.
-        when :restart
-          push_scene :level, @level_number, @player_data, @hardcore, @inversion
-        when :next
-          push_scene :level, @level_number + 1, @player_data, @hardcore, @inversion
+      # Other player stops being real and just becomes a dumb object.
+      @players = [other_player]
+      # TODO: This speeds remaining player up for no apparent reason. Why?
+      #add_object other_player
+    else
+      # Stop the game now that one player is done.
+      other_player.lose if other_player
+
+      run_scene :game_over, self, player do |choice|
+        pop_scene
+
+        case choice
+          when :menu
+            # Do nothing.
+          when :restart
+            push_scene :level, @level_number, @player_data, @hardcore, @inversion
+          when :next
+            push_scene :level, @level_number + 1, @player_data, @hardcore, @inversion
+        end
       end
     end
   end
@@ -270,6 +288,7 @@ class Level < GameScene
   def update_camera(duration)
     # Move the cameras to the player position (left side, plus an amount asked for from the player).
     if players.size == 1
+      @cameras.first.zoom_to(1, duration) # May be used if one player dies.
       @cameras.first.pan_to(players.first.view_range_x.max - GAME_RESOLUTION.width / 2, duration)
     else
       view_ranges = @players.map {|p| p.view_range_x }
