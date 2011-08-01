@@ -37,10 +37,12 @@ while $create_window
   $create_window = false
 
   begin
-    MyGame.new("Zed and Ginger", SCENE_CLASSES).run
-
+    game = MyGame.new("Zed and Ginger", SCENE_CLASSES)
+    game.run
 
   rescue => exception
+    game.window.close
+
     ErrorWindow.new("Zed and Ginger", exception, size: [640, 480]).run
   end
 end

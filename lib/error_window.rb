@@ -8,6 +8,12 @@ class ErrorWindow < Game
     setup
   end
 
+  def register
+   on :quit do
+      Kernel.exit
+    end
+  end
+
   def setup
     message = <<-END
 The game suffered from a fatal error and had to go and die in a corner.
