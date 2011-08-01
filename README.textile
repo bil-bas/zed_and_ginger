@@ -17,20 +17,14 @@ Author: Bil Bas (http://spooner.github.com) (bil dot bagpuss {at} gmail.com)
 h2. How to run the game
 
 * Windows: <pre>zed_and_ginger.exe</pre>.
-* OS X: <pre>zed_and_ginger.app</pre>
-* Linux: <pre>ruby bin/zed_and_ginger.rbw</pre> (see below under _compatibility_ for requirements).
 
 
 h2. Compatibility
 
-Runs in a 768x480 window.
+Runs in a 768x480 window by default, but can be resized or run in native resolution (full-screen).
 
 * Windows: Native executable (.exe) available.
-* OS X: Native executable (.app) available.
-* Linux: Can run from Ruby source + libraries + Ruby gems 
-  * Install Ruby 1.9.2
-  * Install Ruby gem dependencies <pre>bundle install</pre> (may need to <pre>sudo gem install bundler</pre> beforehand).
-  * <pre>ruby bin/zed_and_ginger.rbw</pre>
+* Linux: Coming soon!
 
 
 h2. Where to get a copy of the game from
@@ -54,6 +48,10 @@ h2. Tools used
 * Sound effects created using "bfxr":http://www.bfxr.net/ and converted using "Audacity":http://audacity.sourceforge.net/
 * Windows executable created with the "Ocra":http://ocra.rubyforge.org/.
 
+h2. Credits
+
+* Thanks for Mon-ouie for making the Ray library and generally putting up with me asking dumb questions about it.
+* Thanks to Peter Cakebread (& family), Fowl (& sister), Mon-ouie, jlnr for play-testing and comments.
 
 h2. License
 
