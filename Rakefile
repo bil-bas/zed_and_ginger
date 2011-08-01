@@ -99,12 +99,10 @@ end
 
 desc "Run all our tests"
 task :test do
-  Rake::TestTask.new do |t|
-    begin
-      ruby File.expand_path("test/run_all.rb", File.dirname(__FILE__))
-    rescue
-      exit 1
-    end
+  begin
+    ruby File.expand_path("test/run_all.rb", File.dirname(__FILE__))
+  rescue
+    exit 1
   end
 end
 
