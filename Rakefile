@@ -97,17 +97,15 @@ task :readme => README_TEXTILE do
   end
 end
 
-desc "Check the integrity of all the level data files."
-task :check_levels do
-  Dir["config/levels/*.yml"].each do |file|
-    level_data = YAML::load_file(file)
-
-    wall_tiles = level_data['wall']['tiles'].split("\n").map(&:strip)
-    floor_tiles = level_data['floor']['tiles'].split("\n").map(&:strip)
-    # Ensure that all floor and wall tiles are of the correct length.
-    raise "Bad map data in #{file}" unless (wall_tiles + floor_tiles).map {|row| row.length}.uniq.size == 1
+desc "Run all our tests"
+task :test do
+  Rake::TestTask.new do |t|
+    begin
+      ruby File.expand_path("test/run_all.rb", File.dirname(__FILE__))
+    rescue
+      exit 1
+    end
   end
-  puts "Level data validated OK :)"
 end
 
 

@@ -32,7 +32,7 @@ require_files('standard_ext', %w[hash])
 CLASSES_WITH_SHADERS = [SlowFloor, SlowSplat, Teleporter, Teleporting]
 SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, Level, OptionsControls, Pause, MainMenu, ReadySetGo, Teleporting]
 
-$create_window = true
+$create_window = true unless defined? $create_window # To allow tests not to open a window.
 while $create_window
   $create_window = false
 
