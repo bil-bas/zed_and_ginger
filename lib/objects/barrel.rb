@@ -3,7 +3,7 @@ require_relative "dynamic_object"
 class Barrel < DynamicObject
   MOVE_SPEED = 15
   ANIMATION_DURATION = 1
-  ORIGIN = [4, 8]
+  ORIGIN = [5, 9]
 
   def to_rect; Rect.new(*(@position - [3, 3]), 6, 6) end
 
@@ -13,6 +13,7 @@ class Barrel < DynamicObject
     sprite = sprite image_path("barrel.png")
     sprite.sheet_size = [4, 1]
     sprite.origin = ORIGIN
+    sprite.scale *= 0.75
 
     super(map.scene, sprite, position)
 

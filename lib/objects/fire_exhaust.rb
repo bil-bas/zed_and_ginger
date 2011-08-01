@@ -13,6 +13,7 @@ class FireExhaust < GameObject
   def initialize(map, tile, position)
     sprite = sprite image_path("fire_exhaust.png"), at: position
     sprite.sheet_size = [8, 1]
+    sprite.scale *= 0.75
     color = sprite.color
     color.alpha = 150
     sprite.color = color

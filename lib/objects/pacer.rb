@@ -11,7 +11,8 @@ class Pacer < DynamicObject
   def initialize(map, tile, position)
     sprite = sprite image_path("pacer.png")
     sprite.sheet_size = [4, 1]
-    sprite.origin = [sprite.sprite_width * 0.5, sprite.sprite_height]
+    sprite.origin = [sprite.sprite_width * 0.5, sprite.sprite_height + 2]
+    sprite.scale *= 0.75
 
     super(map.scene, sprite, position)
 
