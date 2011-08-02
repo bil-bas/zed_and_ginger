@@ -66,10 +66,11 @@ class GameOver < DialogScene
       unless @all_time_removed
         @all_time_removed = true
 
-        if @winner.score > previous_scene.high_score
+        score = @winner.score.to_i
+        if score > previous_scene.high_score
           run_scene :enter_name, self do |name|
             if name
-              user_data.set_high_score(previous_scene.level_number, name, @winner.score)
+              user_data.set_high_score(previous_scene.level_number, name, score)
               previous_scene.update_high_score
             end
           end
