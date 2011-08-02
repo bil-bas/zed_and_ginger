@@ -3,14 +3,15 @@ class RadioGroup
   extend Forwardable
   include Registers
 
-  def initialize(position, options = {}, &block)
+  def initialize(options = {}, &block)
     options = {
+        at: [0, 0],
         spacing: 0.5,
         default_button_options: {},
     }.merge! options
 
     @spacing = options[:spacing]
-    @position = position.to_vector2
+    @position = options[:at].to_vector2
 
     @default_button_options = options[:default_button_options]
     @selected_button = nil
@@ -21,13 +22,15 @@ class RadioGroup
     super(scene)
   end
 
+  def value; @selected_button.data; end
+
   def select(value)
     @selected_button.enabled = true if @selected_button
 
     @selected_button = @buttons.find {|b| b.data == value }
     @selected_button.enabled = false
 
-    @handler.call value
+    @handler.call value if @handler
 
     value
   end
@@ -40,7 +43,7 @@ class RadioGroup
     end
 
     options = @default_button_options.merge! options
-    options.merge!(at: position, data: value, disabled_color: Color.red)
+    options.merge!(at: position, data: value, disabled_color: Color.red, group: self)
     button = Button.new(text, options) { select(value) }
 
     @buttons << button

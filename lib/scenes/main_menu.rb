@@ -19,6 +19,7 @@ class MainMenu < GuiScene
   BUTTON_SPACING = 1
   
   TITLE_FONT_SIZE = 16
+  PLAY_FONT_SIZE = 7
   LEVEL_FONT_SIZE = 5.5
   FONT_SIZE = 4.5
   MUTATOR_FONT_SIZE = 3.5
@@ -49,7 +50,6 @@ class MainMenu < GuiScene
 
     @@preloader ||= Preloader.new
 
-
     gui_controls << ShadowText.new("Zed and Ginger", at: [CENTER, 0], size: TITLE_FONT_SIZE, color: TITLE_COLOR,
       auto_center: [0.5, 0])
 
@@ -62,6 +62,16 @@ class MainMenu < GuiScene
     @level_numbers -= [UserData::DEV_LEVEL]
 
     create_level_buttons # Creates the list of level buttons based on whether hardcore is toggled.
+
+    gui_controls << Button.new("Play", at: [RIGHT_EDGE, LEVELS_Y], size: PLAY_FONT_SIZE, auto_center: [1, 0]) do
+      start_level @level_buttons.value
+    end
+
+    if DEVELOPMENT_MODE
+      gui_controls << Button.new("#{UserData::DEV_LEVEL}-dev", at: [30, LEVELS_Y + 8], size: LEVEL_FONT_SIZE) do
+        start_level UserData::DEV_LEVEL
+      end
+    end
 
     y += gui_controls.last.height + BUTTON_SPACING * 2
 
@@ -148,28 +158,27 @@ class MainMenu < GuiScene
 
   protected
   def create_level_buttons
-    @level_buttons = []
-    @level_numbers.each_with_index do |level, i|
-      @level_buttons << Button.new(level.to_s, at: [LEFT_EDGE + 17 + i * (LEVEL_FONT_SIZE + BUTTON_SPACING), LEVELS_Y],
-                                   size: LEVEL_FONT_SIZE, enabled: user_data.level_unlocked?(level, mode: user_data.mode)) do
-        start_level level
-      end
+    current_level = user_data.selected_level
+
+    @level_buttons = RadioGroup.new(at: [LEFT_EDGE + 14, LEVELS_Y], default_button_options: { size: LEVEL_FONT_SIZE }) do |value|
+      user_data.selected_level = value
     end
 
-    if DEVELOPMENT_MODE
-      @level_buttons << Button.new("#{UserData::DEV_LEVEL}-dev", at: [RIGHT_EDGE, LEVELS_Y], size: LEVEL_FONT_SIZE,
-                                 auto_center: [1, 0]) do
-        start_level UserData::DEV_LEVEL
-      end
+    unlocked = @level_numbers.select {|i| user_data.level_unlocked?(i, mode: user_data.mode) }
+    unlocked.each do |i|
+      @level_buttons.button(i.to_s, i)
     end
+
+    p [current_level, @level_buttons]
+    @level_buttons.select current_level
 
     add_level_button_events
   end
 
   def add_level_button_events
-    remove_event_group :level_buttons
+    remove_event_group @level_buttons
 
-    @level_buttons.each {|b| b.register(self, group: :level_buttons) }
+    @level_buttons.register(self)
   end
 
   protected
@@ -221,7 +230,7 @@ class MainMenu < GuiScene
     @zed.origin = @ginger.origin = [@zed.sprite_width / 2, @zed.sprite_height]
 
     # Buttons to choose to play one or both cats.
-    @cat_selection = RadioGroup.new([16, 32], default_button_options: { size: FONT_SIZE }) do |value|
+    @cat_selection = RadioGroup.new(at: [18, 32], default_button_options: { size: FONT_SIZE }) do |value|
       case value
         when :zed
           @cat_animations[:walking1].start @zed
@@ -344,7 +353,7 @@ class MainMenu < GuiScene
       @floor_map.draw_on win
     end
 
-    @level_buttons.each {|b| b.draw_on win }
+    @level_buttons.draw_on win
 
     super(win)
   end

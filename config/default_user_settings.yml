@@ -90,6 +90,11 @@ gameplay:
   selected_cat: :zed
   hardcore: false
   inversion: false
+  selected_level:
+    normal: 1
+    hardcore: 1
+    hardcore_inversion: 1
+    inversion: 1
 
 key_controls:
   general: # Controls that aren't specifically for either player.

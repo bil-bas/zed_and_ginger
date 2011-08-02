@@ -167,6 +167,7 @@ class Level < GameScene
           when :restart
             push_scene :level, @level_number, @player_data, @hardcore, @inversion
           when :next
+            user_data.selected_level = @level_number + 1
             push_scene :level, @level_number + 1, @player_data, @hardcore, @inversion
         end
       end

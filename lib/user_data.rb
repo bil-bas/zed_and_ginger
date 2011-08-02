@@ -65,6 +65,7 @@ class UserData < BaseUserData
   SELECTED_CAT = 'selected_cat'
   HARDCORE = 'hardcore'
   INVERSION = 'inversion'
+  SELECTED_LEVEL = 'selected_level'
 
   def initialize
     super DATA_FILE, DEFAULT_DATA_FILE
@@ -201,6 +202,16 @@ class UserData < BaseUserData
 
   def inversion?
     @data[GROUP_GAMEPLAY][INVERSION]
+  end
+
+  def selected_level
+    @data[GROUP_GAMEPLAY][SELECTED_LEVEL][mode.to_s]
+  end
+
+  def selected_level=(level)
+    raise "Bad level #{level.inspect}" unless level_unlocked? level
+    @data[GROUP_GAMEPLAY][SELECTED_LEVEL][mode.to_s] = level
+    save
   end
 
   def mode
