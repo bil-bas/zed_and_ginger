@@ -169,7 +169,6 @@ class MainMenu < GuiScene
       @level_buttons.button(i.to_s, i)
     end
 
-    p [current_level, @level_buttons]
     @level_buttons.select current_level
 
     add_level_button_events
