@@ -66,7 +66,7 @@ class MainMenu < GuiScene
     y += gui_controls.last.height + BUTTON_SPACING * 2
 
     # Mutators on left hand margin.
-    @hardcore = CheckButton.new("Hardcore", self, at: [LEFT_EDGE, y], size: MUTATOR_FONT_SIZE,
+    @hardcore = CheckButton.new("Hardcore", at: [LEFT_EDGE, y], size: MUTATOR_FONT_SIZE,
                                  checked: user_data.hardcore?) do |button, checked|
       user_data.hardcore = checked
       create_level_buttons
@@ -74,7 +74,7 @@ class MainMenu < GuiScene
 
     y += @hardcore.height + BUTTON_SPACING
 
-    @inversion = CheckButton.new("Inversion", self, at: [LEFT_EDGE, y], size: MUTATOR_FONT_SIZE,
+    @inversion = CheckButton.new("Inversion", at: [LEFT_EDGE, y], size: MUTATOR_FONT_SIZE,
                                  checked: user_data.inversion?) do |button, checked|
       user_data.inversion = checked
       create_level_buttons
@@ -85,7 +85,7 @@ class MainMenu < GuiScene
     # Buttons in a column on the right hand side of the screen.
     y = 28
     # User settings - controls.
-    gui_controls << Button.new("Controls", self, at: [RIGHT_EDGE, y], size: FONT_SIZE,
+    gui_controls << Button.new("Controls", at: [RIGHT_EDGE, y], size: FONT_SIZE,
                                  auto_center: [1, 0]) do
       push_scene :options_controls
     end
@@ -93,7 +93,7 @@ class MainMenu < GuiScene
     y += gui_controls.last.height + BUTTON_SPACING
 
     # Toggle fullscreen/window.
-    gui_controls << CheckButton.new('Fullscreen', self, at: [RIGHT_EDGE, y], size: FONT_SIZE, auto_center: [1, 0],
+    gui_controls << CheckButton.new('Fullscreen', at: [RIGHT_EDGE, y], size: FONT_SIZE, auto_center: [1, 0],
                                     checked: user_data.fullscreen?) do |button, checked|
       user_data.fullscreen = checked
       $create_window = true
@@ -106,7 +106,7 @@ class MainMenu < GuiScene
     unless user_data.fullscreen?
       # Increase and reduce the size of the window.
       x = RIGHT_EDGE
-      gui_controls << Button.new("+", self, at: [RIGHT_EDGE, y], size: FONT_SIZE,
+      gui_controls << Button.new("+", at: [RIGHT_EDGE, y], size: FONT_SIZE,
                                  auto_center: [1, 0]) do
         scale_up
       end
@@ -118,7 +118,7 @@ class MainMenu < GuiScene
 
       x -= gui_controls.last.width + BUTTON_SPACING
 
-      gui_controls << Button.new("-", self, at: [x, y], size: FONT_SIZE,
+      gui_controls << Button.new("-", at: [x, y], size: FONT_SIZE,
                                  auto_center: [1, 0]) do
         scale_down
       end
@@ -128,7 +128,7 @@ class MainMenu < GuiScene
 
     y += gui_controls.last.height + BUTTON_SPACING
 
-    gui_controls << Button.new("Quit", self, at: [RIGHT_EDGE, y], size: FONT_SIZE, auto_center: [1, 0]) do
+    gui_controls << Button.new("Quit", at: [RIGHT_EDGE, y], size: FONT_SIZE, auto_center: [1, 0]) do
       raise_event :quit
     end
 
@@ -150,14 +150,14 @@ class MainMenu < GuiScene
   def create_level_buttons
     @level_buttons = []
     @level_numbers.each_with_index do |level, i|
-      @level_buttons << Button.new(level.to_s, self, at: [LEFT_EDGE + 17 + i * (LEVEL_FONT_SIZE + BUTTON_SPACING), LEVELS_Y],
+      @level_buttons << Button.new(level.to_s, at: [LEFT_EDGE + 17 + i * (LEVEL_FONT_SIZE + BUTTON_SPACING), LEVELS_Y],
                                    size: LEVEL_FONT_SIZE, enabled: user_data.level_unlocked?(level, mode: user_data.mode)) do
         start_level level
       end
     end
 
     if DEVELOPMENT_MODE
-      @level_buttons << Button.new("#{UserData::DEV_LEVEL}-dev", self, at: [RIGHT_EDGE, LEVELS_Y], size: LEVEL_FONT_SIZE,
+      @level_buttons << Button.new("#{UserData::DEV_LEVEL}-dev", at: [RIGHT_EDGE, LEVELS_Y], size: LEVEL_FONT_SIZE,
                                  auto_center: [1, 0]) do
         start_level UserData::DEV_LEVEL
       end
@@ -221,41 +221,39 @@ class MainMenu < GuiScene
     @zed.origin = @ginger.origin = [@zed.sprite_width / 2, @zed.sprite_height]
 
     # Buttons to choose to play one or both cats.
-    @cat_buttons = {}
-    @cat_buttons[:zed] = Button.new('Zed', self, at: [13, 32], size: FONT_SIZE,
-                             disabled_color: Color.red) do
-      enable_cat_buttons(:zed)
-      @cat_animations[:walking1].start @zed
-      @cat_animations[:sitting].start @ginger
-      @cat_animations[:walking2].pause
+    @cat_selection = RadioGroup.new([16, 32], default_button_options: { size: FONT_SIZE }) do |value|
+      case value
+        when :zed
+          @cat_animations[:walking1].start @zed
+          @cat_animations[:sitting].start @ginger
+          @cat_animations[:walking2].pause
+
+        when :ginger
+          @cat_animations[:sitting].start @zed
+          @cat_animations[:walking1].start @ginger
+          @cat_animations[:walking2].pause
+
+        when :both
+          @cat_animations[:walking1].start @zed
+          @cat_animations[:walking2].start @ginger
+          @cat_animations[:sitting].pause
+      end
+
+      user_data.selected_cat = value
     end
 
-    x = @cat_buttons[:zed].x + @cat_buttons[:zed].width + 2
-    @cat_buttons[:both] = Button.new('Both', self, at: [x, 32], size: FONT_SIZE,
-                                disabled_color: Color.red) do
-      enable_cat_buttons(:both)
-      @cat_animations[:walking1].start @zed
-      @cat_animations[:walking2].start @ginger
-      @cat_animations[:sitting].pause
-    end
+    @cat_selection.button("Zed", :zed)
+    @cat_selection.button("Both", :both)
+    @cat_selection.button("Ginger", :ginger)
 
-    x = @cat_buttons[:both].x + @cat_buttons[:both].width + 2
-    @cat_buttons[:ginger] = Button.new('Ginger', self, at: [x, 32], size: FONT_SIZE,
-                                disabled_color: Color.red) do
-      enable_cat_buttons(:ginger)
-      @cat_animations[:sitting].start @zed
-      @cat_animations[:walking1].start @ginger
-      @cat_animations[:walking2].pause
-    end
+    @cat_selection.select user_data.selected_cat
 
     @player_sheets = {
         zed: @@zed_image,
         ginger: @ginger_image,
     }
 
-    @cat_buttons[user_data.selected_cat].activate
-
-    self.gui_controls += [@zed, @ginger] + @cat_buttons.values
+    self.gui_controls += [@zed, @ginger, @cat_selection]
   end
 
   protected

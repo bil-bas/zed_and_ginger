@@ -15,15 +15,15 @@ class GameOver < DialogScene
     gui_controls << Polygon.rectangle([0, 0, GAME_RESOLUTION.width, GAME_RESOLUTION.height * 0.9], Color.new(0, 0, 0, 100))
 
     @buttons = []
-    @buttons << Button.new("Menu", self, at: [GAME_RESOLUTION.width * 0.3, BUTTON_Y], size: TEXT_SIZE, auto_center: [0.5, 0]) do
+    @buttons << Button.new("Menu", at: [GAME_RESOLUTION.width * 0.3, BUTTON_Y], size: TEXT_SIZE, auto_center: [0.5, 0]) do
       pop_scene :menu
     end
 
-    @buttons << Button.new("Restart", self, at: [GAME_RESOLUTION.width * 0.5, BUTTON_Y], size: TEXT_SIZE, auto_center: [0.5, 0]) do
+    @buttons << Button.new("Restart", at: [GAME_RESOLUTION.width * 0.5, BUTTON_Y], size: TEXT_SIZE, auto_center: [0.5, 0]) do
       pop_scene :restart
     end
 
-    @next_button = Button.new("Next", self, at: [GAME_RESOLUTION.width * 0.7, BUTTON_Y], size: TEXT_SIZE, auto_center: [0.5, 0]) do
+    @next_button = Button.new("Next", at: [GAME_RESOLUTION.width * 0.7, BUTTON_Y], size: TEXT_SIZE, auto_center: [0.5, 0]) do
       pop_scene :next
     end
 

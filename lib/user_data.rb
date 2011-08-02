@@ -180,7 +180,7 @@ class UserData < BaseUserData
   end
 
   def selected_cat=(name)
-    raise "Bad cat name #{number.inspect}" unless Player::NAMES.include? name or name == :both
+    raise "Bad cat name #{name.inspect}" unless Player::NAMES.include? name or name == :both
     @data[GROUP_GAMEPLAY][SELECTED_CAT] = name
     save
   end

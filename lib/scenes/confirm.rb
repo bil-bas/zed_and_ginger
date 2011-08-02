@@ -16,11 +16,11 @@ class Confirm < DialogScene
     heading = ShadowText.new(message, at: [width * 0.5, 20], size: 6, auto_center: [0.5, 0])
     gui_controls << heading
 
-    gui_controls << Button.new("OK", self, at: [width * 0.37, 40], size: 8, auto_center: [0.5, 0]) do
+    gui_controls << Button.new("OK", at: [width * 0.37, 40], size: 8, auto_center: [0.5, 0]) do
       pop_scene true
     end
 
-    gui_controls << Button.new("Cancel", self, at: [width * 0.63, 40], size: 8, auto_center: [0.5, 0]) do
+    gui_controls << Button.new("Cancel", at: [width * 0.63, 40], size: 8, auto_center: [0.5, 0]) do
       pop_scene false
     end
   end

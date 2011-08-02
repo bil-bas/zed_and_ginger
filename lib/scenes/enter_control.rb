@@ -19,11 +19,11 @@ class EnterControl < DialogScene
     @key_display = Text.new(display_for_key(current), at: [width * 0.5, 20], size: 10, auto_center: [0.5, 0])
     gui_controls << @key_display
 
-    gui_controls << Button.new("OK", self, at: [width * 0.37, 40], size: 8, auto_center: [0.5, 0], shortcut: nil) do
+    gui_controls << Button.new("OK", at: [width * 0.37, 40], size: 8, auto_center: [0.5, 0], shortcut: nil) do
       pop_scene @key
     end
 
-    gui_controls << Button.new("Cancel", self, at: [width * 0.63, 40], size: 8, auto_center: [0.5, 0], shortcut: nil) do
+    gui_controls << Button.new("Cancel", at: [width * 0.63, 40], size: 8, auto_center: [0.5, 0], shortcut: nil) do
       pop_scene nil
     end
 

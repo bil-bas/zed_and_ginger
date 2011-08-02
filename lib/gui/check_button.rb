@@ -8,13 +8,13 @@ class CheckButton < Button
     @checked
   end
 
-  def initialize(text, scene, options = {}, &handler)
+  def initialize(text, options = {}, &handler)
     options = {
         shortcut: nil,
         checked: false,
     }.merge! options
 
-    super('X', scene, options, &handler)
+    super('X', options, &handler)
 
     @label = text
 

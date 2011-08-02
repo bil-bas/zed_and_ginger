@@ -14,7 +14,7 @@ class Button
   DISABLED_COLOR = Color.new(100, 100, 100)
   HOVER_COLOR =  Color.new(175, 175, 255)
 
-  def initialize(text, scene, options = {}, &handler)
+  def initialize(text, options = {}, &handler)
     raise "#{self.class} must have handler" unless block_given?
 
     options = {
