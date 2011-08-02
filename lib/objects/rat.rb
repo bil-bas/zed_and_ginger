@@ -17,7 +17,7 @@ class Rat < DynamicObject
   def initialize(map, tile, position)
     sprite = sprite image_path("rat.png"), at: position
     sprite.sheet_size = [3, 1]
-    sprite.origin = Vector2[sprite.sprite_width / 2, sprite.sprite_height]
+    sprite.origin = Vector2[sprite.sprite_width / 2, sprite.sprite_height - 1]
     sprite.scale = [0.75, 0.75]
 
     @state = :ok

@@ -18,7 +18,7 @@ class FireExhaust < DynamicObject
     color = sprite.color
     color.alpha = 100
     sprite.color = color
-    sprite.origin = Vector2[sprite.sprite_width / 2, sprite.sprite_height - 0.5]
+    sprite.origin = Vector2[sprite.sprite_width / 2, sprite.sprite_height - 1.5]
 
     super(map.scene, sprite, position)
 

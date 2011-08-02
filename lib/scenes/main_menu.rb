@@ -217,11 +217,11 @@ class MainMenu < GuiScene
       end
     end
 
-    @zed = sprite @@zed_image, at: [17, 55]
+    @zed = sprite @@zed_image, at: [17, 57]
     @zed.scale = [2, 2]
 
     # Create Ginger.
-    @ginger = sprite image_path("player.png"), at: [48, 55]
+    @ginger = sprite @ginger_image, at: [48, 57]
     @ginger.scale = [2, 2]
 
     @zed.sheet_size = @ginger.sheet_size = [8, 5]

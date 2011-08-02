@@ -102,7 +102,7 @@ class Player < DynamicObject
     sprite = sprite sprite_sheet
     sprite.sheet_size = [8, 5]
     sprite.sheet_pos = SITTING_ANIMATION.first
-    sprite.origin = [sprite.sprite_width * 2.0 / 3.0, sprite.sprite_height]
+    sprite.origin = [sprite.sprite_width * 2.0 / 3.0, sprite.sprite_height - 1]
 
     super(scene, sprite, position)
 
