@@ -3,6 +3,8 @@ class RadioGroup
   extend Forwardable
   include Registers
 
+  SELECTED_COLOR = Color.red
+
   def initialize(options = {}, &block)
     options = {
         at: [0, 0],
@@ -18,6 +20,7 @@ class RadioGroup
     @handler = block
 
     @buttons = []
+    @disabled_buttons = []
 
     super(scene)
   end
@@ -36,19 +39,31 @@ class RadioGroup
   end
 
   def button(text, value, options = {})
+    options = @default_button_options.merge options
+
+    options = {
+        enabled: true,
+    }.merge! options
+
     position = if @buttons.empty?
       @position
     else
-      [@buttons.last.x + @buttons.last.width + @spacing, @position.y]
+      last_button = (@buttons + @disabled_buttons).sort_by(&:x).last
+      [last_button.x + last_button.width + @spacing, @position.y]
     end
 
-    options = @default_button_options.merge! options
-    options.merge!(at: position, data: value, disabled_color: Color.red, group: self)
+    enabled = options[:enabled]
+
+    disabled_color = enabled ? SELECTED_COLOR : (options[:disabled_color] || Button::DISABLED_COLOR)
+    options.merge!(at: position, data: value, disabled_color: disabled_color, group: self)
     button = Button.new(text, options) { select(value) }
 
-    @buttons << button
-
-    select(button.data) unless @selected_button
+    if enabled
+      @buttons << button
+      select(button.data) unless @selected_button
+    else
+      @disabled_buttons << button
+    end
   end
 
   def register(scene)
@@ -58,5 +73,6 @@ class RadioGroup
 
   def draw_on(win)
     @buttons.each {|b| b.draw_on win }
+    @disabled_buttons.each {|b| b.draw_on win }
   end
 end

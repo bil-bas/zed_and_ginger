@@ -3,6 +3,10 @@
        CHANGELOG
 ========================
 
+--- next release
+
+  * Made level selection buttons into a radio group and added a separate [Play] button (thanks eigenbom)
+
 ---- v0.2.0 (2011-08-01)
 
   * Added full-screen toggle button in menu (runs at native resolution in full-screen).

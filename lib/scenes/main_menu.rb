@@ -24,7 +24,7 @@ class MainMenu < GuiScene
   FONT_SIZE = 4.5
   MUTATOR_FONT_SIZE = 3.5
   SMALL_FONT_SIZE = 3.5
-  LEVELS_Y = 14
+  LEVELS_Y = 16
 
   MARGIN = 2
   width = GAME_RESOLUTION.width
@@ -164,9 +164,8 @@ class MainMenu < GuiScene
       user_data.selected_level = value
     end
 
-    unlocked = @level_numbers.select {|i| user_data.level_unlocked?(i, mode: user_data.mode) }
-    unlocked.each do |i|
-      @level_buttons.button(i.to_s, i)
+    @level_numbers.each do |i|
+      @level_buttons.button(i.to_s, i,  enabled: user_data.level_unlocked?(i, mode: user_data.mode))
     end
 
     @level_buttons.select current_level
