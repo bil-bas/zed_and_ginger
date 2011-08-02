@@ -264,12 +264,6 @@ class MainMenu < GuiScene
   end
 
   protected
-  def enable_cat_buttons(name)
-    user_data.selected_cat = name
-    @cat_buttons.each_key {|key| @cat_buttons[key].enabled = (key != name) }
-  end
-
-  protected
   def scale_up
     new_size = GAME_RESOLUTION * (user_data.scaling + 2)
     if new_size.x <= Ray.screen_size.width * 0.95 and
