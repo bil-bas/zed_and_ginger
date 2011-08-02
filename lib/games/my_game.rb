@@ -10,7 +10,7 @@ class MyGame < Ray::Game
     @user_data = UserData.new
 
     options = if user_data.fullscreen?
-      { size: Ray.screen_size, fullscreen: true }
+      { size: Ray.screen_size, no_frame: true }
     else
       { size: GAME_RESOLUTION * user_data.scaling }
     end
