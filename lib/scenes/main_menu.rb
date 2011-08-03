@@ -7,7 +7,7 @@ module Ginger
 end
 module Zed
   EYE_COLOR = Color.new(255, 0, 255)
-  SKIN_COLORS = [Color.new(70, 0, 70), Color.new(50, 0, 50), Color.new(40, 0, 40), Color.new(30, 0, 30)]
+  SKIN_COLORS = [Color.new(30, 0, 30), Color.new(40, 0, 40), Color.new(50, 0, 50), Color.new(70, 0, 70)]
 end
 
 class MainMenu < GuiScene
@@ -181,7 +181,7 @@ class MainMenu < GuiScene
           Zed::EYE_COLOR
         else
           column = (x.div 16) % 4 # Some animations are 4-wide.
-          x_in_sprite, y_in_sprite = x % 16, y % 16
+          x_in_sprite, y_in_sprite = 16 - (x % 16), y % 16
           Zed::SKIN_COLORS[(x_in_sprite + y_in_sprite + column) % Zed::SKIN_COLORS.size]
         end
       end
