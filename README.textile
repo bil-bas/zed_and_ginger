@@ -38,7 +38,7 @@ h2. External assets
 
 * "Ray":http://mon-ouie.github.com/projects/ray.html (game-making library) [Included in executable versions].
 * Original music by "Maverick (Brian Peppers)":http://polyhedricpeppers.weebly.com/. !http://i.creativecommons.org/l/by-sa/3.0/88x31.png(CC BY-SA)!:http://creativecommons.org/licenses/by-sa/3.0/
-
+* 2D simplex noise function for GLSL copyright (C) 2011 Ashima Arts (Ian McEwan) under MIT license.
 
 h2. Tools used
 
