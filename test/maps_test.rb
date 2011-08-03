@@ -28,7 +28,7 @@ context Maps do
       end
       def user_data
         # Only load user data once.
-        @@user_data ||= UserData.new
+        @user_data ||= UserData.new
       end
     end
 

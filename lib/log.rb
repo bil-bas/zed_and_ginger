@@ -7,6 +7,7 @@ module Log
     attr_accessor :log
 
     def level=(level)
+      level = LOG_LEVEL_NAMES.index(level) if level.is_a? Symbol
       log.level = level
       log.info "Enabled logging at #{LOG_LEVEL_NAMES[log.level]} level"
     end
