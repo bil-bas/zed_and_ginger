@@ -5,9 +5,11 @@
 
 --- v0.2.1 (2011-08-03)
 
+  * Changed full-screen mode to using a full-screen borderless window, since it is always run in desktop resolution (faster and cleaner switching).
   * Fixed non-standard keys (displaying as 'Key#NNN' rather than being named) not being able to be used as move keys. Thanks Mon-Ouie for report and help with fix!
   * Fixed the broken resolution +/- buttons. Thanks eigenbom for report!
   * Made level selection buttons into a radio group and added a separate [Play] button. Thanks eigenbom for suggestion.
+  * Stopped the cat sprites sometimes having floating pixels near them in some resolutions.
 
 --- v0.2.0 (2011-08-01)
 
