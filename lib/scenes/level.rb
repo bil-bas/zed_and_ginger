@@ -13,6 +13,9 @@ class Level < GameScene
 
   SCORE_BAR_HEIGHT = 6.625
 
+  # All the levels available (Array of Integer)
+  LEVEL_NUMBERS = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")].map {|file| File.basename(file).to_i }.sort
+
   def_delegator :@maps, :floor, :floor_map
 
   attr_reader :players, :timer, :level_number

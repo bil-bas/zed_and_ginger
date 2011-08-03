@@ -67,6 +67,12 @@ class UserData < BaseUserData
   INVERSION = 'inversion'
   SELECTED_LEVEL = 'selected_level'
 
+  DEFAULT_LEVEL_DATA = {
+      'high-score' => 0,      # Highest score, whether finished the level or not.
+      'high-scorer' => '???', # Name of person getting the high score.
+      'finished' => false,    # Has the player ever finished the level?
+  }
+
   def initialize
     super DATA_FILE, DEFAULT_DATA_FILE
 
@@ -82,16 +88,16 @@ class UserData < BaseUserData
   # High scores, high scorers and level unlocking.
 
   def high_scorer(level)
-    @data[GROUP_LEVELS][level][mode.to_s][HIGH_SCORER]
+    level_data(level, mode)[HIGH_SCORER]
   end
 
   def high_score(level)
-    @data[GROUP_LEVELS][level][mode.to_s][HIGH_SCORE]
+    level_data(level, mode)[HIGH_SCORE]
   end
 
   def set_high_score(level, player, score)
-    @data[GROUP_LEVELS][level][mode.to_s][HIGH_SCORER] = player
-    @data[GROUP_LEVELS][level][mode.to_s][HIGH_SCORE] = score
+    level_data(level, mode)[HIGH_SCORER] = player
+    level_data(level, mode)[HIGH_SCORE] = score
     save
   end
 
@@ -105,20 +111,19 @@ class UserData < BaseUserData
       when INITIAL_LEVEL then true # First (tutorial) level is always unlocked.
       else
         # If the level we are asking for exists and we've completed the previous one.
-        @data[GROUP_LEVELS].has_key?(level) and
+        Level::LEVEL_NUMBERS.include? level and
             ((@data[GROUP_LEVELS].has_key?(level - 1) and
-              @data[GROUP_LEVELS][level - 1][options[:mode].to_s][FINISHED]) or
-                DEVELOPMENT_MODE)
+              level_data(level - 1, mode)[FINISHED]) or DEVELOPMENT_MODE)
     end
   end
 
   def finished_level?(level)
-    @data[GROUP_LEVELS][level][mode.to_s][FINISHED]
+    level_data(level, mode)[FINISHED]
   end
 
   # Possible to finish a level without having made a high score.
   def finish_level(level)
-    @data[GROUP_LEVELS][level][mode.to_s][FINISHED] = true
+    level_data(level, mode)[FINISHED] = true
     save
   end
 
@@ -226,5 +231,19 @@ class UserData < BaseUserData
     else
       :normal
     end
+  end
+
+  protected
+  def level_data(level, mode)
+    level_data = @data[GROUP_LEVELS]
+    level_data[level] = {} unless level_data.has_key? level
+
+    level_data = level_data[level]
+
+    level_data[mode] = DEFAULT_LEVEL_DATA.dup unless level_data.has_key? mode
+
+    # TODO: Worry about merging in the DEFAULT_LEVEL_DATA _if_ it adds more fields.
+
+    level_data[mode]
   end
 end

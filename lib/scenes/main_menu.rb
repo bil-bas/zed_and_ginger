@@ -57,9 +57,7 @@ class MainMenu < GuiScene
     gui_controls << ShadowText.new("Level: ", at: [LEFT_EDGE, y], size: LEVEL_FONT_SIZE, color: TEXT_COLOR)
 
     # Get the numbers of all the levels defined.
-    level_files = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")]
-    @level_numbers = level_files.map {|file| File.basename(file).to_i }.sort
-    @level_numbers -= [UserData::DEV_LEVEL]
+    @level_numbers = Level::LEVEL_NUMBERS - [UserData::DEV_LEVEL]
 
     create_level_buttons # Creates the list of level buttons based on whether hardcore is toggled.
 
