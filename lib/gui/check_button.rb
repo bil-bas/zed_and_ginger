@@ -10,7 +10,7 @@ class CheckButton < Button
 
   def initialize(text, options = {}, &handler)
     options = {
-        shortcut: nil,
+        shortcut: text[0].downcase.to_sym,
         checked: false,
     }.merge! options
 
