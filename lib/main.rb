@@ -23,7 +23,7 @@ require_relative 'ray_ext'
 
 GAME_RESOLUTION = Vector2[96, 60] # Resolution of tiles, at least.
 
-require_files('./', %w[camera log user_data version])
+require_files('./', %w[camera log maps user_data version])
 require_files('mixins', %w[has_status registers])
 require_files('scenes', %w[confirm enter_control enter_name game_over level options_controls pause main_menu ready_set_go teleporting])
 require_files('gui', %w[button check_button fps_monitor progress_bar radio_group score_card shadow_text timer])

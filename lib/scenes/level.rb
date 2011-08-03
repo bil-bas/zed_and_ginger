@@ -13,7 +13,9 @@ class Level < GameScene
 
   SCORE_BAR_HEIGHT = 6.625
 
-  attr_reader :floor_map, :players, :timer, :level_number
+  def_delegator :@maps, :floor, :floor_map
+
+  attr_reader :players, :timer, :level_number
 
   def hardcore?; @hardcore; end
   def inversion?; @inversion; end
@@ -28,19 +30,7 @@ class Level < GameScene
     # Create maps and objects
     @dynamic_objects = [] # Objects that need #update
 
-    level_data = YAML::load_file(File.expand_path(File.join(EXTRACT_PATH, "config/levels/#{level_number}.yml")))
-
-    wall_tiles = level_data['wall']['tiles'].split("\n").map(&:strip)
-    floor_tiles = level_data['floor']['tiles'].split("\n").map(&:strip)
-    # Ensure that all floor and wall tiles are of the correct length.
-    raise "Bad map data for #{level_number}" unless (wall_tiles + floor_tiles).map {|row| row.length}.uniq.size == 1
-
-    @wall_map = WallMap.new self, wall_tiles, level_data['wall']['default_tile']
-    @floor_map = FloorMap.new self, floor_tiles,
-                              Kernel::const_get(level_data['floor']['default_tile'].to_sym),
-                              messages: level_data['messages'], player_name: @player_data.keys.first
-    # Fraction of screen covered by game world, not gui.
-    @maps_height_factor = (@wall_map.to_rect.height.to_f + @floor_map.to_rect.height.to_f)  / GAME_RESOLUTION.height
+    @maps = Maps.new(self, level_number, @player_data.keys.first)
 
     # Create the players on the start line.
     start_grid_positions = if @player_data.size == 1
@@ -52,11 +42,11 @@ class Level < GameScene
     @players = []
     @player_data.each_pair.with_index do |(name, sheet), i|
       position = (start_grid_positions[i].to_vector2 + [0.5, 0.5]) * FloorTile.size
-      @players << Player.new(self, @floor_map.tile_at_grid(start_grid_positions[i]), position, sheet, name)
+      @players << Player.new(self, @maps.floor.tile_at_grid(start_grid_positions[i]), position, sheet, name)
     end
 
     @initial_player_x = players.first.x
-    @distance_to_run = @floor_map.finish_line_x - @initial_player_x
+    @distance_to_run = @maps.finish_line_x - @initial_player_x
 
     # Player's score, time remaining and progress through the level.
     score_y = window.scaled_size.height - SCORE_BAR_HEIGHT
@@ -65,7 +55,7 @@ class Level < GameScene
     main_left = width / 3.0 + 2
     main_right = width * 2 / 3.0 - 2
     gui_controls << ShadowText.new("L%02d" % level_number, at: [main_left, score_y], size: FONT_SIZE, color: TEXT_COLOR)
-    @timer = Timer.new level_data['time_limit'], at: [main_right, score_y], size: FONT_SIZE, color: TEXT_COLOR, auto_center: [1, 0]
+    @timer = Timer.new @maps.time_limit, at: [main_right, score_y], size: FONT_SIZE, color: TEXT_COLOR, auto_center: [1, 0]
     @high_score = ShadowText.new "XXX: 000000", at: [width / 2, score_y + FONT_SIZE * 0.7], size: FONT_SIZE * 0.75,
                                  color: TEXT_COLOR, auto_center: [0.5, 0]
 
@@ -247,12 +237,12 @@ class Level < GameScene
     background.draw_on win
 
     world_view = win.view
-    world_view.size *= [1, @maps_height_factor] # Clip off the score bar.
+    world_view.size *= [1, @maps.height_factor] # Clip off the score bar.
     world_view.zoom_by [1, -1] if @inversion
 
     # Clip on the screen.
     viewport = world_view.viewport
-    viewport.height *= @maps_height_factor # Clip off the score bar.
+    viewport.height *= @maps.height_factor # Clip off the score bar.
     world_view.viewport = viewport
 
     @cameras.each do |camera|
@@ -261,13 +251,13 @@ class Level < GameScene
       # Create a camera for displaying the wall map
       camera_view.y = camera_view.rect.height / (@inversion ? -2.0 : 2.0)
       win.with_view camera_view do
-        @wall_map.draw_on(win)
+        @maps.wall.draw_on(win)
       end
 
       # Create a camera for displaying the floor map (which has origin set in the view)
-      camera_view.y -= @wall_map.to_rect.height
+      camera_view.y -= @maps.wall.to_rect.height
       win.with_view camera_view do
-        @floor_map.draw_on(win)
+        @maps.floor.draw_on(win)
 
         @visible_objects.each {|obj| obj.draw_shadow_on win }
         @visible_objects.each {|obj| obj.draw_on win }

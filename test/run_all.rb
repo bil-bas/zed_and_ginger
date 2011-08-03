@@ -1,5 +1,6 @@
 require 'win32console'
 require 'riot'
+require 'riot/rr'
 
 DEVELOPMENT_MODE = true
 ROOT_PATH = EXTRACT_PATH = File.expand_path("../../", __FILE__)
