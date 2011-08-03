@@ -13,7 +13,6 @@ class ReadySetGo < GameScene
 
     beep = sound sound_path("ready_beep.ogg")
     beep.volume = 30 * (user_data.effects_volume / 50.0)
-    p beep.volume
     beep.play
 
     @events = Fiber.new do
