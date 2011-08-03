@@ -29,7 +29,7 @@ class Rat < DynamicObject
     [:chased, :squashed].each do |sound|
       @sounds[sound] = sound sound_path "rat_#{sound}.ogg"
     end
-    @sounds.each_value {|s| s.volume = 30 }
+    @sounds.each_value {|s| s.volume = 30 * (scene.user_data.effects_volume / 50.0)}
 
     @shadow.scale *= [0.4, 0.2]
   end

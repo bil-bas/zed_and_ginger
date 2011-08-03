@@ -51,7 +51,8 @@ class UserData < BaseUserData
 
   # Sound options.
   GROUP_SOUND = 'sound'
-  # TODO: sound options.
+  EFFECTS_VOLUME = 'effects_volume'
+  MUSIC_VOLUME = 'music_volume'
 
   # Controls.
   GROUP_CONTROLS = 'key_controls'
@@ -231,6 +232,21 @@ class UserData < BaseUserData
     else
       :normal
     end
+  end
+
+  # Sound settings.
+  def effects_volume; @data[GROUP_SOUND][EFFECTS_VOLUME]; end
+
+  def effects_volume=(volume)
+    @data[GROUP_SOUND][EFFECTS_VOLUME] = volume
+    save
+  end
+
+  def music_volume; @data[GROUP_SOUND][MUSIC_VOLUME] ;end
+
+  def music_volume=(volume)
+    @data[GROUP_SOUND][MUSIC_VOLUME] = volume
+    save
   end
 
   protected

@@ -3,6 +3,11 @@
        CHANGELOG
 ========================
 
+--- Next release
+
+  * Moved resolution/fullscreen controls into settings page.
+  * Added effects/music sliders in a separate settings page.
+
 --- v0.2.1 (2011-08-03)
 
   * Changed full-screen mode to using a full-screen borderless window, since it is always run in desktop resolution (faster and cleaner switching).

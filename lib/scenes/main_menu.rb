@@ -61,10 +61,6 @@ class MainMenu < GuiScene
 
     create_level_buttons # Creates the list of level buttons based on whether hardcore is toggled.
 
-    gui_controls << Button.new("Play", at: [RIGHT_EDGE, LEVELS_Y], size: PLAY_FONT_SIZE, auto_center: [1, 0]) do
-      start_level @level_buttons.value
-    end
-
     if DEVELOPMENT_MODE
       gui_controls << Button.new("#{UserData::DEV_LEVEL}-dev", at: [30, LEVELS_Y + 8], size: LEVEL_FONT_SIZE) do
         start_level UserData::DEV_LEVEL
@@ -91,47 +87,25 @@ class MainMenu < GuiScene
     self.gui_controls += [@hardcore, @inversion]
 
     # Buttons in a column on the right hand side of the screen.
-    y = 28
+    y = 18
+    gui_controls << Button.new("Play", at: [RIGHT_EDGE, y], size: PLAY_FONT_SIZE, auto_center: [1, 0]) do
+      start_level @level_buttons.value
+    end
+
+    y += gui_controls.last.height + BUTTON_SPACING * 2
+
+    # User settings - controls.
+    gui_controls << Button.new("Settings", at: [RIGHT_EDGE, y], size: FONT_SIZE,
+                                 auto_center: [1, 0]) do
+      push_scene :options_multimedia
+    end
+
+    y += gui_controls.last.height + BUTTON_SPACING
+
     # User settings - controls.
     gui_controls << Button.new("Controls", at: [RIGHT_EDGE, y], size: FONT_SIZE,
                                  auto_center: [1, 0]) do
       push_scene :options_controls
-    end
-
-    y += gui_controls.last.height + BUTTON_SPACING
-
-    # Toggle fullscreen/window.
-    gui_controls << CheckButton.new('Fullscreen', at: [RIGHT_EDGE, y], size: FONT_SIZE, auto_center: [1, 0],
-                                    checked: user_data.fullscreen?) do |button, checked|
-      user_data.fullscreen = checked
-      $create_window = true
-      pop_scene
-      window.close
-    end
-
-    y += gui_controls.last.height + BUTTON_SPACING
-
-    unless user_data.fullscreen?
-      # Increase and reduce the size of the window.
-      x = RIGHT_EDGE
-      gui_controls << Button.new("+", at: [RIGHT_EDGE, y], size: FONT_SIZE,
-                                 auto_center: [1, 0]) do
-        scale_up
-      end
-      x -= gui_controls.last.width + BUTTON_SPACING
-
-      @screen_size = ShadowText.new("0000x0000", at: [x, y + (FONT_SIZE - SMALL_FONT_SIZE) / 2.0],
-                                    size: SMALL_FONT_SIZE, color: TEXT_COLOR, auto_center: [1, 0])
-      gui_controls << @screen_size
-
-      x -= gui_controls.last.width + BUTTON_SPACING
-
-      gui_controls << Button.new("-", at: [x, y], size: FONT_SIZE,
-                                 auto_center: [1, 0]) do
-        scale_down
-      end
-
-      update_screen_size
     end
 
     y += gui_controls.last.height + BUTTON_SPACING
@@ -144,10 +118,8 @@ class MainMenu < GuiScene
     gui_controls << ShadowText.new("v#{ZedAndGinger::VERSION}", at: [RIGHT_EDGE, TOP_EDGE],
                                    size: SMALL_FONT_SIZE, color: TEXT_COLOR, auto_center: [1, 1])
 
-    @@ambient_music ||= music music_path("Space_Cat_Ambient.ogg")
-    @@ambient_music.looping = true
-    @@ambient_music.play
-    @@ambient_music.volume = 70
+    reset_ambient_music_volume
+    ambient_music.play if ambient_music.time == 0
 
     window.icon = image image_path("window_icon.png")
 
@@ -262,41 +234,6 @@ class MainMenu < GuiScene
   end
 
   protected
-  def scale_up
-    new_size = GAME_RESOLUTION * (user_data.scaling + 2)
-    if new_size.x <= Ray.screen_size.width * 0.95 and
-       new_size.y <= Ray.screen_size.height * 0.95
-      self.scaling = user_data.scaling + 2
-    end
-  end
-
-  protected
-  def scale_down
-    if user_data.scaling >= 4
-      self.scaling = user_data.scaling - 2
-    end
-  end
-
-  protected
-  def scaling=(scaling)
-    pop_scene
-    user_data.scaling = scaling
-    window.size = GAME_RESOLUTION * user_data.scaling
-    push_scene name
-    update_screen_size
-  end
-
-  protected
-  def update_screen_size
-    @screen_size.string = ("%dx%d" % (GAME_RESOLUTION * user_data.scaling).to_a).rjust(9)
-  end
-
-  public
-  def clean_up
-    @@ambient_music.pause
-  end
-
-  protected
   def start_level(level_number)
     cat = user_data.selected_cat
     player_data = if cat == :both
@@ -315,11 +252,11 @@ class MainMenu < GuiScene
     add_level_button_events
 
     on :focus_gain do
-      @@ambient_music.play
+      ambient_music.play
     end
 
     on :focus_loss do
-      @@ambient_music.pause
+      ambient_music.pause
     end
   end
 

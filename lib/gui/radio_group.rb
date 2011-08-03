@@ -5,15 +5,19 @@ class RadioGroup
 
   SELECTED_COLOR = Color.red
 
+  def height; (@buttons + @disabled_buttons).map(&:height).max; end
+
   def initialize(options = {}, &block)
     options = {
         at: [0, 0],
         spacing: 0.5,
         default_button_options: {},
+        initial_value: nil,
     }.merge! options
 
     @spacing = options[:spacing]
     @position = options[:at].to_vector2
+    @initial_value = options[:initial_value]
 
     @default_button_options = options[:default_button_options]
     @selected_button = nil
@@ -60,7 +64,7 @@ class RadioGroup
 
     if enabled
       @buttons << button
-      select(button.data) unless @selected_button
+      select(button.data) if @initial_value and button.data == @initial_value
     else
       @disabled_buttons << button
     end

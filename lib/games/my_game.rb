@@ -9,6 +9,12 @@ class MyGame < Ray::Game
   def initialize(title, scene_classes, options = {})
     @user_data = UserData.new
 
+    options = {
+        initial_scene: :main_menu,
+    }.merge! options
+
+    initial_scene = options[:initial_scene]
+
     options = if user_data.fullscreen?
       { size: Ray.screen_size, no_frame: true }
     else
@@ -28,7 +34,13 @@ class MyGame < Ray::Game
 
     scene_classes.each {|s| s.bind(self) }
 
-    scenes << :main_menu unless defined? Ocra
+    unless defined? Ocra
+      scenes << :main_menu
+
+      if initial_scene != :main_menu
+        scenes << initial_scene
+      end
+    end
 
     if defined? RubyProf
       RubyProf.start

@@ -22,6 +22,7 @@ class Button
         color: COLOR.dup,
         disabled_color: DISABLED_COLOR.dup,
         hover_color: HOVER_COLOR.dup,
+        brackets: true,
     }.merge! options
 
     @color = options[:color]
@@ -31,7 +32,8 @@ class Button
     @shortcut = options.has_key?(:shortcut) ? options[:shortcut] : text[0].downcase.to_sym
 
     @data = options[:data]
-    @text = Text.new "[#{text}]", options
+    text = "[#{text}]" if options[:brackets]
+    @text = Text.new text, options
     @handler = handler
 
     self.enabled = options[:enabled]

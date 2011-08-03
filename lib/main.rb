@@ -25,24 +25,22 @@ GAME_RESOLUTION = Vector2[96, 60] # Resolution of tiles, at least.
 
 require_files('./', %w[camera log maps user_data version])
 require_files('mixins', %w[has_status registers])
-require_files('scenes', %w[confirm enter_control enter_name game_over level options_controls pause main_menu ready_set_go teleporting])
+require_files('scenes', %w[confirm enter_control enter_name game_over level options_controls options_multimedia pause main_menu ready_set_go teleporting])
 require_files('gui', %w[button check_button fps_monitor progress_bar radio_group score_card shadow_text timer])
 require_files('standard_ext', %w[hash])
 require_files('games', %w[error_window my_game])
 
 CLASSES_WITH_SHADERS = [SlowFloor, SlowSplat, Teleporter, Teleporting]
-SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, Level, OptionsControls, Pause, MainMenu, ReadySetGo, Teleporting]
+SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, Level, OptionsControls, OptionsMultimedia, Pause, MainMenu, ReadySetGo, Teleporting]
 
-$create_window = true unless defined? $create_window # To allow tests not to open a window.
-while $create_window
-  $create_window = false
-
+$create_game_with_scene = :main_menu unless defined? $create_game_with_scenes # To allow tests not to open a window.
+while $create_game_with_scene
   begin
-    game = MyGame.new("Zed and Ginger", SCENE_CLASSES)
+    game = MyGame.new("Zed and Ginger", SCENE_CLASSES, initial_scene: $create_game_with_scene)
     game.run
 
   rescue => exception
-    game.window.close
+    game.window.close if game
 
     ErrorWindow.new("Zed and Ginger", exception, size: [640, 480]).run
   end

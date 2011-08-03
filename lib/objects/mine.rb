@@ -24,7 +24,7 @@ class Mine < DynamicObject
     @animation.loop!
 
     @explosion = sound sound_path "mine_explosion.ogg"
-    @explosion.volume = 30
+    @explosion.volume = 30 * (scene.user_data.effects_volume / 50.0)
 
     @active = true
   end

@@ -10,10 +10,26 @@ class GameScene < Scene
 
   class << self
     attr_accessor :background
+    attr_accessor :ambient_music
   end
 
   def background; GameScene.background; end
   def background=(background); GameScene.background = background; end
+
+  def ambient_music
+    unless GameScene.ambient_music
+      music = music music_path("Space_Cat_Ambient.ogg")
+      music.looping = true
+      GameScene.ambient_music = music
+      reset_ambient_music_volume
+    end
+
+    GameScene.ambient_music
+  end
+
+  def reset_ambient_music_volume
+     ambient_music.volume = 50 * (user_data.music_volume / 50.0)
+  end
 
   def setup
     @gui_controls = []

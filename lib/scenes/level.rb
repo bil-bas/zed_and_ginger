@@ -83,11 +83,13 @@ class Level < GameScene
     @screen_splitter = Polygon.rectangle([GAME_RESOLUTION.width / 2, 0, 1, GAME_RESOLUTION.height], Color.new(50, 50, 50))
     update_camera(0)
 
+    ambient_music.stop
+
     @level_music ||= music music_path "Space_Cat_Habitat.ogg"
-    @level_music.volume = 20
+    @level_music.volume = 20 * (user_data.music_volume / 50.0)
 
     @finish_music ||= music music_path "Space_Cat_Winner.ogg"
-    @finish_music.volume = 50
+    @finish_music.volume = 50 * (user_data.music_volume / 50.0)
 
     calculate_visible_objects
 

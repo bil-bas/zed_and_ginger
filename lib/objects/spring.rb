@@ -23,7 +23,7 @@ class Spring < DynamicObject
     @activated = false
 
     @bounce_sound = sound sound_path "spring_bounce.ogg"
-    @bounce_sound.volume = 30
+    @bounce_sound.volume = 30 * (scene.user_data.effects_volume / 50.0)
 
     super(map.scene, @sprite_flat, position)
   end

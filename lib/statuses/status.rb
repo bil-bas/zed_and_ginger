@@ -31,7 +31,11 @@ class Status
 
     raise_event :status_application, @owner, self
 
-    sound(sound_path(sound_effect)).play if sound_effect
+    if sound_effect
+      sound = sound(sound_path(sound_effect))
+      sound.volume = 50 * (owner.scene.user_data.effects_volume / 50.0)
+      sound.play
+    end
 
     setup
 

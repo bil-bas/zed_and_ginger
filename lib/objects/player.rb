@@ -123,8 +123,8 @@ class Player < DynamicObject
     [:died, :jump].each do |sound|
       @sounds[sound] = sound sound_path "player_#{sound}.ogg"
     end
-    @sounds.each_value {|s| s.volume = 30 }
-    @sounds[:jump].volume = 15
+    @sounds[:died].volume = 30 * (scene.user_data.effects_volume / 50.0)
+    @sounds[:jump].volume = 15 * (scene.user_data.effects_volume / 50.0)
 
     create_animations
 

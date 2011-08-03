@@ -21,6 +21,7 @@ class EnterName < DialogScene
     gui_controls << @entry
 
     @key_press_sound = sound sound_path("key_press.ogg")
+    @key_press_sound.volume = 50 * (user_data.effects_volume / 50.0)
   end
 
   def register
