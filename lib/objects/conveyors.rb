@@ -1,6 +1,6 @@
-require_relative 'dynamic_object'
+require_relative 'game_object'
 
-class Conveyor < DynamicObject
+class Conveyor < GameObject
   SPEED = 24.0 # Pixels/second
   IMAGE = image_path("conveyor.png")
 

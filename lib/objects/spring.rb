@@ -1,6 +1,6 @@
-require_relative "dynamic_object"
+require_relative "game_object"
 
-class Spring < DynamicObject
+class Spring < GameObject
   JUMP_Z_SPEED = 2
   JUMP_SPEED_MODIFIER = 1.3
 

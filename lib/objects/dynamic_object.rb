@@ -1,5 +1,6 @@
 require_relative "game_object"
 
+# An object that is affected by gravity.
 class DynamicObject < GameObject
   GRAVITY = 8
 
@@ -39,12 +40,6 @@ class DynamicObject < GameObject
       end
     end
 
-    @animations.each(&:update)
-
     super
-  end
-  
-  def animated?
-    @animations.any?(&:running?)
   end
 end

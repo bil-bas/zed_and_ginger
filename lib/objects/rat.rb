@@ -1,7 +1,7 @@
-require_relative "dynamic_object"
+require_relative "game_object"
 require_relative "float_icon"
 
-class Rat < DynamicObject
+class Rat < GameObject
   OK_SPRITE = [0, 0]
   CHASED_SPRITE = [1, 0]
   SQUASHED_SPRITE = [2, 0]

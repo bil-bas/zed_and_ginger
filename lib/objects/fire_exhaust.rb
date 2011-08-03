@@ -1,6 +1,6 @@
 require_relative 'game_object'
 
-class FireExhaust < DynamicObject
+class FireExhaust < GameObject
   BURN_DURATION = 0.9
   INACTIVE_DURATION = 1.8
   PERIOD = INACTIVE_DURATION + BURN_DURATION

@@ -33,7 +33,7 @@ require_files('games', %w[error_window my_game])
 CLASSES_WITH_SHADERS = [SlowFloor, SlowSplat, Teleporter, Teleporting]
 SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, Level, OptionsControls, OptionsMultimedia, Pause, MainMenu, ReadySetGo, Teleporting]
 
-$create_game_with_scene = :main_menu unless defined? $create_game_with_scenes # To allow tests not to open a window.
+$create_game_with_scene = :main_menu unless defined? $create_game_with_scene # To allow tests not to open a window.
 while $create_game_with_scene
   begin
     game = MyGame.new("Zed and Ginger", SCENE_CLASSES, initial_scene: $create_game_with_scene)

@@ -1,6 +1,6 @@
-require_relative "dynamic_object"
+require_relative "game_object"
 
-class Mine < DynamicObject
+class Mine < GameObject
   ANIMATION_DURATION = 1
   EXPLOSION_FORCE = 2.5 # Speed upwards.
 

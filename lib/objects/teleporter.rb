@@ -1,6 +1,6 @@
 require_relative "dynamic_object"
 
-class Teleporter < DynamicObject
+class Teleporter < GameObject
   SKEW = 2
   FREQUENCY_AMPLITUDE = 4
   INTERFERENCE_AMPLITUDE = 2

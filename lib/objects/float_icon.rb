@@ -1,6 +1,6 @@
-require_relative "dynamic_object"
+require_relative "game_object"
 
-class FloatIcon < DynamicObject
+class FloatIcon < GameObject
   PIXELS_PER_SECOND = 20
   FLOAT_DISTANCE = 20
 
@@ -31,9 +31,5 @@ class FloatIcon < DynamicObject
                                     from: sprite.scale,
                                     to: sprite.scale * 1.25,
                                     duration: duration).start(@sprite)
-  end
-
-  def update
-    @animations.each(&:update)
   end
 end

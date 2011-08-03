@@ -1,6 +1,6 @@
-require_relative "dynamic_object"
+require_relative "game_object"
 
-class MessageScreen < DynamicObject
+class MessageScreen < GameObject
   FONT_SIZE = 6.25
 
   def casts_shadow?; false; end

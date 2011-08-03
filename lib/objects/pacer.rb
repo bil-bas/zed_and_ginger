@@ -1,7 +1,7 @@
-require_relative "dynamic_object"
+require_relative "game_object"
 
 # Paces up and down.
-class Pacer < DynamicObject
+class Pacer < GameObject
   MOVE_SPEED = 5
   ANIMATION_DURATION = 0.5
 

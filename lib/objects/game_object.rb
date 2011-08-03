@@ -90,6 +90,8 @@ Too slow to use in the real system, so saved to a file.
     @shadow.origin = @shadow.image.size / 2
     @shadow.scale = [0.06, 0.06]
     @shadow.position = position
+
+    @animations = []
     
     scene.add_object(self)
 
@@ -120,6 +122,8 @@ Too slow to use in the real system, so saved to a file.
   end
 
   def update
+    @animations.each(&:update)
+
     if DEVELOPMENT_MODE
       @collision_rect.matrix = nil
       @collision_rect.pos = @sprite.pos

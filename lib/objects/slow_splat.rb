@@ -1,7 +1,7 @@
-require_relative "dynamic_object"
+require_relative "game_object"
 require_relative "../tiles/slow_floor.rb"
 
-class SlowSplat < DynamicObject
+class SlowSplat < GameObject
   IMAGE_SIZE = Vector2[32, 8]
 
   class << self
