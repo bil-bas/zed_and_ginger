@@ -22,10 +22,10 @@ class Spring < DynamicObject
 
     @activated = false
 
+    super(map.scene, @sprite_flat, position)
+
     @bounce_sound = sound sound_path "spring_bounce.ogg"
     @bounce_sound.volume = 30 * (scene.user_data.effects_volume / 50.0)
-
-    super(map.scene, @sprite_flat, position)
   end
 
   def z_order
