@@ -3,11 +3,13 @@
        CHANGELOG
 ========================
 
---- next release
+--- v0.2.1 (2011-08-03)
 
-  * Made level selection buttons into a radio group and added a separate [Play] button (thanks eigenbom)
+  * Fixed non-standard keys (displaying as 'Key#NNN' rather than being named) not being able to be used as move keys. Thanks Mon-Ouie for report and help with fix!
+  * Fixed the broken resolution +/- buttons. Thanks eigenbom for report!
+  * Made level selection buttons into a radio group and added a separate [Play] button. Thanks eigenbom for suggestion.
 
----- v0.2.0 (2011-08-01)
+--- v0.2.0 (2011-08-01)
 
   * Added full-screen toggle button in menu (runs at native resolution in full-screen).
   * Added key configuration in-game and separate key settings for each of the interplanetary felines.
@@ -18,6 +20,6 @@
   * Added 2-player local racing mode (same screen, but zooms and then splits if you are far apart)!
   * Reduced down-time when "killed", so that someone being disabled for a little while doesn't guarantee a loss.
 
----- v0.1.0 (2011-07-27)
+--- v0.1.0 (2011-07-27)
 
   * First public release
