@@ -2,7 +2,9 @@ class Particle
   extend Forwardable
   include Helper
 
-  GRAVITY = 8.0
+  GRAVITY = 8.0 * 9.81 # Assuming an 8-pixel square tile is 1m square.
+  AUTO_FADE_DURATION = 5.0
+  AUTO_FADE_SPEED = 255.0 / AUTO_FADE_DURATION
 
   def z_order; @y; end
 
@@ -10,7 +12,8 @@ class Particle
   def draw_debug_on(win); ; end # NOP
 
   def initialize(generator, options = {})
-    @polygon = Polygon.rectangle([-0.5, -0.5, 1, 1])
+    size = 0.75
+    @polygon = Polygon.rectangle([-size * 0.5, -size * 0.5, size, size])
     @generator = generator
   end
 
@@ -46,21 +49,34 @@ class Particle
   end
 
   def update(duration)
-    # Physics
-    @x += @velocity_x * duration
-    @y += @velocity_y * duration
-    @velocity_z -= @gravity * duration
-    @z += @velocity_z * duration
+    if @z == 0
+      # Already hit the ground. Just fade away...
+      @alpha -= @fade_speed * duration
+    elsif @z < 0
+      # Hit the ground. Fade out slowly, unless a fade is already set.
+      @z = 0
+      @polygon.y = @y
+      @fade_speed = [AUTO_FADE_SPEED, @fade_speed].max
+    else
+      # Physics
+      @x += @velocity_x * duration
+      @y = [[@y + @velocity_y * duration, 0].max, 30].min # stop it going through a wall (visible or invisible).
+
+      # Interpolate gravity's effect.
+      velocity_change = @gravity * duration
+      @velocity_z -= velocity_change
+      @z += (@velocity_z - velocity_change * 0.5) * duration
+
+      @polygon.x = @x + @y / 2.0
+      @polygon.y = @y - @z
+    end
 
     # Fade.
     @alpha -= @fade_speed * duration
 
-    # Get rid of it unless it is in the world and still visible.
-    if @z < 0 or @z > 100 or @y < 0 or @y > 30 or @alpha <= 10
+    if @alpha < 10
       @generator.destroy(self)
     else
-      @polygon.x = @x + @y / 2.0
-      @polygon.y = @y - @z
       @color.alpha = @alpha
       @polygon.color = @color
     end

@@ -55,9 +55,9 @@ class LaserBeam < GameObject
       player.burn if player.can_be_hurt? and collide? player
     end
 
-    if y > 25 and rand() < 0.25
-      scene.create_particle([x, y + 3, z], velocity: [0, -2, 0], scale: [0.5, 0.5],
-          random_velocity: [5, 2, 1], glow: true, color: SPARK_COLOR, fade_duration: 2.5)
+    if y > 25 and rand() < 0.2
+      scene.create_particle([x, y + 3, z], velocity: [0, -4, 0], gravity: 0.5,
+          random_velocity: [4, 4, 4], glow: true, color: SPARK_COLOR, fade_duration: 2)
     end
   end
 

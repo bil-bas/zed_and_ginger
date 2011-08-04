@@ -51,6 +51,9 @@ class Rat < GameObject
           @sprite.scale_x *= -1 if rand() < 0.5
           @sounds[:squashed].play
           FloatIcon.new(:extra_time, player)
+          scene.create_particle([x, y, z + 0.5], velocity: [0, 0, 24], number: 16,
+              random_velocity: [8, 8, 8], color: Color.red)
+
         else
           @sprite.sheet_pos = CHASED_SPRITE
           player.score += TOUCHED_SCORE
