@@ -12,6 +12,7 @@ class ShadowText
     }.merge! options
 
     @main = Text.new string, options
+    @main.blend_mode = options[:blend_mode] if options.has_key? :blend_mode
 
     @shadow = Text.new string, options # @main.dup should work here.
     @shadow.color = options[:shadow_color]
