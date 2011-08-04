@@ -17,6 +17,7 @@ class Level < GameScene
   LEVEL_NUMBERS = Dir[File.join(EXTRACT_PATH, "config/levels/*.yml")].map {|file| File.basename(file).to_i }.sort
 
   def_delegator :@maps, :floor, :floor_map
+  def_delegator :@particle_generator, :create, :create_particle
 
   attr_reader :players, :timer, :level_number
 
@@ -32,6 +33,7 @@ class Level < GameScene
 
     # Create maps and objects
     @dynamic_objects = [] # Objects that need #update
+    @particle_generator = ParticleGenerator.new(self)
 
     @maps = Maps.new(self, level_number, @player_data.keys.first)
 
@@ -182,7 +184,7 @@ class Level < GameScene
   end
 
   def remove_object(object)
-    @dynamic_objects -= [object]
+    @dynamic_objects.delete object
   end
 
   def objects; @dynamic_objects; end
@@ -211,7 +213,6 @@ class Level < GameScene
     timer.decrease frame_time if @players.all?(&:ok?)
 
     calculate_visible_objects
-    @visible_objects.each(&:update)
 
     update_score_cards
 
@@ -232,8 +233,13 @@ class Level < GameScene
     end
 
     @visible_objects = @dynamic_objects.select do |o|
-      x_positions.any? {|min, max| o.x.between?(min, max) }
+      x_positions.any? {|min, max| x = o.x; x >= min and x <= max }
     end
+
+    @visible_objects.each(&:update)
+    @particle_generator.update
+
+    @visible_objects += @particle_generator.particles
 
     @visible_objects.sort_by!(&:z_order)
   end

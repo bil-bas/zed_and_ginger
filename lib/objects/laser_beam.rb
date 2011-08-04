@@ -6,6 +6,8 @@ class LaserBeam < GameObject
   Z_DIFFERENCE = 24 # Moves from 0..24 at linear speed, but limited at 3..21 (stops at the ends)
   SPEED = 10.0
 
+  SPARK_COLOR = Color.new(255, 255, 0, 150)
+
   def to_rect; Rect.new(*(@position - [0, 3]), 0, 6) end
   def z_order; super - 3; end # So it appear behind the player.
   def phase_shift; 0; end
@@ -37,7 +39,8 @@ class LaserBeam < GameObject
   end
 
   def collide?(other)
-    other.z.between?(z - 7, z + 1) and super(other)
+    other_z = other.z
+    other_z > z - 7 and other_z < z + 1 and super(other)
   end
 
   def update
@@ -50,6 +53,11 @@ class LaserBeam < GameObject
 
     scene.players.each do |player|
       player.burn if player.can_be_hurt? and collide? player
+    end
+
+    if y > 25 and rand() < 0.25
+      scene.create_particle([x, y + 3, z], velocity: [0, -2, 0], scale: [0.5, 0.5],
+          random_velocity: [5, 2, 1], glow: true, color: SPARK_COLOR, fade_duration: 2.5)
     end
   end
 

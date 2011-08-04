@@ -29,6 +29,7 @@ require_files('scenes', %w[confirm enter_control enter_name game_over level opti
 require_files('gui', %w[button check_button fps_monitor progress_bar radio_group score_card shadow_text timer])
 require_files('standard_ext', %w[hash])
 require_files('games', %w[error_window my_game])
+require_files('particles', %w[particle_generator])
 
 CLASSES_WITH_SHADERS = [SlowFloor, SlowSplat, Teleporter, Teleporting]
 SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, Level, OptionsControls, OptionsMultimedia, Pause, MainMenu, ReadySetGo, Teleporting]

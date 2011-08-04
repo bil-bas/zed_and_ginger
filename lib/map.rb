@@ -27,8 +27,9 @@ class Map
   
   def tile_at_grid(grid_position)
     grid_position = grid_position.to_vector2
-    if grid_position.x.between?(0, @grid_width - 1) and grid_position.y.between?(0, @grid_height - 1)
-      @tiles[grid_position.y][grid_position.x]
+    x, y = grid_position.x, grid_position.y
+    if x >= 0 and x < @grid_width and y >= 0 and y < @grid_height
+      @tiles[y][x]
     else
       nil
     end

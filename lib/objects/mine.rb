@@ -41,6 +41,13 @@ class Mine < GameObject
 
           @sprite.sheet_pos = EXPLODED_SPRITE
           @explosion.play
+
+          scene.create_particle([x, y, z + 1], velocity: [0, 0, 50], number: 10, gravity: 0, glow: true,
+              random_velocity: [25, 10, 25], color: Color.new(255, 150, 75, 200), scale: [1.5, 1.5], fade_duration: 1)
+
+          scene.create_particle([x, y, z + 1], velocity: [0, 0, 2.5], number: 10, gravity: -0.5,
+                    random_velocity: [3, 3, 2.5], color: Color.new(0, 0, 0, 150), scale: [2, 2], fade_duration: 5)
+
           @active = false
         end
       end
