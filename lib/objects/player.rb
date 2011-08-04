@@ -21,7 +21,7 @@ class Player < DynamicObject
 
   FOUR_FRAME_ANIMATION_DURATION = 1
 
-  SCORE_PER_TILE = 10
+  SCORE_PER_TILE = 50
 
   # 8 frames of walking.
   WALKING_ANIMATION = [[0, 0], [7, 0]]

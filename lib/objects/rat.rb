@@ -7,7 +7,8 @@ class Rat < GameObject
   SQUASHED_SPRITE = [2, 0]
 
   SQUASHED_EXTRA_TIME = 1 # Extra 1 second when you squash/eat the mouse.
-  TOUCHED_SCORE = 100
+  TOUCHED_SCORE = 250
+  SQUASHED_SCORE = 1000
   RUN_SPEED = -40
 
   def casts_shadow?; @state != :squashed; end
@@ -44,6 +45,7 @@ class Rat < GameObject
         if player.velocity_z < 0
           @sprite.sheet_pos = SQUASHED_SPRITE
           scene.timer.increase SQUASHED_EXTRA_TIME
+          player.score += SQUASHED_SCORE
           @state = :squashed
           @sprite.y += 3
           @sprite.scale_x *= -1 if rand() < 0.5
