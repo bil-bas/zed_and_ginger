@@ -31,7 +31,7 @@ class Rat < GameObject
     end
     @sounds.each_value {|s| s.volume = 30 * (scene.user_data.effects_volume / 50.0)}
 
-    @shadow.scale *= [0.4, 0.2]
+    @shadow.scale *= [0.7, 0.3]
   end
 
   def collide?(other)
