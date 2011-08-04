@@ -2,30 +2,34 @@ class Timer
   OUT_OF_TIME_COLOR = Color.red
   FINISHED_COLOR = Color.new(100, 100, 255)
 
-  attr_reader :remaining
-  def elapsed; @total_time - @remaining; end
+  attr_reader :remaining, :elapsed
 
   def out_of_time?; @remaining == 0; end
 
   def initialize(duration, options = {})
-    @total_time = duration.to_f
-    @remaining = @total_time
+    @elapsed = 0
+    @remaining = duration.to_f
     @text = ShadowText.new "", options
     recalculate
   end
 
+  # Use up time.
   def decrease(time, options = {})
     options = {
         finished: false, # Means the player has finished, so reducing time to 0 is OK.
     }.merge! options
 
-    @remaining = [@remaining - time, 0.0].max
+    decrease = [time, @remaining].min
+
+    @elapsed += decrease unless options[:finished]
+    @remaining -= decrease
     if out_of_time?
       @text.color = options[:finished] ? FINISHED_COLOR : OUT_OF_TIME_COLOR
     end
     recalculate
   end
 
+  # Gain extra time.
   def increase(time)
     @remaining += time
   end
