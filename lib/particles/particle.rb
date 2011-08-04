@@ -4,37 +4,10 @@ class Particle
 
   GRAVITY = 8.0
 
-  attr_reader :z
-
-  def z_order; @polygon.y + @z; end
+  def z_order; @y; end
 
   def draw_shadow_on(win); ; end # NOP
   def draw_debug_on(win); ; end # NOP
-
-  def z=(value)
-    @polygon.y += @z - value
-    @z = value
-  end
-
-  def x=(value)
-    @x = value
-    @polygon.x = value + @y / 2.0
-
-    value
-  end
-
-  def z_order; @y + @z; end
-
-  def y=(value)
-    change_y = value - @y
-
-    @y = value
-
-    @polygon.y = value - @z
-    @polygon.x += change_y / 2.0
-
-    value
-  end
 
   def initialize(generator, options = {})
     @polygon = Polygon.rectangle([-0.5, -0.5, 1, 1])
@@ -58,9 +31,8 @@ class Particle
     @fade_speed = @alpha / options[:fade_duration]
 
     @gravity = GRAVITY * options[:gravity]
-    @x = @y = @z = 0
-    @polygon.pos = [0, 0]
-    self.x, self.y, self.z = position
+    @x, @y, @z = position
+    @polygon.pos = [@x + @y, @y - @z]
 
     @polygon.scale = options[:scale]
 
@@ -75,17 +47,20 @@ class Particle
 
   def update(duration)
     # Physics
-    self.x = @x + @velocity_x * duration
-    self.y = @y + @velocity_y * duration
+    @x += @velocity_x * duration
+    @y += @velocity_y * duration
     @velocity_z -= @gravity * duration
-    self.z = @z + @velocity_z * duration
+    @z += @velocity_z * duration
 
     # Fade.
     @alpha -= @fade_speed * duration
 
+    # Get rid of it unless it is in the world and still visible.
     if @z < 0 or @z > 100 or @y < 0 or @y > 30 or @alpha <= 10
       @generator.destroy(self)
     else
+      @polygon.x = @x + @y / 2.0
+      @polygon.y = @y - @z
       @color.alpha = @alpha
       @polygon.color = @color
     end
