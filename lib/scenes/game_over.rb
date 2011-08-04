@@ -32,7 +32,7 @@ class GameOver < DialogScene
     @button_background = Polygon.rectangle([0, @buttons.last.y - 1, GAME_RESOLUTION.width, @buttons.last.height + 2],
                                            Color.new(0, 0, 0, 100))
 
-    @big_score = ShadowText.new("0000000", at: [GAME_RESOLUTION.width / 2, GAME_RESOLUTION.height * 0.58], size: 20, blend_mode: :add,
+    @big_score = ShadowText.new("%07d" % @winner.score, at: [GAME_RESOLUTION.width / 2, GAME_RESOLUTION.height * 0.58], size: 20, blend_mode: :add,
                                 color: Color.new(150, 150, 255, 200), shadow_color: Color.new(0, 0, 0, 200), auto_center: [0.5, 0.5])
 
     gui_controls << @big_score
