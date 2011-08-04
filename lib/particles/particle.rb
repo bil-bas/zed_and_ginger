@@ -49,15 +49,12 @@ class Particle
   end
 
   def update(duration)
-    if @z == 0
-      # Already hit the ground. Just fade away...
-      @alpha -= @fade_speed * duration
-    elsif @z < 0
+    if @z < 0
       # Hit the ground. Fade out slowly, unless a fade is already set.
       @z = 0
       @polygon.y = @y
       @fade_speed = [AUTO_FADE_SPEED, @fade_speed].max
-    else
+    elsif @z > 0
       # Physics
       @x += @velocity_x * duration
       @y = [[@y + @velocity_y * duration, 0].max, 30].min # stop it going through a wall (visible or invisible).
@@ -70,13 +67,14 @@ class Particle
       @polygon.x = @x + @y / 2.0
       @polygon.y = @y - @z
     end
+    # Else z == 0, so just fade.
 
     # Fade.
     @alpha -= @fade_speed * duration
 
     if @alpha < 10
       @generator.destroy(self)
-    else
+    elsif @fade_speed > 0
       @color.alpha = @alpha
       @polygon.color = @color
     end
