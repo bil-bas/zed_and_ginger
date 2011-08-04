@@ -6,8 +6,14 @@ class Status
 
     def setup
       super
-      owner.sheet_pos = owner.class::BURNT_SPRITE
-      # TODO: Create ash particles that fall? At least a proper burned sprite.
+      # Create charcoal brickets.
+      owner.explode_pixels(color: Color.black, gravity: 0.5, velocity: [0, 0, 5], random_velocity: [1, 1, 1])
+
+      # Create smoke.
+      owner.scene.create_particle([owner.x, owner.y, owner.z + 4], color: Color.new(0, 0, 0, 100), number: 10,
+                                  fade_duration: 4, gravity: -0.1, scale: [2, 2], velocity: [0, 0, 0],
+                                  random_position: [4, 2, 1], random_velocity: [1, 1, 0])
+      owner.sheet_pos = owner.class::BLANK_SPRITE
     end
   end
 end

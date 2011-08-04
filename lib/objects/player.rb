@@ -49,7 +49,7 @@ class Player < DynamicObject
   ELECTROCUTED_SPRITE = [2, 4]
   THROWN_SPRITE = [3, 4]
   AFTER_THROWN_SPRITE = [4, 4]
-  BURNT_SPRITE = [5, 4]
+  BLANK_SPRITE = [7, 2] # Should we not want to be seen.
 
   Z_ORDER_SQUASHED = -10
 

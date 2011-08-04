@@ -147,4 +147,34 @@ Too slow to use in the real system, so saved to a file.
   def collide?(other)
     to_rect.collide? other
   end
+
+  # Explode a sprite into a stack of pixel-sized particles.
+  # Setting :color will override the colour at the particular pixel when creating the particle.
+  def explode_pixels(options = {})
+    image = @sprite.image
+
+    # Find the position of the top left of the sprite in world coordinates. The 0.5s are because particles are centered in the pixel.
+    scale_x, scale_y = *@sprite.scale
+    world_x, world_y, world_z = self.x - (@sprite.origin.width - 0.5) * scale_x, self.y, self.z + (@sprite.origin.height - 0.5) * scale_y
+
+    if @sprite.uses_sprite_sheet?
+      # Assume a 1-pixel transparent edge that we can ignore.
+      rect = @sprite.sub_rect
+      world_x += 1
+      world_z -= 1
+      sprite_offset_x, sprite_offset_y, width, height = rect.x + 1, rect.y + 1, rect.width.to_i - 2, rect.height.to_i - 2
+    else
+      width, height = image.width.to_i, image.height.to_i
+      sprite_offset_x, sprite_offset_y = 0, 0
+    end
+
+    width.times do |x|
+      height.times do |y|
+        color = image[sprite_offset_x + x, sprite_offset_y + y]
+        unless color.alpha < 20
+          scene.create_particle([world_x + x * scale_x, world_y, world_z - y * scale_y], { color: color }.merge!(options))
+        end
+      end
+    end
+  end
 end

@@ -23,6 +23,7 @@ class Particle
         glow: false,
         color: Color.white,
         velocity: [0, 0, 0],
+        random_position: [0, 0, 0],
         random_velocity: [0, 0, 0], # [2, 2, 2] will somewhere from [-2, -2, -2] to [2, 2, 2]
         fade_duration: Float::INFINITY, # Time before the particle fades out.
         scale: [1, 1],
@@ -35,6 +36,11 @@ class Particle
 
     @gravity = GRAVITY * options[:gravity]
     @x, @y, @z = position
+    random_x, random_y, random_z = options[:random_position]
+    @x += (rand() * random_x * 2) - random_x if random_x > 0
+    @y += (rand() * random_y * 2) - random_y if random_y > 0
+    @z += (rand() * random_z * 2) - random_z if random_z > 0
+
     @polygon.pos = [@x + @y, @y - @z]
 
     @polygon.scale = options[:scale]
