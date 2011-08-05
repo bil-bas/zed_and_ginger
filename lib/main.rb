@@ -3,7 +3,7 @@ require 'forwardable'
 require 'fileutils'
 
 begin
-  require 'bundler/setup' unless DEVELOPMENT_MODE or defined?(OSX_EXECUTABLE) or ENV['OCRA_EXECUTABLE']
+  require 'bundler/setup' unless DEVELOPMENT_MODE or defined?(OSX_EXECUTABLE) or ENV['OCRA_EXECUTABLE'] or defined? Ocra
 
 rescue LoadError
   $stderr.puts "Bundler gem not installed. To install:\n  gem install bundler"
@@ -30,6 +30,9 @@ require_files('gui', %w[button check_button fps_monitor progress_bar radio_group
 require_files('standard_ext', %w[hash])
 require_files('games', %w[error_window my_game])
 require_files('particles', %w[particle_generator])
+
+# After all files are included, we don't need to go further for Ocra.
+exit if defined? Ocra
 
 CLASSES_WITH_SHADERS = [SlowFloor, SlowSplat, Teleporter, Teleporting]
 SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, Level, OptionsControls, OptionsMultimedia, Pause, MainMenu, ReadySetGo, Teleporting]

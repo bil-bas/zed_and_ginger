@@ -34,12 +34,10 @@ class MyGame < Ray::Game
 
     scene_classes.each {|s| s.bind(self) }
 
-    unless defined? Ocra
-      scenes << :main_menu
+    scenes << :main_menu
 
-      if initial_scene != :main_menu
-        scenes << initial_scene
-      end
+    if initial_scene != :main_menu
+      scenes << initial_scene
     end
 
     if defined? RubyProf
