@@ -3,7 +3,7 @@ class OptionsMultimedia < GuiScene
   def register
     super
 
-    on key(:escape) do
+    on :key_press, key(:escape) do
       pop_scene
     end
   end
@@ -123,6 +123,12 @@ class OptionsMultimedia < GuiScene
   protected
   def update_screen_size
     @screen_size.string = ("%dx%d" % (GAME_RESOLUTION * user_data.scaling).to_a).rjust(9)
+  end
+
+  public
+  def update
+    background.update frame_time
+    super
   end
 
   public

@@ -51,6 +51,11 @@ class OptionsControls < GuiScene
     back_button
   end
 
+  def update
+    background.update frame_time
+    super
+  end
+
   def register
     super
 

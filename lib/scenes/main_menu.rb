@@ -263,6 +263,8 @@ class MainMenu < GuiScene
   def update
     super
 
+    background.update frame_time
+
     @cat_animations.each_value(&:update)
     @@preloader.update
   end

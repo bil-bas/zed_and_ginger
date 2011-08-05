@@ -210,6 +210,8 @@ class Level < GameScene
   def update
     update_camera(frame_time)
 
+    background.update frame_time
+
     timer.decrease frame_time if @players.all?(&:ok?)
 
     calculate_visible_objects
