@@ -44,11 +44,11 @@ class Mine < GameObject
 
           # Explosion itself.
           scene.create_particle([x, y, z + 1], velocity: [0, 0, 50], number: 16, gravity: 0, glow: true,
-              random_velocity: [25, 10, 25], color: Color.new(255, 150, 75, 200), scale: [2, 2], fade_duration: 1)
+              random_velocity: [25, 10, 25], color: Color.new(255, 150, 75, 200), scale: 2, fade_duration: 1)
 
           # Smoke.
           scene.create_particle([x, y, z + 1], velocity: [0, 0, 3], number: 10, gravity: 0,
-                    random_velocity: [3, 3, 0], random_position: [4, 2, 1], color: Color.new(0, 0, 0, 150), scale: [2, 2], fade_duration: 5)
+                    random_velocity: [3, 3, 0], random_position: [4, 2, 1], color: Color.new(0, 0, 0, 150), scale: 2, fade_duration: 5)
 
           @active = false
         end

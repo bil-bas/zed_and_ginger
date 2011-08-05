@@ -68,9 +68,17 @@ class LaserBeam < GameObject
     end
 
     # Create sparks shooting out from the near-side wall.
-    if y > 25 and rand() < 0.2
-      scene.create_particle([x, y + 3, z], velocity: [0, -4, 0], gravity: 0.5,
-          random_velocity: [4, 4, 4], glow: true, color: SPARK_COLOR, fade_duration: 2)
+    if y > 25
+      if rand() < 0.15
+        scene.create_particle([x, y + 3, z], velocity: [0, -4, 0], gravity: 0.5, fade_duration: 2,
+                              random_velocity: [4, 4, 4], glow: true, color: SPARK_COLOR)
+
+      end
+
+      if frame_number % 4 == 0
+        scene.create_particle([x, y + 3, z], scale: 2, gravity: 0, color: SPARK_COLOR,
+                              glow: true, fade_duration: 0.5, shrink_duration: 0.65)
+      end
     end
   end
 

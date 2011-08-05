@@ -5,7 +5,7 @@ class Pacer < GameObject
   MOVE_SPEED = 5
   ANIMATION_DURATION = 0.5
 
-  SPARK_COLOR = Color.new(150, 150, 255)
+  SPARK_COLOR = Color.new(150, 150, 255, 150)
 
   def casts_shadow?; true; end
   def to_rect; Rect.new(*(@position - [4, 3]), 8, 6) end
@@ -69,8 +69,8 @@ class Pacer < GameObject
       end
 
       if rand() < 0.15
-        scene.create_particle([x, y, z + @sprite.sprite_height / 2.0], gravity: 0,
-            random_velocity: [8, 8, 8], glow: true, color: SPARK_COLOR, fade_duration: 1)
+        scene.create_particle([x, y, z + @sprite.sprite_height / 2.0], gravity: 0, scale: 2,
+            random_velocity: [8, 8, 8], glow: true, color: SPARK_COLOR, shrink_duration: 1.5)
       end
 
       super

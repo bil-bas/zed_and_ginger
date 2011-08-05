@@ -26,13 +26,14 @@ class Particle
         random_position: [0, 0, 0],
         random_velocity: [0, 0, 0], # [2, 2, 2] will somewhere from [-2, -2, -2] to [2, 2, 2]
         fade_duration: Float::INFINITY, # Time before the particle fades out.
-        scale: [1, 1],
+        shrink_duration: Float::INFINITY, # Time before the particle shrinks to nothing.
+        scale: 1,
     }.merge! options
 
     @color = options[:color].dup
     @alpha = @color.alpha.to_f
     @polygon.color = @color
-    @fade_speed = @alpha / options[:fade_duration]
+    @scale = options[:scale]
 
     @gravity = GRAVITY * options[:gravity]
     @x, @y, @z = position
@@ -43,7 +44,7 @@ class Particle
 
     @polygon.pos = [@x + @y, @y - @z]
 
-    @polygon.scale = options[:scale]
+    @polygon.scale = [@scale, @scale]
 
     @polygon.blend_mode = options[:glow] ? :add : :alpha
 
@@ -52,6 +53,9 @@ class Particle
     @velocity_x += (rand() * random_vx * 2) - random_vx if random_vx > 0
     @velocity_y += (rand() * random_vy * 2) - random_vy if random_vy > 0
     @velocity_z += (rand() * random_vz * 2) - random_vz if random_vz > 0
+
+    @fade_speed = @alpha / options[:fade_duration]
+    @shrink_speed = @polygon.scale_x / options[:shrink_duration]
   end
 
   def update(duration)
@@ -76,13 +80,25 @@ class Particle
     # Else z == 0, so just fade.
 
     # Fade.
-    @alpha -= @fade_speed * duration
+    if @fade_speed > 0
+      @alpha -= @fade_speed * duration
 
-    if @alpha < 10
-      @generator.destroy(self)
-    elsif @fade_speed > 0
-      @color.alpha = @alpha
-      @polygon.color = @color
+      if @alpha < 10
+        @generator.destroy(self)
+      else
+        @color.alpha = @alpha
+        @polygon.color = @color
+      end
+    end
+
+    if @shrink_speed > 0
+      @scale -= @shrink_speed * duration
+
+      if @scale < 0.05
+        @generator.destroy(self)
+      else
+        @polygon.scale = [@scale, @scale]
+      end
     end
   end
 

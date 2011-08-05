@@ -322,7 +322,7 @@ class Player < DynamicObject
   protected
   def update_physics
     if DEVELOPMENT_MODE and z > 0 and frame_number % 2 == 0
-      scene.create_particle([x, y, z], gravity: 0, scale: [0.5, 0.5], color: Color.red, fade_duration: 4)
+      scene.create_particle([x, y, z], gravity: 0, scale: 0.5, color: Color.red, fade_duration: 4)
       log.debug { "#{self} apex height: #{z}" } if @velocity_z < +5 and @velocity_z > -5
     end
 
