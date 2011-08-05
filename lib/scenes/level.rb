@@ -155,7 +155,10 @@ class Level < GameScene
       # Stop the game now that one player is done.
       other_player.lose if other_player
 
-      run_scene :game_over, self, player do |choice|
+      # Score the person who finished, otherwise whoever got the best score.
+      winner = @players.sort_by {|p| [(p.finished? ? 1 : 0), p.score] }.last
+
+      run_scene :game_over, self, winner do |choice|
         pop_scene
 
         case choice
