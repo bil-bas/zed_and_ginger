@@ -17,6 +17,11 @@ class Status
 
     def update
        owner.z = @original_z + rand() * 3
+
+      if rand() < 0.25
+        owner.scene.create_particle([owner.x, owner.y, owner.z + 6], gravity: 0, scale: 2,
+            random_velocity: [8, 8, 8], glow: true, color: Pacer::SPARK_COLOR, shrink_duration: 2)
+      end
     end
 
     def clean_up
