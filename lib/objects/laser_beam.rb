@@ -40,7 +40,7 @@ class LaserBeam < GameObject
 
   def collide?(other)
     other_z = other.z
-    other_z > z - 7 and other_z < z + 1 and super(other)
+    other_z > z - 8 and other_z < z - 2 and super(other)
   end
 
   def update
@@ -55,6 +55,7 @@ class LaserBeam < GameObject
       player.burn if player.can_be_hurt? and collide? player
     end
 
+    # Create sparks shooting out from the near-side wall.
     if y > 25 and rand() < 0.2
       scene.create_particle([x, y + 3, z], velocity: [0, -4, 0], gravity: 0.5,
           random_velocity: [4, 4, 4], glow: true, color: SPARK_COLOR, fade_duration: 2)

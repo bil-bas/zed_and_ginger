@@ -63,8 +63,8 @@ class Pacer < GameObject
     end
 
     if rand() < 0.15
-      scene.create_particle([x, y, z + @sprite.sprite_height / 2.0], velocity: [0, 0, 12], gravity: 0.5,
-          random_velocity: [8, 8, 8], glow: true, color: SPARK_COLOR, fade_duration: 1)
+      scene.create_particle([x, y, z + @sprite.sprite_height / 2.0], velocity: [0, 0, 2], gravity: 0,
+          random_velocity: [8, 8, 6], glow: true, color: SPARK_COLOR, fade_duration: 1)
     end
 
     super

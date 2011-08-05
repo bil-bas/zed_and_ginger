@@ -2,7 +2,7 @@ class Particle
   extend Forwardable
   include Helper
 
-  GRAVITY = 8.0 * 9.81 # Assuming an 8-pixel square tile is 1m square.
+  GRAVITY = DynamicObject::GRAVITY
   AUTO_FADE_DURATION = 5.0
   AUTO_FADE_SPEED = 255.0 / AUTO_FADE_DURATION
 
@@ -67,7 +67,7 @@ class Particle
 
       # Interpolate gravity's effect.
       velocity_change = @gravity * duration
-      @velocity_z -= velocity_change
+      @velocity_z += velocity_change
       @z += (@velocity_z - velocity_change * 0.5) * duration
 
       @polygon.x = @x + @y / 2.0

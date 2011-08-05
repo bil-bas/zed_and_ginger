@@ -1,5 +1,5 @@
 class FpsMonitor
-  attr_reader :fps, :potential_fps, :frame_time
+  attr_reader :fps, :potential_fps, :frame_time, :frame_number
   attr_writer :enabled
 
   def shown?; @shown; end
@@ -12,6 +12,7 @@ class FpsMonitor
     @fps = @potential_fps = 0
     @num_frames = 0
     @used_time = 0
+    @frame_number = -1
 
     @shown = false
     @text = ShadowText.new "FPS", size: 5, at: [2, 0],
@@ -21,6 +22,7 @@ class FpsMonitor
 
   public
   def run_frame(&block)
+    @frame_number += 1
     @frame_started_at = Time.now.to_f
     @elapsed = @frame_started_at - @started_at # Time elapsed since start of level.
     @frame_time = [@elapsed - @last_frame_started_at, 0.1].min # Time elapsed since start of last frame.

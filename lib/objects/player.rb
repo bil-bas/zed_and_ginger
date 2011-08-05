@@ -14,7 +14,7 @@ class Player < DynamicObject
   MAX_SPEED = 64.0
   VERTICAL_SPEED = 25.0
   MIN_RUN_VELOCITY = 100.0 # Above this, run animation; below walk.
-  JUMP_SPEED = 1.5 # Z-speed of jumping.
+  JUMP_SPEED = 50 # Z-speed of jumping.
 
   RIDING_OFFSET_X = -2 # Move ridden object back, since we have our origin far forward.
   SQUASH_OFFSET_Y = 3 # Distance moved when squashed.
@@ -288,9 +288,9 @@ class Player < DynamicObject
       end
     else
       # Jumping up, down or across (last at apex of jump).
-      if @velocity_z > 0.4
+      if @velocity_z > 10
         @sprite.sheet_pos = JUMP_UP_SPRITE
-      elsif @velocity_z < -0.4
+      elsif @velocity_z < -10
         @sprite.sheet_pos = JUMP_DOWN_SPRITE
       else
         @sprite.sheet_pos = JUMP_ACROSS_SPRITE
@@ -321,6 +321,11 @@ class Player < DynamicObject
 
   protected
   def update_physics
+    if DEVELOPMENT_MODE and z > 0 and frame_number % 2 == 0
+      scene.create_particle([x, y, z], gravity: 0, scale: [0.5, 0.5], color: Color.red, fade_duration: 4)
+      log.debug { "#{self} apex height: #{z}" } if @velocity_z < +5 and @velocity_z > -5
+    end
+
     self.position += effective_velocity * frame_time
 
     self.y = [[position.y, @rect.y].max, @rect.y + @rect.height].min
@@ -352,6 +357,6 @@ class Player < DynamicObject
     die if scene.hardcore?
 
     apply_status :thrown
-    self.velocity_x, self.velocity_y, self.velocity_z = velocity.to_a
+    self.velocity_x, self.velocity_y, self.velocity_z = velocity
   end
 end

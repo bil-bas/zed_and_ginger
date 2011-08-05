@@ -1,7 +1,7 @@
 require_relative "game_object"
 
 class Spring < GameObject
-  JUMP_Z_SPEED = 2
+  JUMP_Z_SPEED = 80
   JUMP_SPEED_MODIFIER = 1.3
 
   def to_rect; Rect.new(*(@position - [2, 1.5]), 4, 3) end

@@ -1,7 +1,7 @@
 module Registers
   extend Forwardable
 
-  def_delegators :@scene, :window, :frame_time
+  def_delegators :@scene, :window, :frame_time, :frame_number
 
   attr_reader :scene
 

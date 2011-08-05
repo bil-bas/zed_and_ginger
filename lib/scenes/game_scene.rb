@@ -3,7 +3,7 @@ class GameScene < Scene
   include Log
 
   def_delegators :game, :fps_monitor, :user_data
-  def_delegators :"game.fps_monitor", :frame_time
+  def_delegators :"game.fps_monitor", :frame_time, :frame_number
 
   # List of controls, automatically drawn in order.
   attr_accessor :gui_controls
