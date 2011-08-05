@@ -63,7 +63,8 @@ class FloorMap < Map
       when 'B' then [default_tile, Board]
       when 'm' then [default_tile, MessageScreen]
       when 'X' then [default_tile, Mine]
-      when 'p' then [default_tile, Pacer]
+      when 'p' then [default_tile, PacerLow]
+      when 'P' then [default_tile, PacerHigh]
       when 'r' then [default_tile, Rat]
       else
        raise "Unknown floor tile: '#{char}'"

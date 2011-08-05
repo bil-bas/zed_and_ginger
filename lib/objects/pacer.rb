@@ -13,10 +13,14 @@ class Pacer < GameObject
   def initialize(map, tile, position)
     sprite = sprite image_path("pacer.png")
     sprite.sheet_size = [4, 1]
-    sprite.origin = [sprite.sprite_width * 0.5, sprite.sprite_height + 1]
+    sprite.origin = [sprite.sprite_width * 0.5, sprite.sprite_height - 1]
     sprite.scale *= 0.75
 
     super(map.scene, sprite, position)
+
+    @bouncer = sprite image_path("pacer_bouncer.png")
+    @bouncer.pos = [@position.x, 0]
+    @bouncer.origin = [@bouncer.image.width * 0.5, @bouncer.image.height]
 
     @shadow.image = image image_path("glow.png")
     @shadow.color = Color.new(200, 200, 255, 150)
@@ -29,6 +33,8 @@ class Pacer < GameObject
 
     @min_y = map.to_rect.y + map.tile_size.width / 2.0 - 1
     @max_y = map.to_rect.y + map.to_rect.height - map.tile_size.height / 2.0
+
+    @active = true
 
     recalculate_direction
   end
@@ -44,29 +50,56 @@ class Pacer < GameObject
   end
 
   def collide?(other)
-    other.z < 6 and super(other)
+    other.z >= z - 6 and other.z <= z + 6  and super(other)
   end
 
   def update
-    self.y += @velocity_y * frame_time
+    if @active
+      self.y += @velocity_y * frame_time
 
-    recalculate_direction
+      recalculate_direction
 
-    @shadow.scale = @base_shadow_scale * (0.75 + rand() * 0.5)
+      @shadow.scale = @base_shadow_scale * (0.75 + rand() * 0.5)
 
-    scene.players.shuffle.each do |player|
-      if player.can_be_hurt? and collide? player
-        player.electrocute
-        scene.remove_object self
-        break
+      scene.players.each do |player|
+        if player.can_be_hurt? and collide? player
+          player.electrocute
+          @active = false
+        end
       end
-    end
 
-    if rand() < 0.15
-      scene.create_particle([x, y, z + @sprite.sprite_height / 2.0], velocity: [0, 0, 2], gravity: 0,
-          random_velocity: [8, 8, 6], glow: true, color: SPARK_COLOR, fade_duration: 1)
-    end
+      if rand() < 0.15
+        scene.create_particle([x, y, z + @sprite.sprite_height / 2.0], gravity: 0,
+            random_velocity: [8, 8, 8], glow: true, color: SPARK_COLOR, fade_duration: 1)
+      end
 
-    super
+      super
+    end
+  end
+
+  def draw_on(win)
+    super(win) if @active
+  end
+
+  def draw_shadow_on(win)
+    @bouncer.draw_on(win)
+    super(win) if @active
+  end
+end
+
+class PacerLow < Pacer
+  def initialize(*args)
+    super(*args)
+    self.z += 1
+  end
+end
+
+class PacerHigh < Pacer
+  def initialize(*args)
+    super(*args)
+    self.z += WallTile.height + 1
+    @bouncer.y -= WallTile.height
+    @base_shadow_scale *= 0.7
+    @shadow.color = Color.new(200, 200, 255, 75)
   end
 end

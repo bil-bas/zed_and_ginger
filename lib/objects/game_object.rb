@@ -125,12 +125,14 @@ Too slow to use in the real system, so saved to a file.
     @animations.each(&:update)
 
     if DEVELOPMENT_MODE
+      center = [@position.x + @position.y * 0.5, @position.y]
+
       @collision_rect.matrix = nil
-      @collision_rect.pos = @sprite.pos
+      @collision_rect.pos = center
       @collision_rect.skew_x(0.5)
 
       @origin.matrix = nil
-      @origin.pos = @sprite.pos - [0.25, 0.25]
+      @origin.pos = center - [0.25, 0.25]
       @origin.skew_x(0.5)
     end
   end
