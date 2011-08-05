@@ -67,7 +67,7 @@ class FloorMap < Map
       when 'P' then [default_tile, PacerHigh]
       when 'r' then [default_tile, Rat]
       else
-       raise "Unknown floor tile: '#{char}'"
+        raise "Unknown floor tile: '#{char}'"
     end
 
     tile = tile_class.new grid_position, @position

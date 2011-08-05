@@ -27,10 +27,17 @@ class LaserBeam < GameObject
     color.alpha = 150
     sprite.color = color
 
-    # Add an eye if we are in the position nearest the wall.
+    # Add an groove/eye if we are in the position nearest the wall.
     if tile.grid_position.y == 0
       @laser_eye = sprite image_path("laser_eye.png"), at: [position.x, 0]
       @laser_eye.origin = @laser_eye.image.size / 2
+
+      @groove_front = sprite image_path("laser_groove.png"), at: [position.x, 0]
+      @groove_front.sheet_size = [2, 1]
+      @groove_front.origin = @groove_front.sprite_width * 0.5, @groove_front.sprite_height
+
+      @groove_back = @groove_front.dup
+      @groove_back.sheet_pos = [1, 0]
     else
       @laser_eye = nil
     end
@@ -63,7 +70,12 @@ class LaserBeam < GameObject
   end
 
   def draw_on(win)
-    win.draw @laser_eye if @laser_eye
+    if @laser_eye
+      win.draw @groove_back
+      win.draw @laser_eye
+      win.draw @groove_front
+    end
+
     super(win)
   end
 end
