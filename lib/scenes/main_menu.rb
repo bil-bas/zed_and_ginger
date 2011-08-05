@@ -187,18 +187,18 @@ class MainMenu < GuiScene
       end
     end
 
-    @zed = sprite @@zed_image, at: [17, 57]
+    @zed = sprite @@zed_image, at: [18, 57]
     @zed.scale = [2, 2]
 
     # Create Ginger.
-    @ginger = sprite @ginger_image, at: [48, 57]
+    @ginger = sprite @ginger_image, at: [52, 57]
     @ginger.scale = [2, 2]
 
     @zed.sheet_size = @ginger.sheet_size = [8, 5]
     @zed.origin = @ginger.origin = [@zed.sprite_width / 2, @zed.sprite_height]
 
     # Buttons to choose to play one or both cats.
-    @cat_selection = RadioGroup.new(at: [18, 32], default_button_options: { size: FONT_SIZE }) do |value|
+    @cat_selection = RadioGroup.new(at: [22, 32], default_button_options: { size: FONT_SIZE }) do |value|
       case value
         when :zed
           @cat_animations[:walking1].start @zed
