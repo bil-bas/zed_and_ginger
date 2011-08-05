@@ -14,18 +14,25 @@ class LaserBeam < GameObject
 
   def z=(z)
     @sprite.matrix = nil
+    @glow.matrix = nil
     super(z)
-    @sprite.skew_x(FloorTile::SKEW * 0.75)
+    @glow.y = @sprite.y
+    @glow.skew_x(FloorTile::SKEW * 0.75 / @glow.scale_x)
+    @sprite.skew_x(FloorTile::SKEW * 0.75 / @sprite.scale_x)
   end
 
   def initialize(map, tile, position)
     sprite = sprite image_path("laser_beam.png"), at: position.to_vector2 + [tile.grid_position.y * 3, 0]
-    sprite.sheet_size = [1, 1]
-    sprite.origin = Vector2[sprite.sprite_width / 2 + 1.5, sprite.sprite_height / 2]
+    sprite.sheet_size = [2, 1]
+
+    sprite.origin = [sprite.sprite_width + 1.5, sprite.sprite_height * 0.5]
+    sprite.scale_x = 0.25
     sprite.scale_y = 0.75
-    color = sprite.color
-    color.alpha = 150
-    sprite.color = color
+
+    super(map.scene, sprite, position)
+    @glow = @sprite.dup
+    @glow.sheet_pos = [1, 0]
+    @glow.blend_mode = :add
 
     # Add an groove/eye if we are in the position nearest the wall.
     if tile.grid_position.y == 0
@@ -41,8 +48,6 @@ class LaserBeam < GameObject
     else
       @laser_eye = nil
     end
-
-    super(map.scene, sprite, position)
   end
 
   def collide?(other)
@@ -77,6 +82,8 @@ class LaserBeam < GameObject
     end
 
     super(win)
+
+    @glow.draw_on(win)
   end
 end
 
