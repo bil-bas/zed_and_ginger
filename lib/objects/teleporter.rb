@@ -30,15 +30,13 @@ class Teleporter < GameObject
   def initialize(map, tile, position)
     @@image ||= Image.new([8, 8])
     sprite = sprite @@image
-    sprite.origin = Vector2[sprite.image.width - 3, sprite.image.height * 1.5]
+    sprite.origin = Vector2[sprite.image.width - 4, sprite.image.height + 3]
 
     super(map.scene, sprite, position)
 
-    @sprite.shader = self.class.shader
-
+    @sprite.shader = Teleporter.shader
     @shader_offset = Vector2[tile.grid_position.x, tile.grid_position.y - 1] / @sprite.image.width
-
-    @sprite.scale_x = tile.width.to_f / (tile.height * 3)
+    @sprite.scale_x = tile.width.to_f / (tile.height * 3.5)
     @sprite.skew_y(SKEW * @sprite.scale_x)
   end
 

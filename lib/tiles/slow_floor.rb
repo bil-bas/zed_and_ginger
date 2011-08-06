@@ -32,6 +32,7 @@ class SlowFloor < FloorTile
     @sprite.shader = self.class.shader
 
     @shader_offset = grid_position / @sprite.sheet_size
+    @shader_offset.y *= -1.0
   end
 
   def draw_on(win)
