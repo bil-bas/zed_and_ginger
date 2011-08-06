@@ -48,8 +48,6 @@ class MainMenu < GuiScene
     create_floor
     create_cats
 
-    @@preloader ||= Preloader.new
-
     gui_controls << ShadowText.new("Zed and Ginger", at: [CENTER, 0], size: TITLE_FONT_SIZE, color: TITLE_COLOR,
       auto_center: [0.5, 0])
 
@@ -124,6 +122,8 @@ class MainMenu < GuiScene
     window.icon = image image_path("window_icon.png")
 
     log.info { "#{self.class} loaded in #{Time.now - started_at}s" }
+
+    @@preloader ||= Preloader.new
   end
 
   protected

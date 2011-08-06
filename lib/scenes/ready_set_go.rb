@@ -1,5 +1,3 @@
-require 'fiber'
-
 require_relative 'game_scene'
 
 class ReadySetGo < GameScene
@@ -11,27 +9,25 @@ class ReadySetGo < GameScene
     @message = ShadowText.new "Ready...", at: [37.5, 8.75], size: 8
     gui_controls << @message
 
-    beep = sound sound_path("ready_beep.ogg")
-    beep.volume = 30 * (user_data.effects_volume / 50.0)
-    beep.play
+    @beep = sound sound_path("ready_beep.ogg")
+    @beep.volume = 30 * (user_data.effects_volume / 50.0)
+    @beep.play
 
-    @events = Fiber.new do
-      ["Set...", "Go!!!"].each do |string|
-        @message.string = string
-        beep.play
-        Fiber.yield
-      end
-    end
+    @message_strings = ["Set...", "Go!!!"]
 
     @next_event_at = Time.now + 1
-
     @last_time = Time.now
   end
 
   def update
     if Time.now >= @next_event_at
-      @events.resume
-      pop_scene unless @events.alive?
+      unless @message_strings.any?
+        pop_scene
+        return
+      end
+
+      @beep.play
+      @message.string = @message_strings.shift
       @next_event_at += 1
     end
 
