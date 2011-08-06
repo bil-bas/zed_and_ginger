@@ -29,11 +29,12 @@ class SlowSplat < GameObject
     sprite.sheet_size = [4, 1]
     sprite.sheet_pos = [rand(4), 0]
     sprite.scale_x = -sprite.scale_x if rand() < 0.5
-    sprite.origin = Vector2[sprite.sprite_width / 2 + 1.5, sprite.sprite_height]
+    sprite.origin = Vector2[sprite.sprite_width / 2, sprite.sprite_height]
 
     super(map.scene, sprite, position)
 
     @sprite.y = 0 # Move it up next to the wall.
+    @sprite.x -= 1.5
 
     @sprite.shader = self.class.shader
 

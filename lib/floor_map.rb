@@ -55,8 +55,12 @@ class FloorMap < Map
       when '{' then [TeleportFloor, Teleporter]
       when '}' then [TeleportBackwardsFloor, TeleporterBackwards]
 
-      when 's' then [SlowFloor, nil]
-      when 'S' then [SlowFloor, SlowSplat]
+      when 's'
+        if grid_position.y == 0 and rand() < 0.5
+          [SlowFloor, SlowSplat]
+        else
+          [SlowFloor, nil]
+        end
 
       when '^' then [SpringFloor, Spring]
       when 'b' then [default_tile, Barrel]

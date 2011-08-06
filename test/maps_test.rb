@@ -36,12 +36,14 @@ context Maps do
   end
 
   helper :map do |level_number|
-    # Only load maps in once, since they are very costly (0.5s or so).
-    t = Time.now
     $maps ||= {}
-    $maps[level_number] ||= Maps.new(scene, level_number, :zed)
-    elapsed = Time.now - t
-    puts "-------> loaded in #{elapsed}s" if elapsed > 0.05
+    # Only load maps in once, since they are very costly (0.5s or so).
+    unless $maps[level_number]
+      t = Time.now
+      $maps[level_number] = Maps.new(scene, level_number, :zed)
+      elapsed = Time.now - t
+      puts "-------> level #{level_number} loaded in #{elapsed}s"
+    end
     $maps[level_number]
   end
 
@@ -50,6 +52,9 @@ context Maps do
   Dir["config/levels/*.yml"].each do |file|
     file =~ /(\d+)\.yml/
     level_number = $1
+
+    # Have to put this out here so we catch the error in a test.
+    asserts("level #{level_number} loads without error") { map level_number }
 
     context level_number do
       setup { map level_number }
@@ -72,7 +77,7 @@ context Maps do
       end
 
       context "wall" do
-        helper(:data) { @floor_tile_data ||= YAML::load_file(file)['wall'] }
+        helper(:data) { @wall_tile_data ||= YAML::load_file(file)['wall'] }
         helper(:default_tile) { data['default_tile'] }
 
         setup { topic.wall }
