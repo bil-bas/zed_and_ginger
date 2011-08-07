@@ -36,13 +36,23 @@ context Maps do
   end
 
   helper :map do |level_number|
+    # Load the preloader in order to get a good idea of how long the levels themselves take to load.
+    unless defined? $preloader
+      Window.send :scaling=, 8
+      t = Time.now
+      $preloader = Preloader.new
+      $preloader.update until $preloader.complete?
+      puts "-------> pre-loading complete in #{Time.now - t}s"
+    end
+
     $maps ||= {}
     # Only load maps in once, since they are very costly (0.5s or so).
     unless $maps[level_number]
       t = Time.now
       $maps[level_number] = Maps.new(scene, level_number, :zed)
-      elapsed = Time.now - t
-      puts "-------> level #{level_number} loaded in #{elapsed}s"
+      floor, wall = $maps[level_number].floor, $maps[level_number].wall
+      num_tiles = floor.grid_width * floor.grid_height + wall.grid_width * wall.grid_height
+      puts "-------> level #{level_number} loaded #{num_tiles} tiles in #{Time.now - t}s"
     end
     $maps[level_number]
   end

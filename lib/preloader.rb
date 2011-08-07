@@ -5,6 +5,8 @@ class Preloader
   include Helper
   include Log
 
+  def complete?; @complete; end
+
   def initialize
     @font_files = Dir[File.join(font_path(""), "**/*.ttf")]
     @sound_files = Dir[File.join(sound_path(""), "**/*.ogg")]
