@@ -1,7 +1,10 @@
+require_relative 'objects/player'
+require_relative 'objects/conveyors'
+
 class Camera
   MAX_ZOOM_CHANGE = 0.5 # Most the zoom can change in a second.
-  MAX_X_CHANGE = 100 # Most the camera's position can change in a second.
-
+  MAX_X_CHANGE = Player::MAX_SPEED + Conveyor::SPEED # Most the camera's position can change in a second.
+ 
   attr_accessor :zoom, :x
 
   def initialize(x, options = {})
