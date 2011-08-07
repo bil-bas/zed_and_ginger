@@ -12,7 +12,8 @@ class GameOver < DialogScene
 
     @winner = winner
 
-    gui_controls << Polygon.rectangle([0, 0, GAME_RESOLUTION.width, GAME_RESOLUTION.height * 0.9], Color.new(0, 0, 0, 100))
+    gui_controls << Polygon.rectangle([0, 0, GAME_RESOLUTION.width, GAME_RESOLUTION.height * 0.9], Color.new(150, 150, 150))
+    gui_controls.last.blend_mode = :multiply
 
     @buttons = []
     @buttons << Button.new("Menu", at: [GAME_RESOLUTION.width * 0.3, BUTTON_Y], size: TEXT_SIZE, auto_center: [0.5, 0]) do
