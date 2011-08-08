@@ -28,12 +28,16 @@ class Particle
         fade_duration: Float::INFINITY, # Time before the particle fades out.
         shrink_duration: Float::INFINITY, # Time before the particle shrinks to nothing.
         scale: 1,
+        min_y: 0,
+        max_y: 30,
     }.merge! options
 
     @color = options[:color].dup
     @alpha = @color.alpha.to_f
     @polygon.color = @color
     @scale = options[:scale]
+
+    @min_y, @max_y = options[:min_y], options[:max_y]
 
     @gravity = GRAVITY * options[:gravity]
     @x, @y, @z = position
@@ -42,7 +46,7 @@ class Particle
     @y += (rand() * random_y * 2) - random_y if random_y > 0
     @z += (rand() * random_z * 2) - random_z if random_z > 0
 
-    @polygon.pos = [@x + @y, @y - @z]
+    @polygon.pos = [@x + @y / 2.0, @y - @z]
 
     @polygon.scale = [@scale, @scale]
 
@@ -67,7 +71,7 @@ class Particle
     elsif @z > 0
       # Physics
       @x += @velocity_x * duration
-      @y = [[@y + @velocity_y * duration, 0].max, 30].min # stop it going through a wall (visible or invisible).
+      @y = [[@y + @velocity_y * duration, @min_y].max, @max_y].min # stop it going through a wall (visible or invisible).
 
       # Interpolate gravity's effect.
       velocity_change = @gravity * duration
