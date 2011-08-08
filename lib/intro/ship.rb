@@ -15,7 +15,7 @@ class Ship < GameObject
   end
 
   def update
-    @sprite.x += @speed * frame_time
+    @sprite.x += @speed
     @front_sprite.x = @sprite.x
   end
 

@@ -92,6 +92,14 @@ class MainMenu < GuiScene
 
     y += gui_controls.last.height + BUTTON_SPACING * 2
 
+    # Replay the intro.
+    gui_controls << Button.new("Intro", at: [RIGHT_EDGE, y], size: FONT_SIZE,
+                                 auto_center: [1, 0]) do
+      push_scene :intro_outside
+    end
+
+    y += gui_controls.last.height + BUTTON_SPACING
+
     # User settings - controls.
     gui_controls << Button.new("Settings", at: [RIGHT_EDGE, y], size: FONT_SIZE,
                                  auto_center: [1, 0]) do
@@ -124,7 +132,7 @@ class MainMenu < GuiScene
     log.info { "#{self.class} loaded in #{Time.now - started_at}s" }
 
     # Bit of a fudgy way to prevent the intro being reloaded if we flip fullscreen/window.
-    run_scene :intro unless defined? @@preloader
+    run_scene :intro_outside unless defined? @@preloader
 
     @@preloader ||= Preloader.new
   end

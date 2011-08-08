@@ -157,7 +157,7 @@ Too slow to use in the real system, so saved to a file.
 
     # Find the position of the top left of the sprite in world coordinates. The 0.5s are because particles are centered in the pixel.
     scale_x, scale_y = *@sprite.scale
-    world_x, world_y, world_z = self.x - (@sprite.origin.width - 0.5) * scale_x, self.y, self.z + (@sprite.origin.height - 0.5) * scale_y
+    world_x, world_y, world_z = self.x - (@sprite.origin.x - 0.5) * scale_x, self.y, self.z + (@sprite.origin.y - 0.5) * scale_y
 
     if @sprite.uses_sprite_sheet?
       # Assume a 1-pixel transparent edge that we can ignore.

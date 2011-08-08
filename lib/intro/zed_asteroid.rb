@@ -1,5 +1,6 @@
-class ZedAsteroid < GameObject
+require_relative "zed_essence"
 
+class ZedAsteroid < GameObject
   def initialize(scene, position)
     sprite = sprite image(image_path("zed_asteroid.png")), at: position
     sprite.origin = sprite.image.size / 2
@@ -10,22 +11,21 @@ class ZedAsteroid < GameObject
     @glow.blend_mode = :add
     @glow.origin = @glow.image.size / 2
     @glow.scale *= 0.125
-
   end
 
   def update
-    @sprite.x -= 20 * frame_time
-    @sprite.y += 3 * frame_time
+    self.x -= 1
+    self.y += 0.15
     @sprite.angle += 50 * frame_time
 
     @glow.pos = @sprite.pos
 
-    if @sprite.x < 30
-      # Bit of a fudge to make the particles work outside the regular corridor system.
-      scene.create_particle([@sprite.x - @sprite.y * 0.5, @sprite.y, 0.000001], gravity: 0, number: 60,
-                            velocity: [-5, 0, 0], random_velocity: [10, 10, 0], random_position: [3, 3, 0],
-                            color: Color.new(100, 0, 100), min_y: -Float::INFINITY, max_y: Float::INFINITY, fade_duration: 10)
+    if @sprite.x < 20
+      explode_pixels(gravity: 0, number: 5,
+                     velocity: [-5, 0, 0], random_velocity: [10, 10, 0],
+                     min_y: -Float::INFINITY, max_y: Float::INFINITY, fade_duration: 10)
       scene.remove_object(self)
+      ZedEssence.new(scene, [x, y])
     end
   end
 

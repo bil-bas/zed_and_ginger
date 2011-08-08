@@ -1,6 +1,5 @@
 class FpsMonitor
   attr_reader :fps, :potential_fps, :frame_time, :frame_number
-  attr_writer :enabled
 
   def shown?; @shown; end
   def toggle; @shown = (not @shown); end
