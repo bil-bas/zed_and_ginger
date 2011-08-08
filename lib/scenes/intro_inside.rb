@@ -23,8 +23,8 @@ class IntroInside < IntroScene
     background.draw_on(win)
 
     camera_view = win.view
-    camera_view.y -= 3
-    camera_view.x += 20
+    camera_view.y -= BORDER_WIDTH
+    camera_view.x += 16
     win.with_view camera_view do
       @maps.wall.draw_on(win)
     end

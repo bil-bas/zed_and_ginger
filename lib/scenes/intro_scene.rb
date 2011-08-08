@@ -2,16 +2,23 @@ class IntroScene < GameScene
   def_delegator :@particle_generator, :create, :create_particle
   attr_reader :particle_generator
 
+  BORDER_WIDTH = 3
+
   BORDER_RECTANGLES = [
-      [0, 0, GAME_RESOLUTION.width, 3],
-      [0, GAME_RESOLUTION.height - 3, GAME_RESOLUTION.width, 3]
+      [0, 0, GAME_RESOLUTION.width, BORDER_WIDTH],
+      [0, GAME_RESOLUTION.height - BORDER_WIDTH, GAME_RESOLUTION.width, BORDER_WIDTH]
   ]
+
 
   def setup
     super()
 
     @objects = []
     @particle_generator = ParticleGenerator.new(self)
+
+    @fade = Polygon.rectangle([0, 0, *GAME_RESOLUTION], Color.black)
+    @fade.blend_mode = :multiply
+    gui_controls << @fade
 
     self.gui_controls += BORDER_RECTANGLES.map {|r| Polygon.rectangle(r, Color.black) }
 
@@ -39,6 +46,13 @@ class IntroScene < GameScene
 
   def update
     super
+
+    # Fade in.
+    color = @fade.color_of(0)
+    if color.red < 255
+      color.red = color.green = color.blue = color.red + 2
+      @fade.color = color
+    end
 
     background.update frame_time
     @particle_generator.update
