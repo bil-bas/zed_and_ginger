@@ -2,7 +2,7 @@ class ZedEssence < GameObject
   POSITION_TRACKER_FILE = File.expand_path("config/intro/zed_outside_position.yml", EXTRACT_PATH)
 
   def initialize(scene, position)
-    sprite = sprite image(image_path("glow.png")), color: Color.new(200, 0, 200, 200), at: position
+    sprite = sprite image(image_path("glow.png")), color: Color.new(255, 0, 255, 255), at: position
     sprite.blend_mode = :add
     sprite.origin = sprite.image.size / 2
     sprite.scale = [0.1, 0.1]
