@@ -10,6 +10,7 @@
   * Added particle system.
   * Fixed problem with gaining extra time, which also messing up animations (e.g. of green goo texture or laser movement).
   * Changed gravity to be more realistic.
+  * Added intro.
 
 --- v0.2.1 (2011-08-03)
 

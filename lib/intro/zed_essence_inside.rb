@@ -20,4 +20,12 @@ class ZedEssenceInside < ZedEssenceOutside
   def create_echo
     Echo.new(scene, @sprite.dup, position + [16, -30])
   end
+
+  def rescale
+    if @position_tracker.size < 20
+      @sprite.scale *= 0.95
+    else
+      @sprite.scale = [0.1 + Math::sin((Time.now - @created_at) * 5) * 0.02] * 2
+    end
+  end
 end
