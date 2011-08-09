@@ -48,23 +48,28 @@ class IntroInside < IntroScene
 
   def update
     elapsed = Time.now - @started_at
-    if elapsed > 12
+    if elapsed > 13
       pop_scene_while {|s| s.is_a? IntroScene }
-    elsif elapsed > 10
+    elsif elapsed > 11
       fade_out
-    elsif elapsed > 9
+    elsif elapsed > 10
       jump @zed
-    elsif elapsed > 8
+    elsif elapsed > 9
       jump @ginger
     elsif elapsed > 7
       if @objects.include? @zed_essence
         @cloned_sound.play
         @zed_essence.save_tracker if @zed_essence.recording?
         remove_object @zed_essence
-        @zed.pos = @ginger.pos
+        @zed.pos = @ginger.pos + [0, 0.01] # Just to ensure Zed is in front.
+        @zed.color = Color.new(255, 255, 255, 0)
         @zed.explode_pixels(glow: true, color: ZedEssenceInside::COLOR, number: 2, gravity: 0, scale: 3,
                             velocity: [0, 0, 10], random_velocity: [20, 20, 20], shrink_duration: 3, fade_duration: 2)
       end
+
+      color = @zed.color
+      color.alpha += 3
+      @zed.color = color
     elsif elapsed > 5.5
       @ginger.velocity_x = 0 if @ginger.velocity_x > 0
     elsif elapsed > 5
