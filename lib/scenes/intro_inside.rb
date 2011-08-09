@@ -30,6 +30,8 @@ class IntroInside < IntroScene
     @cloned_sound = sound sound_path("zed_clone.ogg")
     @cloned_sound.volume = 30 * (user_data.effects_volume / 50.0)
 
+    @zed_essence = nil
+
     ambient_music.pause
   end
 
@@ -74,7 +76,7 @@ class IntroInside < IntroScene
     elsif elapsed > 2.5
       @ginger.velocity_x = 0 if @ginger.velocity_x > 0
     elsif elapsed > 2
-      unless defined? @zed_essence
+      unless @zed_essence
         @zed_essence = ZedEssenceInside.new(self, @glow_entry_position) #, state: :recording)
         @zed_essence.z += 30
       end
