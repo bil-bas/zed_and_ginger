@@ -198,7 +198,7 @@ class Player < DynamicObject
     read_controls
 
     on :key_press, *key_or_code(@controls[:jump]) do
-      jump if ok? unless disabled? :animation
+      jump if ok? unless disabled? :animation or disabled? :controls
     end
   end
 

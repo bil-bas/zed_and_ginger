@@ -42,7 +42,7 @@ class IntroInside < IntroScene
   def jump(cat)
     if cat.velocity_x == 0
       cat.velocity_x = 32
-      cat.velocity_z = Player::JUMP_SPEED
+      cat.jump
     end
   end
 
