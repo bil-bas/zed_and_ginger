@@ -12,7 +12,9 @@ class Starscape
     background = Image.new GAME_RESOLUTION * SCALE
 
     draw_stars_on background
-    draw_moon_on background
+
+    @moon = sprite image(image_path("moon.png")),
+                at: [79, 4.5]
 
     @background = sprite background
     @background.scale = [1.0 / SCALE] * 2
@@ -47,17 +49,6 @@ class Starscape
     end
   end
 
-  def draw_moon_on(image)
-    # Add the moon and a sprinkling of asteroids.
-    moon = sprite image(image_path("moon.png")),
-                at: [310, 18],
-                scale: Vector2[4, 4]
-
-    image_target image do |target|
-      target.draw moon
-    end
-  end
-
   def draw_asteroids_on(image, base_brightness)
     image_target image do |target|
       target.clear Color.none
@@ -82,6 +73,7 @@ class Starscape
 
   def draw_on(win)
     win.draw @background
+    win.draw @moon
     @asteroids.flatten.each {|layer| win.draw layer }
   end
 end
