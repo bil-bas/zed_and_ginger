@@ -132,7 +132,7 @@ class MainMenu < GuiScene
     log.info { "#{self.class} loaded in #{Time.now - started_at}s" }
 
     # Bit of a fudgy way to prevent the intro being reloaded if we flip fullscreen/window.
-    run_scene :intro_outside unless defined? @@preloader
+    run_scene :intro_outside, @player_sheets unless defined? @@preloader
 
     @@preloader ||= Preloader.new
   end

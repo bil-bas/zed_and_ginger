@@ -3,7 +3,9 @@ require_relative "../intro/ship"
 require_relative "../intro/zed_asteroid"
 
 class IntroOutside < IntroScene
-  def setup
+  def setup(player_sheets)
+    @player_sheets = player_sheets
+
     super()
 
     @objects = []
@@ -11,6 +13,10 @@ class IntroOutside < IntroScene
 
     @ship = Ship.new(self, [-190, 24], 0.1)
     @asteroid = ZedAsteroid.new(self, [200, 5])
+  end
+
+  def next_intro
+    push_scene :intro_inside, @player_sheets
   end
 
   def render(win)

@@ -9,7 +9,7 @@ class Status
 
   attr_reader :owner # Object this status is applied to.
 
-  def self.type; name.downcase[/[^:]+$/].to_sym; end
+  def self.type; name[/[^:]+$/].gsub(/([A-Z])/, '_\1')[1..-1].downcase.to_sym; end
   def type; @type ||= self.class.type; end
 
   def default_duration; Float::INFINITY; end

@@ -9,7 +9,6 @@ class IntroScene < GameScene
       [0, GAME_RESOLUTION.height - BORDER_WIDTH, GAME_RESOLUTION.width, BORDER_WIDTH]
   ]
 
-
   def setup
     super()
 
@@ -23,7 +22,9 @@ class IntroScene < GameScene
     self.gui_controls += BORDER_RECTANGLES.map {|r| Polygon.rectangle(r, Color.black) }
 
     gui_controls << ShadowText.new("<space> to skip", at: [GAME_RESOLUTION.width - 4, GAME_RESOLUTION.height - 0.75],
-                                   auto_center: [1, 1], size: 4, color: Color.new(255, 255, 255, 150))
+                                   auto_center: [1, 1], size: 4, color: Color.new(75, 75, 75))
+
+    @fading_in = true
   end
 
   def register
@@ -44,15 +45,28 @@ class IntroScene < GameScene
     pop_scene_while {|s| s.is_a? IntroScene }
   end
 
+  def fade_in
+    color = @fade.color_of(0)
+    if color.red < 255
+      color.red = color.green = color.blue = color.red + 3
+      @fade.color = color
+    else
+      @fading_in = false
+    end
+  end
+
+  def fade_out
+    color = @fade.color_of(0)
+    if color.red > 0
+      color.red = color.green = color.blue = color.red - 3
+      @fade.color = color
+    end
+  end
+
   def update
     super
 
-    # Fade in.
-    color = @fade.color_of(0)
-    if color.red < 255
-      color.red = color.green = color.blue = color.red + 2
-      @fade.color = color
-    end
+    fade_in if @fading_in
 
     background.update frame_time
     @particle_generator.update

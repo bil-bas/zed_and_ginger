@@ -8,6 +8,7 @@ module HasStatus
       klass = Status.const_get(status)
 
       if klass.is_a? Class and klass.ancestors.include? Status
+
         type = klass.type
         @@status_types[type] = klass
         define_method("#{type}?") do

@@ -1,4 +1,4 @@
-require_relative "zed_essence"
+require_relative "zed_essence_outside"
 
 class ZedAsteroid < GameObject
   def initialize(scene, position)
@@ -25,7 +25,7 @@ class ZedAsteroid < GameObject
                      velocity: [-5, 0, 0], random_velocity: [10, 10, 0],
                      min_y: -Float::INFINITY, max_y: Float::INFINITY, fade_duration: 10)
       scene.remove_object(self)
-      ZedEssence.new(scene, [x, y])
+      ZedEssenceOutside.new(scene, [x, y])
     end
   end
 
