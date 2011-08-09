@@ -1,4 +1,20 @@
 class ZedEssenceOutside < GameObject
+  COLOR = Color.new(255, 0, 255, 50)
+
+  class Echo < GameObject
+    def update
+      color = @sprite.color
+      if color.red > 0
+        color.red -= 10
+        color.green -= 10
+        color.blue -= 10
+        @sprite.color = color
+      else
+        scene.remove_object self
+      end
+    end
+  end
+
   def recording?; @state == :recording; end
   def playing?; @state == :playing; end
 
@@ -12,7 +28,7 @@ class ZedEssenceOutside < GameObject
 
     raise "bad state #{@state}" unless playing? or recording?
 
-    sprite = sprite image(image_path("glow.png")), color: Color.new(255, 0, 255, 255), at: position
+    sprite = sprite image(image_path("glow.png")), color: COLOR, at: position
     sprite.blend_mode = :add
     sprite.origin = sprite.image.size / 2
     sprite.scale = [0.1, 0.1]
@@ -56,8 +72,14 @@ class ZedEssenceOutside < GameObject
     scene.next_intro
   end
 
+  def create_echo
+    Echo.new(scene, @sprite.dup, position)
+  end
+
   def update
     @sprite.scale = [0.1 + Math::sin((Time.now - @created_at) * 5) * 0.02] * 2
+
+    create_echo
 
     case @state
       when :recording

@@ -26,6 +26,15 @@ class IntroInside < IntroScene
     @zed.apply_status :in_cutscene
 
     @started_at = Time.now
+
+    @cloned_sound = sound sound_path("zed_clone.ogg")
+    @cloned_sound.volume = 30 * (user_data.effects_volume / 50.0)
+
+    ambient_music.pause
+  end
+
+  def clean_up
+    ambient_music.play
   end
 
   def jump(cat)
@@ -47,9 +56,12 @@ class IntroInside < IntroScene
       jump @ginger
     elsif elapsed > 7
       if @objects.include? @zed_essence
+        @cloned_sound.play
         @zed_essence.save_tracker if @zed_essence.recording?
         remove_object @zed_essence
         @zed.pos = @ginger.pos
+        @zed.explode_pixels(glow: true, color: ZedEssenceInside::COLOR, number: 2, gravity: 0, scale: 3,
+                            velocity: [0, 0, 10], random_velocity: [20, 20, 20], shrink_duration: 3, fade_duration: 2)
       end
     elsif elapsed > 5.5
       @ginger.velocity_x = 0 if @ginger.velocity_x > 0

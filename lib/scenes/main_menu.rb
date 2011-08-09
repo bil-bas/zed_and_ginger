@@ -95,7 +95,7 @@ class MainMenu < GuiScene
     # Replay the intro.
     gui_controls << Button.new("Intro", at: [RIGHT_EDGE, y], size: FONT_SIZE,
                                  auto_center: [1, 0]) do
-      push_scene :intro_outside
+      push_scene :intro_outside, @player_sheets
     end
 
     y += gui_controls.last.height + BUTTON_SPACING

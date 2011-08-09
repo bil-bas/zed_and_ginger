@@ -14,7 +14,10 @@ class ZedEssenceInside < ZedEssenceOutside
   end
 
   def tracking_complete
-    scene.create_zed
-    scene.remove_object self
+    # Do nothing.
+  end
+
+  def create_echo
+    Echo.new(scene, @sprite.dup, position + [16, -30])
   end
 end
