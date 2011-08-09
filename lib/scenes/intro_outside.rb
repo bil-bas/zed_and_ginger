@@ -1,5 +1,6 @@
 require_relative "intro_scene"
 require_relative "../intro/ship"
+require_relative "../intro/asteroid"
 require_relative "../intro/zed_asteroid"
 
 class IntroOutside < IntroScene
@@ -19,13 +20,25 @@ class IntroOutside < IntroScene
     push_scene :intro_inside, @player_sheets
   end
 
+  def update
+    super
+
+    if rand() < 0.02
+      Asteroid.new(self, [100, rand(50)])
+    end
+  end
+
   def render(win)
     background.draw_on(win)
 
-    @objects.each {|o| o.draw_on(win) }
-    @ship.draw_front_on(win)
+    before, behind  = @objects.partition {|o| o.is_a? Asteroid }
+
+    behind.each {|o| o.draw_on(win) }
 
     @particle_generator.particles.each {|p| p.draw_on(win) }
+    @ship.draw_front_on(win)
+
+    before.each {|o| o.draw_on(win) }
 
     super(win)
   end
