@@ -20,7 +20,7 @@ class Board < DynamicObject
                                     duration: ANIMATION_DURATION).start(@sprite)
     @animations.last.loop!
 
-    @ridden = false
+    @ridden_by = nil
     @dropped = false
 
     @shadow.scale *= [1.5, 0.4]
@@ -31,7 +31,7 @@ class Board < DynamicObject
   end
 
   def dropped
-    @ridden = false
+    @ridden_by = nil
     @dropped = true
   end
 
@@ -40,12 +40,17 @@ class Board < DynamicObject
       self.x -= DROPPED_SPEED * frame_time
     else
       scene.players.shuffle.each do |player|
-        if not @ridden and not @dropped and collide? player
+        if not @ridden_by and not @dropped and collide? player
           player.ride self
-          @ridden = true
+          @ridden_by = player
           break
         end
       end
+    end
+
+    # Force the player to move at a minimum speed if riding.
+    if @ridden_by
+      @ridden_by.velocity_x = 32 if @ridden_by.velocity_x < 32
     end
 
     super
