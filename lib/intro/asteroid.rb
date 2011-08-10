@@ -4,6 +4,7 @@ class Asteroid < GameObject
     sprite.sheet_size = [3, 1]
     sprite.sheet_pos = [rand(3), 0]
     sprite.origin = [sprite.sprite_width / 2, sprite.sprite_height / 2]
+    sprite.scale = [0.8 + rand() * 0.4] * 2
 
     super(scene, sprite, position)
 
