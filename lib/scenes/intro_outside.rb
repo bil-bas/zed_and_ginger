@@ -14,6 +14,7 @@ class IntroOutside < IntroScene
 
     @ship = Ship.new(self, [-190, 24], 0.1)
     @asteroid = ZedAsteroid.new(self, [200, 5])
+    @num_frames = 0
   end
 
   def next_intro
@@ -31,14 +32,25 @@ class IntroOutside < IntroScene
   def render(win)
     background.draw_on(win)
 
-    before, behind  = @objects.partition {|o| o.is_a? Asteroid }
+    view = win.view
 
-    behind.each {|o| o.draw_on(win) }
+    if @num_frames > 800
+      essence = @objects.find {|o| o.is_a? ZedEssenceOutside }
+      view.zoom_by 2
+      view.center = essence.x + essence.y / 2, essence.y
+    end
+    @num_frames += 1
 
-    @particle_generator.particles.each {|p| p.draw_on(win) }
-    @ship.draw_front_on(win)
+    win.with_view view do
+      before, behind  = @objects.partition {|o| o.is_a? Asteroid }
 
-    before.each {|o| o.draw_on(win) }
+      behind.each {|o| o.draw_on(win) }
+
+      @particle_generator.particles.each {|p| p.draw_on(win) }
+      @ship.draw_front_on(win)
+
+      before.each {|o| o.draw_on(win) }
+    end
 
     super(win)
   end
