@@ -27,6 +27,9 @@ gameplay:
     hardcore_inversion: 1
     inversion: 1
 
+general:
+  auto_show_intro: true
+
 key_controls:
   general: # Controls that aren't specifically for either player.
     pause: :p

@@ -68,6 +68,9 @@ class UserData < BaseUserData
   INVERSION = 'inversion'
   SELECTED_LEVEL = 'selected_level'
 
+  GROUP_GENERAL = 'general'
+  AUTO_SHOW_INTRO = 'auto_show_intro'
+
   DEFAULT_LEVEL_DATA = {
       'high-score' => 0,      # Highest score, whether finished the level or not.
       'high-scorer' => '???', # Name of person getting the high score.
@@ -246,6 +249,16 @@ class UserData < BaseUserData
 
   def music_volume=(volume)
     @data[GROUP_SOUND][MUSIC_VOLUME] = volume
+    save
+  end
+
+  # General settings.
+  def auto_show_intro?
+    @data[GROUP_GENERAL][AUTO_SHOW_INTRO]
+  end
+
+  def auto_show_intro=(value)
+    @data[GROUP_GENERAL][AUTO_SHOW_INTRO] = value
     save
   end
 
