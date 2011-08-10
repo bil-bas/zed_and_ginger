@@ -32,10 +32,14 @@ class IntroInside < IntroScene
 
     @zed_essence = nil
 
+    @level_music ||= music music_path "Space_Cat_Habitat.ogg"
+    @level_music.volume = 20 * (user_data.music_volume / 50.0)
+
     ambient_music.pause
   end
 
   def clean_up
+    @level_music.stop
     ambient_music.play
   end
 
@@ -48,14 +52,15 @@ class IntroInside < IntroScene
 
   def update
     elapsed = Time.now - @started_at
-    if elapsed > 13
+    if elapsed > 14
       pop_scene_while {|s| s.is_a? IntroScene }
-    elsif elapsed > 11
+    elsif elapsed > 11.5
       fade_out
     elsif elapsed > 10
       jump @zed
     elsif elapsed > 9
       jump @ginger
+      @level_music.play
     elsif elapsed > 7
       if @objects.include? @zed_essence
         @cloned_sound.play
