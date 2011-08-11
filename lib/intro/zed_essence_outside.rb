@@ -1,7 +1,29 @@
 class ZedEssenceOutside < GameObject
   COLOR = Color.new(255, 0, 255, 50)
+  PIXELATED_IMAGE_SIZE = Vector2[7, 7]
+
+  class << self
+    def shader
+      unless defined? @shader
+        @shader = Shader.new frag: StringIO.new(read_shader("zed_essence.frag"))
+        @shader[:pixel_width] = 1.0 / PIXELATED_IMAGE_SIZE.width
+        @shader[:pixel_height] = 1.0 / PIXELATED_IMAGE_SIZE.height
+      end
+
+      @shader
+    end
+
+    def shader_time=(time)
+      @shader[:time] = time if defined? @shader
+    end
+  end
 
   class Echo < GameObject
+    def initialize(*args)
+      super(*args)
+      @sprite.shader = ZedEssenceOutside.shader
+    end
+
     def update
       color = @sprite.color
       if color.red > 0
@@ -32,6 +54,7 @@ class ZedEssenceOutside < GameObject
     sprite.blend_mode = :add
     sprite.origin = sprite.image.size / 2
     sprite.scale = [0.1, 0.1]
+    sprite.shader = ZedEssenceOutside.shader
 
     @created_at = Time.now
 
