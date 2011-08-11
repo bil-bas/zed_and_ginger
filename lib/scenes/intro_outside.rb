@@ -15,10 +15,16 @@ class IntroOutside < IntroScene
     @ship = Ship.new(self, [-190, 24], 0.1)
     @asteroid = ZedAsteroid.new(self, [200, 5])
     @num_frames = 0
+    @zed_essence = nil
   end
 
   def next_intro
     push_scene :intro_inside, @player_sheets
+  end
+
+  def clean_up
+    super
+    @zed_essence.quiet if @zed_essence
   end
 
   def update
@@ -32,13 +38,14 @@ class IntroOutside < IntroScene
   def render(win)
     background.draw_on(win)
 
-    view = win.view
+    @zed_essence ||= @objects.find {|o| o.is_a? ZedEssenceOutside }
 
+    view = win.view
     if @num_frames > 800
-      essence = @objects.find {|o| o.is_a? ZedEssenceOutside }
       view.zoom_by 2
-      view.center = essence.x + essence.y / 2, essence.y
+      view.center = @zed_essence.x + @zed_essence.y / 2, @zed_essence.y
     end
+
     @num_frames += 1
 
     win.with_view view do

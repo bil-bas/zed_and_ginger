@@ -13,6 +13,8 @@ class ZedAsteroid < GameObject
     @glow.blend_mode = :add
     @glow.origin = @glow.image.size / 2
     @glow.scale *= 0.125
+    @explosion = sound sound_path("asteroid_explosion.ogg")
+    @explosion.volume = 50 * (scene.user_data.effects_volume / 50.0)
   end
 
   def update
@@ -32,8 +34,10 @@ class ZedAsteroid < GameObject
                      min_y: -Float::INFINITY, max_y: Float::INFINITY, fade_duration: 2,
                      color: ZedEssenceOutside::COLOR, scale: 3)
 
-      scene.remove_object(self)
+      @explosion.play
       ZedEssenceOutside.new(scene, [x, y])
+
+      scene.remove_object(self)
     end
   end
 

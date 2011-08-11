@@ -40,7 +40,8 @@ class IntroInside < IntroScene
 
   def clean_up
     @level_music.stop
-    ambient_music.play
+    super
+    @zed_essence.quiet if @zed_essence
   end
 
   def jump(cat)

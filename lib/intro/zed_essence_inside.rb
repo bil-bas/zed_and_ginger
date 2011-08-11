@@ -15,6 +15,7 @@ class ZedEssenceInside < ZedEssenceOutside
 
   def tracking_complete
     # Do nothing.
+    quiet
   end
 
   def create_echo

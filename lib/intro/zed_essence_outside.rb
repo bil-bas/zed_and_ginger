@@ -46,6 +46,11 @@ class ZedEssenceOutside < GameObject
       when :playing
         @position_tracker = YAML::load_file(@position_tracker_file)
     end
+
+    @sound = sound sound_path("zed_essence.ogg")
+    @sound.volume = 10 * (scene.user_data.effects_volume / 50.0)
+    @sound.looping = true
+    @sound.play
   end
 
   def register(scene)
@@ -106,5 +111,9 @@ class ZedEssenceOutside < GameObject
       else
         raise "bad state #{@state}"
     end
+  end
+
+  def quiet
+    @sound.stop
   end
 end
