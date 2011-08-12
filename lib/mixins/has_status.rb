@@ -45,6 +45,8 @@ module HasStatus
   end
 
   def remove_status(type)
+    raise "No defined status: #{type.inspect}" unless @@status_types.has_key? type
+
     return unless status(type)
 
     status = @statuses.delete type

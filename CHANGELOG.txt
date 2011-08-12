@@ -3,6 +3,11 @@
        CHANGELOG
 ========================
 
+--- unreleased
+
+  * Added glue floor (prevents jumping).
+  * Added hyper-speed pill (increases run-speed, but forces you to run).
+
 --- v0.3.0 (2011-08-10)
 
   * Moved resolution/fullscreen controls into Settings page.

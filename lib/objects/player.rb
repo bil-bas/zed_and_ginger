@@ -1,7 +1,7 @@
 require_relative "dynamic_object"
 require_relative "../tiles/floor_tile"
 
-require_files('statuses', %w[burnt electrocuted in_cutscene invulnerable squashed thrown])
+require_files('statuses', %w[burnt electrocuted hyper_speed in_cutscene invulnerable squashed thrown])
 
 class Player < DynamicObject
   include HasStatus
@@ -13,7 +13,7 @@ class Player < DynamicObject
   MIN_SPEED = 0.0
   MAX_SPEED = 64.0
   VERTICAL_SPEED = 25.0
-  MIN_RUN_VELOCITY = 100.0 # Above this, run animation; below walk.
+  MIN_RUN_VELOCITY = 1000.0 # Above this, run animation; below walk.
   JUMP_SPEED = 50 # Z-speed of jumping.
 
   RIDING_OFFSET_X = -2 # Move ridden object back, since we have our origin far forward.
@@ -280,10 +280,10 @@ class Player < DynamicObject
       if vel == 0
         @player_animations[:sitting].update
       elsif vel >= MIN_RUN_VELOCITY
-        @player_animations[:running].duration = (80 - vel) / 20.0
+        @player_animations[:running].duration = (100 - vel) / 20.0
         @player_animations[:running].update
       else
-        @player_animations[:walking].duration = (80 - vel) / 20.0
+        @player_animations[:walking].duration = (100 - vel) / 20.0
         @player_animations[:walking].update
       end
     else

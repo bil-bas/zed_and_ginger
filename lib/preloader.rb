@@ -5,6 +5,8 @@ class Preloader
   include Helper
   include Log
 
+  FRAMES_BETWEEN_LOADS = 2
+
   def complete?; @complete; end
 
   def initialize
@@ -19,6 +21,19 @@ class Preloader
   def update
     return if @complete
 
+    # Shaders are always slow, since they involve compilation.
+    if @shader_classes.any?
+      @shader_classes.pop.shader
+      return
+    end
+
+    # Sound files of any size (>10k) are pretty slow to load.
+    if @sound_files.any?
+      SoundBufferSet[@sound_files.pop]
+      return
+    end
+
+    # Fonts don't really take any time.
     if @font_files.any?
       font_file = @font_files.pop
       text "!", font: font_file, size: Level::FONT_SIZE
@@ -26,18 +41,9 @@ class Preloader
       return
     end
 
-    if @sound_files.any?
-      SoundBufferSet[@sound_files.pop]
-      return
-    end
-
+    # Image loading is very fast.
     if @image_files.any?
       ImageSet[@image_files.pop]
-      return
-    end
-
-    if @shader_classes.any?
-      @shader_classes.pop.shader
       return
     end
 

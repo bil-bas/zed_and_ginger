@@ -2,7 +2,7 @@
   require_relative "tiles/#{file_name}_floor"
 end
 
-%w[barrel board conveyors fire_exhaust laser_beam message_screen mine pacer rat slow_splat spring teleporter].each do |file_name|
+%w[barrel board conveyors fire_exhaust laser_beam message_screen mine pacer rat slow_splat speed_pill spring teleporter].each do |file_name|
   require_relative "objects/#{file_name}"
 end
 
@@ -53,6 +53,7 @@ class FloorMap < Map
       when 'E' then [ExhaustFloor, FireExhaustShifted]
 
       when 'g' then [GlueFloor, nil]
+      when 'h' then [default_tile, SpeedPill]
 
       when '{' then [TeleportFloor, Teleporter]
       when '}' then [TeleportBackwardsFloor, TeleporterBackwards]
