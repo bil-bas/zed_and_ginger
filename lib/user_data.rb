@@ -214,7 +214,10 @@ class UserData < BaseUserData
   end
 
   def selected_level
-    @data[GROUP_GAMEPLAY][SELECTED_LEVEL][mode.to_s]
+    level = @data[GROUP_GAMEPLAY][SELECTED_LEVEL][mode.to_s]
+    # Ensure we never return a level that is currently locked!
+    level -= 1 until level_unlocked? level
+    level
   end
 
   def selected_level=(level)
