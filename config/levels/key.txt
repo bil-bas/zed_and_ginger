@@ -10,6 +10,7 @@
 #    # GlassFloor (window, slightly angled)
 #    f FinishFloor
 #    s SlowFloor
+#    g GlueFloor (prevents jumping).
 
 #    ^ Std + Spring
 #    b Std + Barrel

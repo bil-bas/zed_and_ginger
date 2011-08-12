@@ -34,7 +34,9 @@ require_files('particles', %w[particle_generator])
 # After all files are included, we don't need to go further for Ocra.
 exit if defined? Ocra
 
-CLASSES_WITH_SHADERS = [SlowFloor, SlowSplat, Teleporter, Teleporting]
+CLASSES_WITH_TIME_SHADERS = [SlowFloor, SlowSplat, Teleporter, Teleporting]
+CLASSES_WITH_SHADERS = CLASSES_WITH_TIME_SHADERS + [ZedEssenceOutside, GlueFloor]
+
 SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, IntroInside, IntroOutside, Level, OptionsControls, OptionsMultimedia, Pause, MainMenu, ReadySetGo, Teleporting]
 
 $create_game_with_scene = :main_menu unless defined? $create_game_with_scene # To allow tests not to open a window.

@@ -1,5 +1,7 @@
 ---
 
+# Used as the test map, but also for the intro.
+
 time_limit: 50.0
 
 wall:

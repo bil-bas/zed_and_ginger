@@ -11,7 +11,7 @@ class Preloader
     @font_files = Dir[File.join(font_path(""), "**/*.ttf")]
     @sound_files = Dir[File.join(sound_path(""), "**/*.ogg")]
     @image_files = Dir[File.join(image_path(""), "**/*.png")]
-    @shader_classes = CLASSES_WITH_SHADERS.dup + [ZedEssenceOutside]
+    @shader_classes = CLASSES_WITH_SHADERS.dup
     @complete = false
     log.info { "Preload started." }
   end

@@ -289,7 +289,7 @@ class Level < GameScene
   end
 
   def update_shaders
-    CLASSES_WITH_SHADERS.each {|c| c.shader_time = timer.elapsed }
+    CLASSES_WITH_TIME_SHADERS.each {|c| c.shader_time = timer.elapsed }
   end
 
   def update_camera(duration)

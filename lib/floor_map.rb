@@ -1,4 +1,4 @@
-%w[checkered exhaust finish glass laser metal slow spring teleport].each do |file_name|
+%w[checkered exhaust finish glass glue laser metal slow spring teleport].each do |file_name|
   require_relative "tiles/#{file_name}_floor"
 end
 
@@ -51,6 +51,8 @@ class FloorMap < Map
 
       when 'e' then [ExhaustFloor, FireExhaust]
       when 'E' then [ExhaustFloor, FireExhaustShifted]
+
+      when 'g' then [GlueFloor, nil]
 
       when '{' then [TeleportFloor, Teleporter]
       when '}' then [TeleportBackwardsFloor, TeleporterBackwards]

@@ -1,16 +1,15 @@
 require_relative "floor_tile"
 
-class SlowFloor < FloorTile
+# Prevents the player from jumping.
+class GlueFloor < FloorTile
   SHADER_PIXELS_PER_PIXEL = 1
-  FREQUENCY_AMPLITUDE = 0.8
-  INTERFERENCE_AMPLITUDE = 10
+  INTERFERENCE_AMPLITUDE = 20
 
   class << self
     def shader
       unless defined? @shader
-        @shader = Shader.new frag: StringIO.new(read_shader("slime.frag"))
+        @shader = Shader.new frag: StringIO.new(read_shader("glue.frag"))
         @shader[:interference_amplitude] = INTERFERENCE_AMPLITUDE
-        @shader[:frequency_amplitude] = FREQUENCY_AMPLITUDE
         @shader[:pixel_width] = 1.0 / FloorTile::IMAGE_SIZE.width
         @shader[:pixel_height] = 1.0 / FloorTile::IMAGE_SIZE.height
       end
@@ -23,10 +22,8 @@ class SlowFloor < FloorTile
     end
   end
 
-  def speed; 0.25; end
-
   def initialize(grid_position, offset)
-    super([2, 0], grid_position, offset)
+    super([1, 2], grid_position, offset)
 
     @sprite.shader = self.class.shader
 

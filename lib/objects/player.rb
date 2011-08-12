@@ -204,7 +204,7 @@ class Player < DynamicObject
 
   public
   def jump
-    if z == 0
+    if z == 0 and (riding? or not @tile.is_a? GlueFloor)
       @sounds[:jump].pitch = 0.8 + rand(3) * 0.1
       @sounds[:jump].play
       self.velocity_z = JUMP_SPEED

@@ -2,6 +2,7 @@ require_relative "tile"
 
 class FloorTile < Tile
   SKEW = 0.5
+  IMAGE_SIZE = Vector2[64, 64] # Size of the tiles sprite-sheet.
 
   def speed; 1.0; end
 
