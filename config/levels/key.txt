@@ -1,12 +1,13 @@
 #  Wall key:
-#    - default floor for map
+#    - default wall for map
 #    # square glass window
 #    x tech panel
 #    o porthole
+#    f finishing line
 #
 #  Floor key:
 #    - default floor for map
-#    # GlassFloor (window)
+#    # GlassFloor (window, slightly angled)
 #    f FinishFloor
 #    s SlowFloor
 
@@ -18,8 +19,6 @@
 #    p Std + PacerLow (electric thingie moves to and fro on bottom tile)
 #    P Std + PacerHigh (electric thingie moves to and fro on middle tile)
 
-#    S SlowFloor + SlowSplat (goo on wall)
-)
 #    { Std + Forward Teleporter
 #    } Std + Backward Teleporter
 
