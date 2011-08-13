@@ -70,7 +70,7 @@ class ZedEssenceOutside < GameObject
         @position_tracker = YAML::load_file(@position_tracker_file)
     end
 
-    @sound = sound sound_path("zed_essence.ogg")
+    @sound = music music_path("zed_essence.ogg")
     @sound.volume = 10 * (scene.user_data.effects_volume / 50.0)
     @sound.looping = true
     @sound.play
