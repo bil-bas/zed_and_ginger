@@ -1,7 +1,7 @@
 require_relative "dynamic_object"
 require_relative "../tiles/floor_tile"
 
-require_files('statuses', %w[burnt electrocuted hyper_speed in_cutscene invulnerable squashed thrown])
+require_files('statuses', %w[burnt eaten electrocuted hyper_speed in_cutscene invulnerable squashed thrown])
 
 class Player < DynamicObject
   include HasStatus

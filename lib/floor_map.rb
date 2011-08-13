@@ -1,8 +1,8 @@
-%w[checkered exhaust finish glass glue laser metal slow spring teleport].each do |file_name|
+%w[checkered dirt exhaust finish glass glue laser metal slow spring teleport].each do |file_name|
   require_relative "tiles/#{file_name}_floor"
 end
 
-%w[barrel board conveyors fire_exhaust laser_beam message_screen mine pacer rat slow_splat speed_pill spring teleporter].each do |file_name|
+%w[barrel board conveyors fire_exhaust fly_trap laser_beam message_screen mine pacer rat slow_splat speed_pill spring teleporter].each do |file_name|
   require_relative "objects/#{file_name}"
 end
 
@@ -40,6 +40,7 @@ class FloorMap < Map
       when '-' then [default_tile, nil]
       when '#' then [GlassFloor, nil]
       when 'f' then [FinishFloor, nil]
+      when 'd' then [DirtFloor, nil]
 
       when '\\' then [default_tile, RightConveyor]
       when '/' then [default_tile, LeftConveyor]
@@ -51,7 +52,7 @@ class FloorMap < Map
 
       when 'e' then [ExhaustFloor, FireExhaust]
       when 'E' then [ExhaustFloor, FireExhaustShifted]
-
+      when 't' then [DirtFloor, FlyTrap]
       when 'g' then [GlueFloor, nil]
       when 'h' then [default_tile, SpeedPill]
 

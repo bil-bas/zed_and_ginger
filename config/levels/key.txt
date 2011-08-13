@@ -11,12 +11,14 @@
 #    f FinishFloor
 #    s SlowFloor
 #    g GlueFloor (prevents jumping).
+#    d DirtFloor
 
 #    ^ Std + Spring
 #    b Std + Barrel
 #    B Std + Board
 #    m Std + MessageScreen (on wall)
 #    h Std + Hyper-speed pill
+#    t DirtFloor + Fly Trap.
 
 #    p Std + PacerLow (electric thingie moves to and fro on bottom tile)
 #    P Std + PacerHigh (electric thingie moves to and fro on middle tile)
