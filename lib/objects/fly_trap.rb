@@ -21,6 +21,13 @@ class FlyTrap < GameObject
 
     @digesting = nil
     @activated_at = 0
+
+    @chew_sound = sound sound_path("fly_trap_chew.ogg")
+    @chew_sound.volume = 5 * (scene.user_data.effects_volume / 50.0)
+    @chew_sound.looping = true
+
+    @snap_sound = sound sound_path("fly_trap_snap.ogg")
+    @snap_sound.volume = 50 * (scene.user_data.effects_volume / 50.0)
   end
 
   def collide?(other)
@@ -34,6 +41,7 @@ class FlyTrap < GameObject
       if frame
         @sprite.sheet_pos = [frame, 0]
       else
+        @chew_sound.stop
         @digesting.remove_status :eaten
 
         @digesting = nil
@@ -45,6 +53,8 @@ class FlyTrap < GameObject
           player.x, player.y, player.z = x, y, z + 4
           @activated_at = scene.timer.elapsed
           @sprite.sheet_pos = [1, 0]
+          @chew_sound.play
+          @snap_sound.play
           @digesting = player
         end
       end
