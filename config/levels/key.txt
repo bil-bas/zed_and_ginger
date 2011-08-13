@@ -12,11 +12,12 @@
 #    s SlowFloor
 #    g GlueFloor (prevents jumping).
 #    d DirtFloor
+#    m MetalFloor
 
 #    ^ Std + Spring
 #    b Std + Barrel
 #    B Std + Board
-#    m Std + MessageScreen (on wall)
+#    M Std + MessageScreen (on wall)
 #    h Std + Hyper-speed pill
 #    t DirtFloor + Fly Trap.
 

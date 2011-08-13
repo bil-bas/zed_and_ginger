@@ -1,0 +1,29 @@
+---
+
+time_limit: 35
+
+wall:
+  tiles: |
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------------f----------
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------------f----------
+    --------------x--------------x-----------------------------x------------------------------------------x-----------------------------x-x-x------------------x------f----------
+
+  default_tile: [7, 1]
+
+floor:
+  tiles: |
+    ---------t------tMt-t-t-t-t-t-t-th-----------------b-------bss-sss-------------sss-------------bmmmmmmmmmmmmmmmmmmmmmmmmX---sssss------bbbb-------t------##-------f----------
+    mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm-mm-mm-----###-b---mmmmbsmmmmsmmmmmsmmmmssssmmmmb---------hbmmmmmmmmmmmmmmmmmmmmmmmmX-----sst-----b----bmmmmmmmmmmmmmmmmmmmmmmfmmmmmmmmmm
+    -----t----#####-------------t------------------###-b-------b-----s--s--s----s------------------------t-----X-X-----------XmmmmmmmmmmmbmmmmmXb---------------------fbm#m#m#m#m
+    mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm----###-b---mmmmbmmmmmmmmsmmmmmmmmmmmmmmmbs----##----t----------X-X----t-------------------b----bmmmmmmmmmmmmmmmmmmmmmmfmmmmmmmmmm
+    ----------------##----t-t-t------------------------b-------b--------ssss---------sssss----##--------t-----^X-X----t------------t-------bbbb--------------##-------f----------
+
+  default_tile: DirtFloor
+
+# Messages can be up to 14 chars (15 if there is a follow-on screen) and must have 4+ spaces between them.
+# - '0123456789012345'
+messages:
+  - "The Garden "
+
+  - "Do not feed the "
+  - "plants!"

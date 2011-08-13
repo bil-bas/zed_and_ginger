@@ -41,6 +41,7 @@ class FloorMap < Map
       when '#' then [GlassFloor, nil]
       when 'f' then [FinishFloor, nil]
       when 'd' then [DirtFloor, nil]
+      when 'm' then [MetalFloor, nil]
 
       when '\\' then [default_tile, RightConveyor]
       when '/' then [default_tile, LeftConveyor]
@@ -69,7 +70,7 @@ class FloorMap < Map
       when '^' then [SpringFloor, Spring]
       when 'b' then [default_tile, Barrel]
       when 'B' then [default_tile, Board]
-      when 'm' then [default_tile, MessageScreen]
+      when 'M' then [default_tile, MessageScreen]
       when 'X' then [default_tile, Mine]
       when 'p' then [default_tile, PacerLow]
       when 'P' then [default_tile, PacerHigh]

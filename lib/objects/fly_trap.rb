@@ -1,8 +1,7 @@
 require_relative "game_object"
 
 class FlyTrap < GameObject
-  def casts_shadow?; @digesting; end
-  def to_rect; Rect.new(*(@position - [4, 3]), 8, 6) end
+  def to_rect; Rect.new(*(@position - [3, 2.5]), 6, 5) end
   def z_order; @digesting ? super : Player::Z_ORDER_SQUASHED - 1; end # So it appear under the player when flat.
 
   def initialize(map, tile, position)
@@ -36,13 +35,14 @@ class FlyTrap < GameObject
         @sprite.sheet_pos = [frame, 0]
       else
         @digesting.remove_status :eaten
-        @digesting.x, @digesting.y, @digesting.z = x, y, z + 4
+
         @digesting = nil
       end
     else
       scene.players.shuffle.each do |player|
         if player.can_be_hurt? and collide? player
           player.apply_status :eaten
+          player.x, player.y, player.z = x, y, z + 4
           @activated_at = scene.timer.elapsed
           @sprite.sheet_pos = [1, 0]
           @digesting = player

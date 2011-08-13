@@ -23,7 +23,7 @@ class Barrel < DynamicObject
   end
 
   def collide?(other)
-    other.z < 3 and super(other)
+    other.z < 2 and super(other)
   end
 
   def update
