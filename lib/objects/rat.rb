@@ -17,7 +17,7 @@ class Rat < GameObject
 
   def initialize(map, tile, position)
     sprite = sprite image_path("rat.png"), at: position
-    sprite.sheet_size = [3, 1]
+    sprite.sheet_size = [5, 1]
     sprite.origin = Vector2[sprite.sprite_width / 2, sprite.sprite_height - 1]
     sprite.scale = [0.75, 0.75]
 
@@ -51,8 +51,8 @@ class Rat < GameObject
           @sprite.scale_x *= -1 if rand() < 0.5
           @sounds[:squashed].play
           FloatIcon.new(:extra_time, player)
-          scene.create_particle([x, y, z + 0.5], velocity: [0, 0, 24], number: 16,
-              random_velocity: [8, 8, 8], color: Color.red)
+          scene.create_particle([x, y, z + 0.5], velocity: [0, 0, 48], number: 16,
+              random_velocity: [16, 16, 16], color: Color.red)
 
         else
           @sprite.sheet_pos = CHASED_SPRITE
@@ -66,7 +66,13 @@ class Rat < GameObject
       end
     end
 
-    self.x += @speed * frame_time if @state == :chased
+    case @state
+      when :ok
+         @sprite.sheet_pos = [(scene.timer.elapsed * 2.0).floor % 2, 0]
+      when :chased
+        self.x += @speed * frame_time
+        @sprite.sheet_pos = [3 + (scene.timer.elapsed * 2.0).floor % 2, 0]
+    end
 
     super
   end
