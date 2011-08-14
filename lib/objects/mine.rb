@@ -56,5 +56,7 @@ class Mine < GameObject
 
       @animation.update if @active
     end
+
+    super
   end
 end

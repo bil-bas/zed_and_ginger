@@ -40,5 +40,7 @@ class SpeedPill < GameObject
         break
       end
     end
+
+    super
   end
 end

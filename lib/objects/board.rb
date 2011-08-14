@@ -4,7 +4,7 @@ class Board < DynamicObject
   ANIMATION_DURATION = 0.5
   DROPPED_SPEED = 40
 
-  def to_rect; Rect.new(*(@position - [2, 1]), 4, 2) end
+  def to_rect; Rect.new(*(@position - [4, 1]), 8, 2) end
 
   def casts_shadow?; true; end
 

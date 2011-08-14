@@ -8,7 +8,7 @@ class LaserBeam < GameObject
 
   SPARK_COLOR = Color.new(255, 255, 0, 150)
 
-  def to_rect; Rect.new(*(@position - [0, 3]), 0, 6) end
+  def to_rect; Rect.new(*(@position - [0.05, 3]), 0.1, 6) end
   def z_order; super - 3; end # So it appear behind the player.
   def phase_shift; 0; end
 
@@ -80,10 +80,13 @@ class LaserBeam < GameObject
                               glow: true, fade_duration: 0.5, shrink_duration: 0.65)
       end
     end
+
+    super
   end
 
   def draw_on(win)
     if @laser_eye
+      p [__id__, x, y, z, z_order]
       win.draw @groove_back
       win.draw @laser_eye
       win.draw @groove_front

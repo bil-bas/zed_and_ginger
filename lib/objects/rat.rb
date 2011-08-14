@@ -67,5 +67,7 @@ class Rat < GameObject
     end
 
     self.x += @speed * frame_time if @state == :chased
+
+    super
   end
 end

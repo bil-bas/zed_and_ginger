@@ -51,6 +51,8 @@ class Spring < GameObject
         break
       end
     end
+
+    super
   end
 
   def draw_on(win)
