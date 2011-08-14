@@ -13,6 +13,7 @@ class Button
   COLOR = Color.white
   DISABLED_COLOR = Color.new(100, 100, 100)
   HOVER_COLOR =  Color.new(175, 175, 255)
+  SHORTCUT_COLOR = Color.cyan
 
   def initialize(text, options = {}, &handler)
     raise "#{self.class} must have handler" unless block_given?
@@ -20,14 +21,15 @@ class Button
     options = {
         enabled: true,
         color: COLOR.dup,
-        disabled_color: DISABLED_COLOR.dup,
-        hover_color: HOVER_COLOR.dup,
+        disabled_color: DISABLED_COLOR,
+        hover_color: HOVER_COLOR,
+        shortcut_color: SHORTCUT_COLOR,
         brackets: true,
     }.merge! options
 
-    @color = options[:color]
-    @disabled_color = options[:disabled_color]
-    @hover_color = options[:hover_color]
+    @color = options[:color].dup
+    @disabled_color = options[:disabled_color].dup
+    @hover_color = options[:hover_color].dup
 
     @shortcut = options.has_key?(:shortcut) ? options[:shortcut] : text[0].downcase.to_sym
 
@@ -35,6 +37,15 @@ class Button
     text = "[#{text}]" if options[:brackets]
     @text = Text.new text, options
     @handler = handler
+
+    @shortcut_text = if @shortcut
+      overlay = ' ' * text.length
+      index = text.index /[#{@shortcut}]/i
+      overlay[index] = text[index]
+      Text.new overlay, options.merge(color: options[:shortcut_color].dup)
+    else
+      nil
+    end
 
     self.enabled = options[:enabled]
 
@@ -108,5 +119,6 @@ class Button
 
   def draw_on(win)
     @text.draw_on win
+    @shortcut_text.draw_on win if @shortcut and enabled?
   end
 end

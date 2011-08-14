@@ -14,9 +14,9 @@ class CheckButton < Button
         checked: false,
     }.merge! options
 
-    super('X', options, &handler)
-
     @label = text
+
+    super("[X]#{@label}", options, &handler)
 
     self.checked = options[:checked]
   end
