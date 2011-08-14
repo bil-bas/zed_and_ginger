@@ -5,7 +5,7 @@ class GameOver < DialogScene
   BUTTON_Y = 46
 
   TIME_MULTIPLIER = 10 # Speed of counting off time.
-  SCORE_PER_S = 1000 # Score you get for each remaining second.
+  SCORE_PER_S = 2000 # Score you get for each remaining second.
 
   def setup(previous_scene, winner)
     super(previous_scene, cursor_shown: false)
@@ -60,6 +60,7 @@ class GameOver < DialogScene
   end
 
   def remove_time(duration)
+    duration = [duration, previous_scene.timer.remaining].min
     previous_scene.timer.decrease duration, finished: true
     @winner.score += SCORE_PER_S * duration
     previous_scene.update_score_cards
@@ -69,7 +70,7 @@ class GameOver < DialogScene
     super
 
     # Empty out all the remaining time in the timer and convert to points, before finishing.
-    if previous_scene.timer.out_of_time?
+    if previous_scene.timer.out_of_time? or @winner.dead?
       unless @all_time_removed
         @all_time_removed = true
 
@@ -97,7 +98,7 @@ class GameOver < DialogScene
         enable_event_group :buttons
       end
     else
-      remove_time [frame_time * TIME_MULTIPLIER, previous_scene.timer.remaining].min
+      remove_time frame_time * TIME_MULTIPLIER
     end
 
     @big_score.string = "%07d" % @winner.score

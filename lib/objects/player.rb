@@ -63,7 +63,6 @@ class Player < DynamicObject
 
   attr_reader :name
   attr_accessor :speed_modifier
-  attr_writer :score
 
   def shadow_width; 1.2; end
   def shadow_height; 0.6; end
@@ -75,7 +74,10 @@ class Player < DynamicObject
   def ok?; @state == :ok; end
   def dead?; @state == :dead; end
   def finished?; @state == :finished; end
-  def score; ((x - @initial_x).div(8) * SCORE_PER_TILE) + @score; end
+  # Score gained purely by number of tiles travelled.
+  def distance_score; ((x - @initial_x).div(8) * SCORE_PER_TILE); end
+  def score; @score + distance_score; end
+  def score=(score); @score = score - distance_score; end
   def can_be_hurt?; not disabled? :hurt; end
 
   def velocity_z=(velocity)
