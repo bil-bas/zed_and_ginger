@@ -359,4 +359,11 @@ class Player < DynamicObject
     apply_status :thrown
     self.velocity_x, self.velocity_y, self.velocity_z = velocity
   end
+
+  public
+  def eaten(options = {})
+    die if scene.hardcore?
+
+    apply_status :eaten, options
+  end
 end

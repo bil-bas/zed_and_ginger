@@ -49,7 +49,7 @@ class FlyTrap < GameObject
     else
       scene.players.shuffle.each do |player|
         if player.can_be_hurt? and collide? player
-          player.apply_status :eaten
+          player.eaten
           player.x, player.y, player.z = x, y, z + 4
           @activated_at = scene.timer.elapsed
           @sprite.sheet_pos = [1, 0]
