@@ -69,7 +69,7 @@ class LaserBeam < GameObject
 
     # Create sparks shooting out from the near-side wall.
     if y > 25
-      if rand() < 0.15
+      if rand() < 0.05
         scene.create_particle([x, y + 3, z], velocity: [0, -4, 0], gravity: 0.5, fade_duration: 2,
                               random_velocity: [4, 4, 4], glow: true, color: SPARK_COLOR)
 
@@ -86,7 +86,6 @@ class LaserBeam < GameObject
 
   def draw_on(win)
     if @laser_eye
-      p [__id__, x, y, z, z_order]
       win.draw @groove_back
       win.draw @laser_eye
       win.draw @groove_front
