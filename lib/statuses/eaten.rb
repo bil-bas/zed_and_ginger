@@ -15,8 +15,8 @@ class Status
     end
 
     def clean_up
-      super
       owner.color = DEFAULT_COLOR
+      super
     end
   end
 end
