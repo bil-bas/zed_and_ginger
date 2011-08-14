@@ -54,7 +54,7 @@ Too slow to use in the real system, so saved to a file.
     value
   end
 
-  def z_order; @position.y + @z; end
+  def z_order; @position.y; end
   
   def y=(value)
     change_y = value - y
