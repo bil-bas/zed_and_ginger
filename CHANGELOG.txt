@@ -3,10 +3,14 @@
        CHANGELOG
 ========================
 
---- unreleased
+--- v0.4.0 (unreleased)
 
-  * Added glue floor (prevents jumping).
-  * Added hyper-speed pill (increases run-speed, but forces you to run).
+  * Added glue on the floor (prevents jumping).
+  * Added hyper-speed pill (increases run-speed, but forces you to run as fast as you can).
+  * Hover-board now imposes a minimum speed.
+  * Added venus fly traps.
+  * Added 5th level (The Garden).
+  * More clearly showed keyboard shortcuts for buttons (shortcuts have always been there, but most people didn't think of using them).
 
 --- v0.3.0 (2011-08-10)
 

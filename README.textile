@@ -9,7 +9,7 @@ h1. Zed and Ginger
 
 A single-player game of a cat running along a corridor in a space station just for the joy of it. Based on the classic arcade/8-/16-bit game, Metro-Cross.
 
-Created using the Ruby and the Ray gem.
+Created using Ruby and the Ray gem.
 
 License: GPL v3
 Author: Bil Bas (http://spooner.github.com) (bil dot bagpuss {at} gmail.com)
@@ -17,6 +17,13 @@ Author: Bil Bas (http://spooner.github.com) (bil dot bagpuss {at} gmail.com)
 h2. How to run the game
 
 * Windows: <pre>zed_and_ginger.exe</pre>.
+
+h2. How to play the game
+
+* Player 1 (Zed) - WASD + space to jump.
+* Player 2 (Ginger) - Arrows and Enter/Return to jump.
+
+Keys can be configured in-game, in Controls.
 
 
 h2. Compatibility
@@ -40,6 +47,7 @@ h2. External assets
 * Original music by "Maverick (Brian Peppers)":http://polyhedricpeppers.weebly.com/. !http://i.creativecommons.org/l/by-sa/3.0/88x31.png(CC BY-SA)!:http://creativecommons.org/licenses/by-sa/3.0/
 * 2D simplex noise function for GLSL copyright (C) 2011 Ashima Arts (Ian McEwan) under MIT license.
 
+
 h2. Tools used
 
 * Ruby 1.9.2
@@ -48,10 +56,12 @@ h2. Tools used
 * Sound effects created using "bfxr":http://www.bfxr.net/ and converted using "Audacity":http://audacity.sourceforge.net/
 * Windows executable created with the "Ocra":http://ocra.rubyforge.org/.
 
+
 h2. Credits
 
 * Thanks for Mon-ouie for making the Ray library and generally putting up with me asking dumb questions about it.
-* Thanks to Peter Cakebread (& family), Fowl (& sister), Mon-ouie, jlnr for play-testing and comments.
+* Thanks to BlueScope, eigenbom, Fowl (& sister), Ippa, jlnr, Mon-ouie, Peter Cakebread (& family) and SiliconEidolon for play-testing and comments.
+
 
 h2. License
 
