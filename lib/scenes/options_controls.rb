@@ -13,8 +13,9 @@ class OptionsControls < GuiScene
       control_name = control.to_s.tr('_', ' ').capitalize
       gui_controls << ShadowText.new(control_name, at: [LABEL_X, y], size: ITEM_SIZE, color: LABEL_COLOR)
       current = user_data.control(control)
-      gui_controls << Button.new(display_for_key(current), at: [BUTTON_X, y], size: ITEM_SIZE, shortcut: nil) do
-        run_scene :enter_control, self, "Press key to: #{control_name}", current do |new_value|
+      gui_controls << Button.new(display_for_key(current), at: [BUTTON_X, y], size: ITEM_SIZE, shortcut: nil,
+                                 tip: "Edit key for #{control_name}") do
+        run_scene :enter_control, self, "Press key to #{control_name}", current do |new_value|
           if new_value
             user_data.set_control(control, new_value)
             pop_scene
@@ -33,7 +34,7 @@ class OptionsControls < GuiScene
       UserData::VALID_PLAYER_CONTROLS.each do |control|
         gui_controls << ShadowText.new(control.to_s.capitalize, at: [LABEL_X, y], size: ITEM_SIZE, color: LABEL_COLOR)
         current = user_data.player_control(player_name, control)
-        gui_controls << Button.new(display_for_key(current),
+        gui_controls << Button.new(display_for_key(current), tip: "Edit #{control.to_s.capitalize} key for #{player_display_name}",
                                    at: [BUTTON_X, y], size: ITEM_SIZE, shortcut: nil) do
           run_scene :enter_control, self, "Press #{control} for #{player_display_name}", current do |new_value|
             if new_value

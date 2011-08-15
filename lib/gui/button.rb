@@ -31,6 +31,8 @@ class Button
     @disabled_color = options[:disabled_color].dup
     @hover_color = options[:hover_color].dup
 
+    @tip = options[:tip]
+
     @shortcut = options.has_key?(:shortcut) ? options[:shortcut] : text[0].downcase.to_sym
 
     @data = options[:data]
@@ -50,6 +52,14 @@ class Button
     self.enabled = options[:enabled]
 
     update_contents
+  end
+
+  def tip
+    if @tip.respond_to? :call
+      @tip.call
+    else
+      @tip
+    end
   end
 
   def register(scene, options = {})

@@ -11,6 +11,7 @@
   * Added venus fly traps.
   * Added 5th level (The Garden).
   * More clearly showed keyboard shortcuts for buttons (shortcuts have always been there, but most people didn't think of using them).
+  * Added tool-tips.
   * Fixed: Time remaining added to score after death in Hardcore mode.
   * Fixed: Time remaining added at much to great a rate after completion of a course.
 

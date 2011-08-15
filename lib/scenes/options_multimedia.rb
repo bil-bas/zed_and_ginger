@@ -29,7 +29,7 @@ class OptionsMultimedia < GuiScene
     # Toggle fullscreen/window.
     x = LABEL_X
     gui_controls << CheckButton.new('Fullscreen', at: [x, y], size: ITEM_SIZE,
-                                    checked: user_data.fullscreen?) do |button, checked|
+                                    checked: user_data.fullscreen?, tip: "Toggle fullscreen/windowed") do |button, checked|
       user_data.fullscreen = checked
       $create_game_with_scene = :options_multimedia
       pop_scene_while {|scene| scene }
@@ -39,7 +39,7 @@ class OptionsMultimedia < GuiScene
 
     unless user_data.fullscreen?
       # Increase and reduce the size of the window.
-      gui_controls << Button.new("-", at: [x, y], size: ITEM_SIZE) do
+      gui_controls << Button.new("-", at: [x, y], size: ITEM_SIZE, tip: "Decrease window size") do
         scale_down
       end
       x += gui_controls.last.width + LINE_SPACING
@@ -49,7 +49,7 @@ class OptionsMultimedia < GuiScene
 
       x += gui_controls.last.width + LINE_SPACING
 
-      gui_controls << Button.new("+", at: [x, y], size: ITEM_SIZE) do
+      gui_controls << Button.new("+", at: [x, y], size: ITEM_SIZE, tip: "Increase window size") do
         scale_up
       end
 
@@ -87,7 +87,7 @@ class OptionsMultimedia < GuiScene
         when 100 then ' 100%'
         else         ' |'
       end
-      gui_controls.last.button(title, i, shortcut: nil, brackets: false)
+      gui_controls.last.button(title, i, shortcut: nil, brackets: false, tip: "#{i}% volume")
     end
 
     y += gui_controls.last.height + LINE_SPACING * 4

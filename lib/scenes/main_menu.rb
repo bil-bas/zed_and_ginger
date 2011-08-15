@@ -69,7 +69,8 @@ class MainMenu < GuiScene
 
     # Mutators on left hand margin.
     @hardcore = CheckButton.new("Hardcore", at: [LEFT_EDGE, y], size: MUTATOR_FONT_SIZE,
-                                 checked: user_data.hardcore?) do |button, checked|
+                                 checked: user_data.hardcore?,
+                                 tip: "Hardcore mode: game ends when player is killed") do |button, checked|
       user_data.hardcore = checked
       create_level_buttons
     end
@@ -77,7 +78,8 @@ class MainMenu < GuiScene
     y += @hardcore.height + BUTTON_SPACING
 
     @inversion = CheckButton.new("Inversion", at: [LEFT_EDGE, y], size: MUTATOR_FONT_SIZE,
-                                 checked: user_data.inversion?) do |button, checked|
+                                 checked: user_data.inversion?,
+                                 tip: "Inversion mode: game is upside-down") do |button, checked|
       user_data.inversion = checked
       create_level_buttons
     end
@@ -86,7 +88,31 @@ class MainMenu < GuiScene
 
     # Buttons in a column on the right hand side of the screen.
     y = 18
-    gui_controls << Button.new("Play", at: [RIGHT_EDGE, y], size: PLAY_FONT_SIZE, auto_center: [1, 0]) do
+    play_tip = lambda {
+      str = "Play level #{@level_buttons.value} with "
+
+      str += case @cat_selection.value
+        when :zed then "Zed"
+        when :ginger then "Ginger"
+        when :both then "Zed and Ginger"
+      end
+
+      str += if user_data.hardcore?
+         if user_data.inversion?
+           " [HARDCORE INVERSION]"
+         else
+           " [HARDCORE]"
+         end
+      elsif user_data.inversion?
+         " [INVERSION]"
+      else
+         ""
+      end
+
+      str
+    }
+    gui_controls << Button.new("Play", at: [RIGHT_EDGE, y], size: PLAY_FONT_SIZE, auto_center: [1, 0],
+                               tip: play_tip) do
       start_level @level_buttons.value
     end
 
@@ -94,7 +120,7 @@ class MainMenu < GuiScene
 
     # Replay the intro.
     gui_controls << Button.new("Replay Intro", at: [RIGHT_EDGE, y], size: FONT_SIZE,
-                                 auto_center: [1, 0]) do
+                                 auto_center: [1, 0], tip: "Play the introductory cut-scene") do
       play_intro
     end
 
@@ -102,7 +128,7 @@ class MainMenu < GuiScene
 
     # User settings - controls.
     gui_controls << Button.new("Settings", at: [RIGHT_EDGE, y], size: FONT_SIZE,
-                                 auto_center: [1, 0]) do
+                                 auto_center: [1, 0], tip: "Change sound and graphics settings") do
       push_scene :options_multimedia
     end
 
@@ -110,13 +136,14 @@ class MainMenu < GuiScene
 
     # User settings - controls.
     gui_controls << Button.new("Controls", at: [RIGHT_EDGE, y], size: FONT_SIZE,
-                                 auto_center: [1, 0]) do
+                                 auto_center: [1, 0], tip: "Edit the game's controls") do
       push_scene :options_controls
     end
 
     y += gui_controls.last.height + BUTTON_SPACING
 
-    gui_controls << Button.new("Quit", at: [RIGHT_EDGE, y], size: FONT_SIZE, auto_center: [1, 0]) do
+    gui_controls << Button.new("Quit", at: [RIGHT_EDGE, y], size: FONT_SIZE, auto_center: [1, 0],
+                               tip: "Leave the inter-dimensional felines to their fate") do
       raise_event :quit
     end
 
@@ -153,7 +180,7 @@ class MainMenu < GuiScene
     end
 
     @level_numbers.each do |i|
-      @level_buttons.button(i.to_s, i,  enabled: user_data.level_unlocked?(i, mode: user_data.mode))
+      @level_buttons.button(i.to_s, i,  enabled: user_data.level_unlocked?(i, mode: user_data.mode), tip: "Level #{i}")
     end
 
     @level_buttons.select current_level
@@ -237,9 +264,9 @@ class MainMenu < GuiScene
       user_data.selected_cat = value
     end
 
-    @cat_selection.button("Zed", :zed)
-    @cat_selection.button("Both", :both)
-    @cat_selection.button("Ginger", :ginger)
+    @cat_selection.button("Zed", :zed, tip: "Play as Zed")
+    @cat_selection.button("Both", :both, tip: "Two player game with both Zed and Ginger")
+    @cat_selection.button("Ginger", :ginger, tip: "Play as Ginger")
 
     @cat_selection.select user_data.selected_cat
 
