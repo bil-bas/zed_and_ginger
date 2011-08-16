@@ -93,7 +93,7 @@ class ZedEssenceOutside < GameObject
 
   def save_tracker
     log.info { "Wrote #{@position_tracker_file}" }
-    File.open(@position_tracker_file, "w") {|f| f.puts @position_tracker.to_yaml }
+    File.open(@position_tracker_file, "w") {|f| YAML.dump @position_tracker, f }
   end
 
   def tracking_complete

@@ -24,8 +24,10 @@ END
   def save
     File.open(@user_file, "w") do |f|
       f.puts HEADER
-      f.puts @data.to_yaml
+      YAML.dump @data, f
     end
+
+    log.info { "Saved #{File.basename(@user_file)}" }
   end
 end
 
