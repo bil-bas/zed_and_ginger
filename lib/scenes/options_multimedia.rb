@@ -43,18 +43,19 @@ class OptionsMultimedia < GuiScene
         scale_down
       end
       x += gui_controls.last.width + LINE_SPACING
+    end
 
-      @screen_size = ShadowText.new("0000x0000", at: [x, y], size: ITEM_SIZE, color: LABEL_COLOR)
-      gui_controls << @screen_size
+    @screen_size = ShadowText.new("0000x0000", at: [x, y], size: ITEM_SIZE, color: LABEL_COLOR)
+    gui_controls << @screen_size
+    x += gui_controls.last.width + LINE_SPACING
 
-      x += gui_controls.last.width + LINE_SPACING
-
+    unless user_data.fullscreen?
       gui_controls << Button.new("+", at: [x, y], size: ITEM_SIZE, tip: "Increase window size") do
         scale_up
       end
-
-      update_screen_size
     end
+
+    update_screen_size
 
     back_button
   end
