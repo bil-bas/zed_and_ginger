@@ -67,7 +67,7 @@ class MyGame < Ray::Game
 
       on :key_press, *key_or_code(user_data.control(:screenshot)) do
         path = File.join(ROOT_PATH, 'screenshots')
-        FileUtils.mkdir_p path
+        Dir.mkdir path unless File.exists? path
         files = Dir[File.join(path, "screenshot_*.#{SCREEN_SHOT_EXTENSION}")]
         last_number = files.map {|f| f =~ /(\d+)\.#{SCREEN_SHOT_EXTENSION}$/; $1.to_i }.sort.last || 0
         window.to_image.write(File.join(path, "screenshot_#{(last_number + 1).to_s.rjust(3, '0')}.#{SCREEN_SHOT_EXTENSION}"))

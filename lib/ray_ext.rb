@@ -1,5 +1,3 @@
-require 'ray'
-
 def media_path(type, resource)
  File.expand_path File.join(EXTRACT_PATH, 'media', type, resource)
 end
@@ -29,29 +27,25 @@ module Ray
       win.draw self
     end
   end
-end
 
-module Ray
   class Sprite
     def draw_on(win)
       win.draw self
     end
   end
-end
 
-module Ray::Helper
-  # Matchers for either a key or an unknown keycode.
-  def key_or_code(value)
-    value.is_a?(Integer) ? [key(:unknown), anything, value] : [key(value)]
-  end
+  module Helper
+    # Matchers for either a key or an unknown keycode.
+    def key_or_code(value)
+      value.is_a?(Integer) ? [key(:unknown), anything, value] : [key(value)]
+    end
 
-  def display_for_key(key)
-    if key.is_a? Symbol
-      key.to_s.tr("_", ' ').capitalize
-    else
-      "Key##{key}"
+    def display_for_key(key)
+      if key.is_a? Symbol
+        key.to_s.tr("_", ' ').capitalize
+      else
+        "Key##{key}"
+      end
     end
   end
 end
-
-include Ray
