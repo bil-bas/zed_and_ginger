@@ -112,7 +112,7 @@ class UserData < BaseUserData
 
     Window.send :scaling=, @scaling
 
-    @data.delete :levels # This has been renamed since the structure has changed.
+    @data.delete 'levels' # This has been renamed since the structure has changed.
   end
 
   # High scores, high scorers and level unlocking.
