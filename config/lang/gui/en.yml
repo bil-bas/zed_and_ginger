@@ -161,6 +161,6 @@ pause:
 # --
 ready_set_go:
   label:
-    ready: "Ready..."
-    set: "Set..."
-    go: "Go!!!"
+    ready: Ready...
+    set: Set...
+    go: Go!!!
