@@ -1,0 +1,166 @@
+# Aliases:
+# use with       back: *back_button
+back: &back_button
+  string: Back
+skip: &skip_label
+  <space> to skip
+
+# Windows
+window:
+  title: Zed and Ginger
+
+error_window:
+  title: Zed and Ginger - Error
+
+# Scenes.
+confirm:
+  button:
+    ok:
+      string: OK
+    cancel:
+      string: Cancel
+
+# --
+enter_control:
+  button:
+    ok:
+      string: Accept
+    cancel:
+      string: Cancel
+
+# --
+enter_name:
+  label:
+    high_score: HIGH SCORE!
+    enter_name: "Enter name:"
+
+# --
+game_over:
+  button:
+    menu:
+      string: Menu
+      tip: Return to the main menu
+    restart:
+      string: Restart
+      tip: Restart the level just played
+    next:
+      string: Next
+      tip: Play the next level after this one
+
+# --
+high_scores:
+  label:
+    title: High Scores
+  button:
+    back: *back_button
+    level:
+      tip: Scores for level %1
+
+intro_inside:
+  label:
+    skip: *skip_label
+
+intro_outside:
+  label:
+    skip: *skip_label
+
+# --
+main_menu:
+  players:
+    zed: Zed
+    ginger: Ginger
+    both: both Zed and Ginger
+  button:
+    controls:
+      string: Controls
+      tip: Edit the game's controls
+    hardcore:
+      string: Hardcore
+      tip: "Hardcore mode: game ends when player is killed"
+    high_scores:
+      string: High scores
+      tip: View online high-scores
+    intro:
+      string: Replay Intro
+      tip: Play the introductory cut-scene
+    inversion:
+      string: Inversion
+      tip: "Inversion mode: game is upside-down"
+    level:
+      string: Level %1
+      tip: Select level %1
+    options:
+      string: Options
+      tip: Change sound and graphics settings
+    play:
+      string: Play
+      tip: Play level %1 with %2%3
+    quit:
+      string: Quit
+      tip: Leave the inter-dimensional felines to their fate
+    selected_cat:
+      zed:
+        string: Zed
+        tip: Single-player game as Zed
+      both:
+        string: Both
+        tip: Two-player game with both Zed and Ginger
+      ginger:
+        string: Ginger
+        tip: Single-player game as Ginger
+  label:
+    level: "Level:"
+    title: Zed and Ginger
+
+options_controls:
+  label:
+    title: Controls
+  button:
+    back: *back_button
+    general_control:
+      tip: Edit key for %1
+    player_control:
+      tip: Edit %1 key for %2
+  dialog:
+    general_control:
+      label:
+        request: Press key to %1
+    player_control:
+      label:
+        request: Press %1 for %2
+
+# --
+options_multimedia:
+  label:
+    title: Options
+    effects_volume: Effects volume
+    music_volume: Music volume
+    graphics: Graphics
+
+  button:
+    back: *back_button
+    fullscreen:
+      string: Fullscreen
+      tip: Toggle fullscreen/windowed
+    increase_size:
+      string: "+"
+      tip: Increase window size
+    decrease_size:
+      string: "-"
+      tip: Decrease window size
+    mute:
+      string: Mute
+    volume_slider:
+      tip: %1% volume
+
+# --
+pause:
+  label:
+    paused: Paused
+
+# --
+ready_set_go:
+  label:
+    ready: "Ready..."
+    set: "Set..."
+    go: "Go!!!"

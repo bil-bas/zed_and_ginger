@@ -22,7 +22,7 @@ end
 
 require_relative 'log'
 
-R18n.from_env '', ''
+R18n.from_env File.expand_path('config/lang', EXTRACT_PATH), ''
 
 Log.log.info { "Ruby gems loaded in #{Time.now - t}s" }
 
@@ -57,12 +57,12 @@ SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, HighScores, IntroIn
 $create_game_with_scene = :main_menu unless defined? $create_game_with_scene # To allow tests not to open a window.
 while $create_game_with_scene
   begin
-    game = MyGame.new("Zed and Ginger", SCENE_CLASSES, initial_scene: $create_game_with_scene)
+    game = MyGame.new(R18n.get.t.window.title, SCENE_CLASSES, initial_scene: $create_game_with_scene)
     game.run
 
   rescue => exception
     game.window.close if game
 
-    ErrorWindow.new("Zed and Ginger", exception, size: [640, 480]).run
+    ErrorWindow.new(R18n.get.t.error_window.title, exception, size: [640, 480]).run
   end
 end

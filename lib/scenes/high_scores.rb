@@ -13,7 +13,7 @@ class HighScores < GuiScene
 
     y = 0
 
-    gui_controls << ShadowText.new("High Scores", at: [TITLE_X, y], size: HEADING_SIZE)
+    gui_controls << ShadowText.new(t.label.title, at: [TITLE_X, y], size: HEADING_SIZE)
     y += gui_controls.last.height + LINE_SPACING * 4
 
     # Level buttons to get the scores for a particular level.
@@ -22,7 +22,7 @@ class HighScores < GuiScene
     end
 
     (Level::LEVEL_NUMBERS - [UserData::DEV_LEVEL]).each do |i|
-      @level_buttons.button(i.to_s, i, tip: "Level #{i}")
+      @level_buttons.button(i.to_s, i, tip: t.button.level.tip(i))
     end
 
     gui_controls << @level_buttons

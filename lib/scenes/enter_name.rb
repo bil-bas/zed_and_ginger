@@ -9,10 +9,10 @@ class EnterName < DialogScene
   def setup(previous_scene)
     super(previous_scene, cursor_shown: false)
 
-    gui_controls << ShadowText.new("HIGH SCORE!", at: [GAME_RESOLUTION.width / 2, 1.25], size: 12, color: Color.red,
+    gui_controls << ShadowText.new(t.label.high_score, at: [GAME_RESOLUTION.width / 2, 1.25], size: 12, color: Color.red,
                                   auto_center: [0.5, 0])
 
-    gui_controls << ShadowText.new("Enter name:", at: [GAME_RESOLUTION.width / 2, 12], size: 6,
+    gui_controls << ShadowText.new(t.label.enter_name, at: [GAME_RESOLUTION.width / 2, 12], size: 6,
                                   auto_center: [0.5, 0])
     @entry = text BLANK_CHAR * MAX_CHARS, at: [GAME_RESOLUTION.width / 2, 18], size: 11.25, auto_center: [0.5, 0]
 
@@ -30,7 +30,7 @@ class EnterName < DialogScene
       char = Ray::TextHelper.convert(char).upcase
 
       case char
-        when 'A'..'Z', '0'..'9'
+        when 'A'..'Z', '0'..'9', '-', '.'
           first_blank_index = @entry.string.index(BLANK_CHAR)
           if first_blank_index
             name = @entry.string

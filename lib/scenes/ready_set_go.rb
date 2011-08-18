@@ -6,14 +6,14 @@ class ReadySetGo < GameScene
 
     @previous_scene = previous_scene
 
-    @message = ShadowText.new "Ready...", at: [37.5, 8.75], size: 8
+    @message = ShadowText.new t.label.ready, at: [37.5, 8.75], size: 8
     gui_controls << @message
 
     @beep = sound sound_path("ready_beep.ogg")
     @beep.volume = 30 * (user_data.effects_volume / 50.0)
     @beep.play
 
-    @message_strings = ["Set...", "Go!!!"]
+    @message_strings = [t.label.set, t.label.go]
 
     @next_event_at = Time.now + 1
     @last_time = Time.now

@@ -48,11 +48,11 @@ class MainMenu < GuiScene
     create_floor
     create_cats
 
-    gui_controls << ShadowText.new("Zed and Ginger", at: [CENTER, 0], size: TITLE_FONT_SIZE, color: TITLE_COLOR,
+    gui_controls << ShadowText.new(t.label.title, at: [CENTER, 0], size: TITLE_FONT_SIZE, color: TITLE_COLOR,
       auto_center: [0.5, 0])
 
     y = LEVELS_Y
-    gui_controls << ShadowText.new("Level: ", at: [LEFT_EDGE, y], size: LEVEL_FONT_SIZE, color: TEXT_COLOR)
+    gui_controls << ShadowText.new(t.label.level, at: [LEFT_EDGE, y], size: LEVEL_FONT_SIZE, color: TEXT_COLOR)
 
     # Get the numbers of all the levels defined.
     @level_numbers = Level::LEVEL_NUMBERS - [UserData::DEV_LEVEL]
@@ -68,18 +68,18 @@ class MainMenu < GuiScene
     y += gui_controls.last.height + BUTTON_SPACING * 2
 
     # Mutators on left hand margin.
-    @hardcore = CheckButton.new("Hardcore", at: [LEFT_EDGE, y], size: MUTATOR_FONT_SIZE,
+    @hardcore = CheckButton.new(t.button.hardcore.string, at: [LEFT_EDGE, y], size: MUTATOR_FONT_SIZE,
                                  checked: user_data.hardcore?,
-                                 tip: "Hardcore mode: game ends when player is killed") do |button, checked|
+                                 tip: t.button.hardcore.tip) do |button, checked|
       user_data.hardcore = checked
       create_level_buttons
     end
 
     y += @hardcore.height + BUTTON_SPACING
 
-    @inversion = CheckButton.new("Inversion", at: [LEFT_EDGE, y], size: MUTATOR_FONT_SIZE,
+    @inversion = CheckButton.new(t.button.inversion.string, at: [LEFT_EDGE, y], size: MUTATOR_FONT_SIZE,
                                  checked: user_data.inversion?,
-                                 tip: "Inversion mode: game is upside-down") do |button, checked|
+                                 tip: t.button.inversion.tip) do |button, checked|
       user_data.inversion = checked
       create_level_buttons
     end
@@ -89,15 +89,7 @@ class MainMenu < GuiScene
     # Buttons in a column on the right hand side of the screen.
     y = 18
     play_tip = lambda {
-      str = "Play level #{@level_buttons.value} with "
-
-      str += case @cat_selection.value
-        when :zed then "Zed"
-        when :ginger then "Ginger"
-        when :both then "Zed and Ginger"
-      end
-
-      str += if user_data.hardcore?
+      modes = if user_data.hardcore?
          if user_data.inversion?
            " <HC INV>"
          else
@@ -109,9 +101,9 @@ class MainMenu < GuiScene
          ""
       end
 
-      str
+      t.button.play.tip @level_buttons.value, t.players[@cat_selection.value], modes
     }
-    gui_controls << Button.new("Play", at: [RIGHT_EDGE, y], size: PLAY_FONT_SIZE, auto_center: [1, 0],
+    gui_controls << Button.new(t.button.play.string, at: [RIGHT_EDGE, y], size: PLAY_FONT_SIZE, auto_center: [1, 0],
                                tip: play_tip) do
       start_level @level_buttons.value
     end
@@ -119,39 +111,39 @@ class MainMenu < GuiScene
     y += gui_controls.last.height + BUTTON_SPACING * 2
 
     # Replay the intro.
-    gui_controls << Button.new("Replay Intro", at: [RIGHT_EDGE, y], size: FONT_SIZE,
-                                 auto_center: [1, 0], tip: "Play the introductory cut-scene") do
+    gui_controls << Button.new(t.button.intro.string, at: [RIGHT_EDGE, y], size: FONT_SIZE,
+                                 auto_center: [1, 0], tip: t.button.intro.tip) do
       play_intro
     end
 
     y += gui_controls.last.height + BUTTON_SPACING
 
     # High scores.
-    gui_controls << Button.new("High scores", at: [RIGHT_EDGE, y], size: FONT_SIZE, shortcut: :s,
-                                 auto_center: [1, 0], tip: "View online high-scores") do
+    gui_controls << Button.new(t.button.high_scores.string, at: [RIGHT_EDGE, y], size: FONT_SIZE, shortcut: :s,
+                                 auto_center: [1, 0], tip: t.button.high_scores.tip) do
       push_scene :high_scores
     end
 
     y += gui_controls.last.height + BUTTON_SPACING
 
     # User settings - controls.
-    gui_controls << Button.new("Options", at: [RIGHT_EDGE, y], size: FONT_SIZE,
-                                 auto_center: [1, 0], tip: "Change sound and graphics settings") do
+    gui_controls << Button.new(t.button.options.string, at: [RIGHT_EDGE, y], size: FONT_SIZE,
+                                 auto_center: [1, 0], tip: t.button.options.tip) do
       push_scene :options_multimedia
     end
 
     y += gui_controls.last.height + BUTTON_SPACING
 
     # User settings - controls.
-    gui_controls << Button.new("Controls", at: [RIGHT_EDGE, y], size: FONT_SIZE,
-                                 auto_center: [1, 0], tip: "Edit the game's controls") do
+    gui_controls << Button.new(t.button.controls.string, at: [RIGHT_EDGE, y], size: FONT_SIZE,
+                                 auto_center: [1, 0], tip: t.button.controls.tip) do
       push_scene :options_controls
     end
 
     y += gui_controls.last.height + BUTTON_SPACING
 
-    gui_controls << Button.new("Quit", at: [RIGHT_EDGE, y], size: FONT_SIZE, auto_center: [1, 0],
-                               tip: "Leave the inter-dimensional felines to their fate") do
+    gui_controls << Button.new(t.button.quit.string, at: [RIGHT_EDGE, y], size: FONT_SIZE, auto_center: [1, 0],
+                               tip: t.button.quit.tip) do
       raise_event :quit
     end
 
@@ -188,7 +180,7 @@ class MainMenu < GuiScene
     end
 
     @level_numbers.each do |i|
-      @level_buttons.button(i.to_s, i,  enabled: user_data.level_unlocked?(i, mode: user_data.mode), tip: "Level #{i}")
+      @level_buttons.button(i.to_s, i,  enabled: user_data.level_unlocked?(i, mode: user_data.mode), tip: t.button.level.tip(i))
     end
 
     @level_buttons.select current_level
@@ -272,9 +264,9 @@ class MainMenu < GuiScene
       user_data.selected_cat = value
     end
 
-    @cat_selection.button("Zed", :zed, tip: "Play as Zed")
-    @cat_selection.button("Both", :both, tip: "Two player game with both Zed and Ginger")
-    @cat_selection.button("Ginger", :ginger, tip: "Play as Ginger")
+    @cat_selection.button(t.button.selected_cat.zed.string, :zed, tip: t.button.selected_cat.zed.tip)
+    @cat_selection.button(t.button.selected_cat.both.string, :both, tip: t.button.selected_cat.both.tip)
+    @cat_selection.button(t.button.selected_cat.ginger.string, :ginger, tip: t.button.selected_cat.ginger.tip)
 
     @cat_selection.select user_data.selected_cat
 

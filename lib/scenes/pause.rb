@@ -6,7 +6,7 @@ class Pause < GameScene
 
     @previous_scene = previous_scene
 
-    gui_controls << ShadowText.new("Paused", at: [22, 15], size: 26,
+    gui_controls << ShadowText.new(t.label.paused, at: [22, 15], size: 26,
                               color: Color.new(255, 255, 255, 150),
                               shadow_color: Color.new(0, 0, 0, 150))
   end

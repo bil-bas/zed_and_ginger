@@ -27,6 +27,8 @@ class Button
         brackets: true,
     }.merge! options
 
+    text = text.to_s
+
     @color = options[:color].dup
     @disabled_color = options[:disabled_color].dup
     @hover_color = options[:hover_color].dup

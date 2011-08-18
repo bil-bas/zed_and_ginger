@@ -4,7 +4,7 @@ class OptionsControls < GuiScene
 
     y = 0
 
-    gui_controls << ShadowText.new("Controls", at: [TITLE_X, y], size: HEADING_SIZE)
+    gui_controls << ShadowText.new(t.label.title, at: [TITLE_X, y], size: HEADING_SIZE)
     y += gui_controls.last.height + LINE_SPACING
 
     y = sub_heading(y, "General")
@@ -14,8 +14,8 @@ class OptionsControls < GuiScene
       gui_controls << ShadowText.new(control_name, at: [LABEL_X, y], size: ITEM_SIZE, color: LABEL_COLOR)
       current = user_data.control(control)
       gui_controls << Button.new(display_for_key(current), at: [BUTTON_X, y], size: ITEM_SIZE, shortcut: nil,
-                                 tip: "Edit key for #{control_name}") do
-        run_scene :enter_control, self, "Press key to #{control_name}", current do |new_value|
+                                 tip: t.button.general_control.tip(control_name)) do
+        run_scene :enter_control, self, t.dialog.general_control.label.request(control_name), current do |new_value|
           if new_value
             user_data.set_control(control, new_value)
             pop_scene
@@ -34,9 +34,9 @@ class OptionsControls < GuiScene
       UserData::VALID_PLAYER_CONTROLS.each do |control|
         gui_controls << ShadowText.new(control.to_s.capitalize, at: [LABEL_X, y], size: ITEM_SIZE, color: LABEL_COLOR)
         current = user_data.player_control(player_name, control)
-        gui_controls << Button.new(display_for_key(current), tip: "Edit #{control.to_s.capitalize} key for #{player_display_name}",
+        gui_controls << Button.new(display_for_key(current), tip: t.button.player_control.tip(control.to_s.capitalize, player_display_name),
                                    at: [BUTTON_X, y], size: ITEM_SIZE, shortcut: nil) do
-          run_scene :enter_control, self, "Press #{control} for #{player_display_name}", current do |new_value|
+          run_scene :enter_control, self, t.dialog.player_control.label.request(control, player_display_name), current do |new_value|
             if new_value
               user_data.set_player_control(player_name, control, new_value)
               pop_scene

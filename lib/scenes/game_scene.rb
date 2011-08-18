@@ -8,6 +8,8 @@ class GameScene < Scene
   # List of controls, automatically drawn in order.
   attr_accessor :gui_controls
 
+  def t; R18n.get.t[name]; end
+
   class << self
     attr_accessor :background
     attr_accessor :ambient_music

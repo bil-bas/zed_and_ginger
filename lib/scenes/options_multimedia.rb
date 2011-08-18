@@ -14,22 +14,22 @@ class OptionsMultimedia < GuiScene
 
     y = 0
 
-    gui_controls << ShadowText.new("Options", at: [TITLE_X, y], size: HEADING_SIZE)
+    gui_controls << ShadowText.new(t.label.title, at: [TITLE_X, y], size: HEADING_SIZE)
     y += gui_controls.last.height + LINE_SPACING * 3
 
     @play_sound_on_effects = false # Don't play effect sound unless slider moved.
-    y = volume_sliders("Effects volume", :effects_volume, y)
+    y = volume_sliders(t.label.effects_volume, :effects_volume, y)
     @play_sound_on_effects = true
-    y = volume_sliders("Music volume", :music_volume, y)
+    y = volume_sliders(t.label.music_volume, :music_volume, y)
 
     # GRAPHICS OPTIONS.
-    y = sub_heading(y, "Graphics")
+    y = sub_heading(y, t.label.graphics)
     y += LINE_SPACING * 4
 
     # Toggle fullscreen/window.
     x = LABEL_X
-    gui_controls << CheckButton.new('Fullscreen', at: [x, y], size: ITEM_SIZE,
-                                    checked: user_data.fullscreen?, tip: "Toggle fullscreen/windowed") do |button, checked|
+    gui_controls << CheckButton.new(t.button.fullscreen.string, at: [x, y], size: ITEM_SIZE,
+                                    checked: user_data.fullscreen?, tip: t.button.fullscreen.tip) do |button, checked|
       user_data.fullscreen = checked
       $create_game_with_scene = :options_multimedia
       pop_scene_while {|scene| scene }
@@ -39,7 +39,7 @@ class OptionsMultimedia < GuiScene
 
     unless user_data.fullscreen?
       # Increase and reduce the size of the window.
-      gui_controls << Button.new("-", at: [x, y], size: ITEM_SIZE, tip: "Decrease window size") do
+      gui_controls << Button.new(t.button.decrease_size.string, at: [x, y], size: ITEM_SIZE, tip: t.button.decrease_size.tip) do
         scale_down
       end
       x += gui_controls.last.width + LINE_SPACING
@@ -50,7 +50,7 @@ class OptionsMultimedia < GuiScene
     x += gui_controls.last.width + LINE_SPACING
 
     unless user_data.fullscreen?
-      gui_controls << Button.new("+", at: [x, y], size: ITEM_SIZE, tip: "Increase window size") do
+      gui_controls << Button.new(t.button.decrease_size.string, at: [x, y], size: ITEM_SIZE, tip: t.button.increase_size.tip) do
         scale_up
       end
     end
@@ -83,12 +83,12 @@ class OptionsMultimedia < GuiScene
 
     (0..100).step(5) do |i|
       title = case i
-        when 0  then 'Mute'
+        when 0  then t.button.mute.string
         when 50 then ' 50%'
         when 100 then ' 100%'
         else         ' |'
       end
-      gui_controls.last.button(title, i, shortcut: nil, brackets: false, tip: "#{i}% volume")
+      gui_controls.last.button(title, i, shortcut: nil, brackets: false, tip: t.button.volume_slider.tip(i))
     end
 
     y += gui_controls.last.height + LINE_SPACING * 4

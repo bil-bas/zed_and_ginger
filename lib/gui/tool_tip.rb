@@ -27,7 +27,7 @@ class ToolTip
   end
 
   def string=(string)
-    @text.string = string
+    @text.string = string.to_s
     @background.scale = @text.rect.size + [2, 0.5]
   end
 

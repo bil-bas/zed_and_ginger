@@ -143,7 +143,7 @@ class GuiScene < GameScene
 
   protected
   def back_button
-    gui_controls << Button.new("Back", at: [TITLE_X, BOTTOM_BUTTONS_Y], size: SUB_HEADING_SIZE) do
+    gui_controls << Button.new(t.button.back.string, at: [TITLE_X, BOTTOM_BUTTONS_Y], size: SUB_HEADING_SIZE) do
       pop_scene
     end
   end

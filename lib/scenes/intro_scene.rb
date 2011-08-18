@@ -21,7 +21,7 @@ class IntroScene < GameScene
 
     self.gui_controls += BORDER_RECTANGLES.map {|r| Polygon.rectangle(r, Color.black) }
 
-    gui_controls << ShadowText.new("<space> to skip", at: [GAME_RESOLUTION.width - 4, GAME_RESOLUTION.height - 0.75],
+    gui_controls << ShadowText.new(t.label.skip, at: [GAME_RESOLUTION.width - 4, GAME_RESOLUTION.height - 0.75],
                                    auto_center: [1, 1], size: 4, color: Color.new(75, 75, 75))
 
     @fading_in = true
