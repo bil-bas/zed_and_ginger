@@ -49,15 +49,24 @@ class HighScores < GuiScene
       y += @dates.last.height + LINE_SPACING * 2
     end
 
-    self.gui_controls += @scores + @names + @dates + @texts
+    @message = ShadowText.new('', at: [LABEL_X, y], size: SCORE_SIZE, color: Color.red)
 
     @level_buttons.select 1
+
+    self.gui_controls += @scores + @names + @dates + @texts + [@message]
 
     back_button
   end
 
   def update_scores
-    high_scores = game.online_high_scores[@level_buttons.value]
+    high_scores = begin
+      @message.string = ""
+      game.online_high_scores[@level_buttons.value]
+    rescue OnlineHighScores::NetworkError
+      @message.string = "Network failure - try again later!"
+      []
+    end
+
     high_scores.each_with_index do |score, i|
       @scores[i].string = score.score.to_s.rjust(7, '0')
       @names[i].string = score.name

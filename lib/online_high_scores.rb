@@ -18,7 +18,7 @@ class OnlineHighScores
       9 => 23,
   }
 
-  class NetworkError < Exception
+  class NetworkError < IOError
   end
 
   class HighScore
@@ -54,7 +54,11 @@ class OnlineHighScores
 
   public
   def high_score?(level, score)
-    self[level].size < NUM_SCORES_STORED or score > self[level].last.score
+    begin
+      self[level].size < NUM_SCORES_STORED or score > self[level].last.score
+    rescue NetworkError
+      false
+    end
   end
 
   public

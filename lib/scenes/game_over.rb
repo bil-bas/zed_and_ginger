@@ -84,42 +84,11 @@ class GameOver < DialogScene
         # Add modifiers based on mutators.
         @winner.score *= HARDCORE_MULTIPLIER if previous_scene.hardcore?
         @winner.score *= INVERSION_MULTIPLIER if previous_scene.inversion?
-        score = @winner.score.to_i
 
-        level = previous_scene.level_number
-        if score > previous_scene.high_score or game.online_high_scores.high_score?(level, score)
-          run_scene :enter_name, self do |name|
-            if name
-              # Record load high score. Just one is stored.
-              if score > previous_scene.high_score
-                user_data.set_high_score(level, name, score)
-                previous_scene.update_high_score
-              end
-
-              # Record online high-score.
-              if game.online_high_scores.high_score?(level, score)
-                t = Time.now
-                text = if previous_scene.hardcore?
-                  if previous_scene.inversion?
-                    "<HC INV>"
-                  else
-                    "<HC>"
-                  end
-                elsif previous_scene.inversion?
-                  "<INV>"
-                end
-
-                score_accepted = game.online_high_scores.add_score(level, name, score, text)
-                log.info do
-                  if score_accepted
-                    "Posted online high-score: #{name} scored #{score} on level #{level} at position #{score_accepted.position}"
-                  else
-                    "Failed to post online high-score: #{name} scored #{score} on level #{level}, but this was not high enough"
-                  end + " (Took: #{Time.now - t}s to update)"
-                end
-              end
-            end
-          end
+        begin
+          record_high_score(@winner.score.to_i, previous_scene.level_number)
+        rescue OnlineHighScores::NetworkError
+          log.warn "Network failed when posting new score."
         end
 
         # It is possible to get a high score without finishing and vice versa.
@@ -140,6 +109,43 @@ class GameOver < DialogScene
     end
 
     @big_score.string = "%07d" % @winner.score
+end
+
+  def record_high_score(score, level)
+    if score > previous_scene.high_score or game.online_high_scores.high_score?(level, score)
+      run_scene :enter_name, self do |name|
+        if name
+          # Record local high score. Just one is stored.
+          if score > previous_scene.high_score
+            user_data.set_high_score(level, name, score)
+            previous_scene.update_high_score
+          end
+
+          # Record online high-score.
+          if game.online_high_scores.high_score?(level, score)
+            t = Time.now
+            text = if previous_scene.hardcore?
+              if previous_scene.inversion?
+                "<HC INV>"
+              else
+                "<HC>"
+              end
+            elsif previous_scene.inversion?
+              "<INV>"
+            end
+
+            score_accepted = game.online_high_scores.add_score(level, name, score, text)
+            log.info do
+              if score_accepted
+                "Posted online high-score: #{name} scored #{score} on level #{level} at position #{score_accepted.position}"
+              else
+                "Failed to post online high-score: #{name} scored #{score} on level #{level}, but this was not high enough"
+              end + " (Took: #{Time.now - t}s to update)"
+            end
+          end
+        end
+      end
+    end
   end
 end
 
