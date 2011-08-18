@@ -1,7 +1,7 @@
 require_relative 'gui_scene'
 
 class HighScores < GuiScene
-  SCORE_SIZE = ITEM_SIZE * 1.3
+  SCORE_SIZE = ITEM_SIZE * 1.2
 
   DEFAULT_SCORE = '0000000'
   DEFAULT_SCORER = '???'
@@ -34,7 +34,12 @@ class HighScores < GuiScene
     @names = []
     @dates = []
     @texts = []
-    OnlineHighScores::NUM_SCORES_STORED.times do |score|
+    (OnlineHighScores::NUM_SCORES_STORED + 1).times.with_index do |score, i|
+      if i == OnlineHighScores::NUM_SCORES_STORED
+        @message = ShadowText.new('', at: [LABEL_X, y], size: SCORE_SIZE, color: Color.red)
+        y += @dates.last.height + LINE_SPACING * 1.5
+      end
+
       x = LABEL_X
       @scores << ShadowText.new(DEFAULT_SCORE, at: [x, y], size: SCORE_SIZE, color: LABEL_COLOR)
       x += @scores.last.width + LINE_SPACING * 20
@@ -46,10 +51,8 @@ class HighScores < GuiScene
       x += @texts.last.width + LINE_SPACING * 20
 
       @dates << ShadowText.new(DEFAULT_DATE, at: [x, y], size: SCORE_SIZE, color: LABEL_COLOR)
-      y += @dates.last.height + LINE_SPACING * 2
+      y += @dates.last.height + LINE_SPACING * 1.5
     end
-
-    @message = ShadowText.new('', at: [LABEL_X, y], size: SCORE_SIZE, color: Color.red)
 
     @level_buttons.select 1
 
@@ -80,6 +83,24 @@ class HighScores < GuiScene
       @names[i].string = DEFAULT_SCORER
       @dates[i].string = DEFAULT_DATE
       @texts[i].string = DEFAULT_TEXT
+    end
+
+    # If the network is down or the local high score isn't in the list, then add it at the bottom.
+    score, scorer, time, text =
+        user_data.high_score(@level_buttons.value),
+        user_data.high_scorer(@level_buttons.value),
+        user_data.high_score_time(@level_buttons.value),
+        user_data.high_score_text(@level_buttons.value)
+
+    if  score > 0 and (high_scores.empty? or
+        high_scores.all? {|h| h.score != score and h.name != scorer and h.time != time and h.text != text })
+
+      @scores.last.string = score.to_s.rjust(7, '0')
+      @names.last.string = scorer
+      @dates.last.string = R18n.get.l time
+      @texts.last.string = text
+    else
+      @scores.last.string = @names.last.string = @dates.last.string = @texts.last.string = ''
     end
   end
 

@@ -53,9 +53,12 @@ class UserData < BaseUserData
   DATA_FILE = File.join(ROOT_PATH, 'zed_and_ginger.dat')
 
   # High scores, high scorers and level unlocking.
-  GROUP_LEVELS = 'levels'
+  GROUP_LEVELS = 'level_scores'
   HIGH_SCORER = 'high-scorer'
   HIGH_SCORE = 'high-score'
+  HIGH_SCORE_TIME = 'high-score-time'
+  HIGH_SCORE_TEXT = 'high-score-text'
+
   FINISHED = 'finished'
 
   DEV_LEVEL = 0 # Level just used for development.
@@ -91,9 +94,11 @@ class UserData < BaseUserData
   AUTO_SHOW_INTRO = 'auto_show_intro'
 
   DEFAULT_LEVEL_DATA = {
-      'high-score' => 0,      # Highest score, whether finished the level or not.
-      'high-scorer' => '???', # Name of person getting the high score.
-      'finished' => [],    # Has the player ever finished the level (list of modes)?
+      HIGH_SCORE => 0,      # Highest score, whether finished the level or not.
+      HIGH_SCORER => '???', # Name of person getting the high score.
+      HIGH_SCORE_TIME => Time.new(0), # Time the score was achieved.
+      HIGH_SCORE_TEXT => '', # Mutators used to get the score.
+      FINISHED => [],    # Has the player ever finished the level (list of modes)?
   }
 
   def initialize
@@ -106,6 +111,8 @@ class UserData < BaseUserData
     end
 
     Window.send :scaling=, @scaling
+
+    @data.delete :levels # This has been renamed since the structure has changed.
   end
 
   # High scores, high scorers and level unlocking.
@@ -118,9 +125,20 @@ class UserData < BaseUserData
     level_data(level)[HIGH_SCORE]
   end
 
-  def set_high_score(level, player, score)
+  def high_score_time(level)
+    level_data(level)[HIGH_SCORE_TIME]
+  end
+
+  def high_score_text(level)
+    level_data(level)[HIGH_SCORE_TEXT]
+  end
+
+  def set_high_score(level, player, score, text)
     level_data(level)[HIGH_SCORER] = player
     level_data(level)[HIGH_SCORE] = score
+    level_data(level)[HIGH_SCORE_TIME] = Time.now
+    level_data(level)[HIGH_SCORE_TEXT] = text
+
     save
   end
 

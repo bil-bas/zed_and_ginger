@@ -47,7 +47,7 @@ class OnlineHighScores
       end
 
       @cached_scores[level]
-    rescue RestClient::ResourceNotFound
+    rescue RestClient::ResourceNotFound, JSON::ParserError
       raise OnlineHighScores::NetworkError
     end
   end
@@ -70,7 +70,7 @@ class OnlineHighScores
       data = RestClient.post url(level), high_score: { name: name, score: score, text: text }
       HighScore.new(data)
 
-    rescue RestClient::ResourceNotFound
+    rescue RestClient::ResourceNotFound, JSON::ParserError
       raise OnlineHighScores::NetworkError
 
     rescue RestClient::Forbidden # Score wouldn't get on the table, so was refused.

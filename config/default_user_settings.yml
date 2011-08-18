@@ -9,7 +9,7 @@
 ---
 version: 0.3.0
 
-levels: {} # Generated as needed.
+level_scores: {} # Generated as needed.
 
 graphics:
   scaling: 8 # Multiple of the underlying window size (Game sort of runs at 96x60, though some things are at a different scale)
