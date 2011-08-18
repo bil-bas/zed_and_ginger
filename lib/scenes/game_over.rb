@@ -101,12 +101,12 @@ class GameOver < DialogScene
                 t = Time.now
                 text = if previous_scene.hardcore?
                   if previous_scene.inversion?
-                    "[HC INV]"
+                    "<HC INV>"
                   else
-                    "[HC]"
+                    "<HC>"
                   end
                 elsif previous_scene.inversion?
-                  "[INV]"
+                  "<INV>"
                 end
 
                 score_accepted = game.online_high_scores.add_score(level, name, score, text)

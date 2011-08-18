@@ -99,12 +99,12 @@ class MainMenu < GuiScene
 
       str += if user_data.hardcore?
          if user_data.inversion?
-           " [HARDCORE INVERSION]"
+           " <HC INV>"
          else
-           " [HARDCORE]"
+           " <HC>"
          end
       elsif user_data.inversion?
-         " [INVERSION]"
+         " <INV>"
       else
          ""
       end
