@@ -4,6 +4,9 @@ class GameOver < DialogScene
   TEXT_SIZE = 6
   BUTTON_Y = 46
 
+  HARDCORE_MULTIPLIER = 1.2
+  INVERSION_MULTIPLIER = 1.2
+
   TIME_MULTIPLIER = 10 # Speed of counting off time.
   SCORE_PER_S = 2000 # Score you get for each remaining second.
 
@@ -62,6 +65,7 @@ class GameOver < DialogScene
     remove_time previous_scene.timer.remaining
   end
 
+  # @param duration [Object]
   def remove_time(duration)
     duration = [duration, previous_scene.timer.remaining].min
     previous_scene.timer.decrease duration, finished: true
@@ -77,12 +81,43 @@ class GameOver < DialogScene
       unless @all_time_removed
         @all_time_removed = true
 
+        # Add modifiers based on mutators.
+        @winner.score *= HARDCORE_MULTIPLIER if previous_scene.hardcore?
+        @winner.score *= INVERSION_MULTIPLIER if previous_scene.inversion?
         score = @winner.score.to_i
-        if score > previous_scene.high_score
+
+        level = previous_scene.level_number
+        if score > previous_scene.high_score or game.online_high_scores.high_score?(level, score)
           run_scene :enter_name, self do |name|
             if name
-              user_data.set_high_score(previous_scene.level_number, name, score)
-              previous_scene.update_high_score
+              # Record load high score. Just one is stored.
+              if score > previous_scene.high_score
+                user_data.set_high_score(level, name, score)
+                previous_scene.update_high_score
+              end
+
+              # Record online high-score.
+              if game.online_high_scores.high_score?(level, score)
+                t = Time.now
+                text = if previous_scene.hardcore?
+                  if previous_scene.inversion?
+                    "[HC INV]"
+                  else
+                    "[HC]"
+                  end
+                elsif previous_scene.inversion?
+                  "[INV]"
+                end
+
+                score_accepted = game.online_high_scores.add_score(level, name, score, text)
+                log.info do
+                  if score_accepted
+                    "Posted online high-score: #{name} scored #{score} on level #{level} at position #{score_accepted.position}"
+                  else
+                    "Failed to post online high-score: #{name} scored #{score} on level #{level}, but this was not high enough"
+                  end + " (Took: #{Time.now - t}s to update)"
+                end
+              end
             end
           end
         end

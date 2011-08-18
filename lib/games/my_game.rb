@@ -4,10 +4,11 @@ class MyGame < Ray::Game
 
   SCREEN_SHOT_EXTENSION = 'tga'
 
-  attr_reader :fps_monitor, :user_data
+  attr_reader :fps_monitor, :user_data, :online_high_scores
 
   def initialize(title, scene_classes, options = {})
     @user_data = UserData.new
+    @online_high_scores = OnlineHighScores.new
 
     options = {
         initial_scene: :main_menu,

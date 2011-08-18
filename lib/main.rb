@@ -3,9 +3,9 @@ t = Time.now
 require 'yaml'
 require 'logger'
 require 'forwardable'
-#require 'rest-client'
-#require 'json'
-#require 'r18n-desktop'
+require 'rest-client'
+require 'json'
+require 'r18n-desktop'
 require 'ray'
 include Ray
 
@@ -22,6 +22,8 @@ end
 
 require_relative 'log'
 
+R18n.from_env '', ''
+
 Log.log.info { "Ruby gems loaded in #{Time.now - t}s" }
 
 t = Time.now
@@ -35,8 +37,8 @@ end
 GAME_RESOLUTION = Vector2[96, 60] # Resolution of tiles, at least.
 
 require_files('mixins', %w[has_status registers])
-require_files('./', %w[log ray_ext maps camera user_data version])
-require_files('scenes', %w[confirm enter_control enter_name game_over intro_inside intro_outside level options_controls options_multimedia pause main_menu ready_set_go teleporting])
+require_files('./', %w[log ray_ext maps online_high_scores camera user_data version])
+require_files('scenes', %w[confirm enter_control enter_name game_over high_scores intro_inside intro_outside level options_controls options_multimedia pause main_menu ready_set_go teleporting])
 require_files('gui', %w[button check_button fps_monitor progress_bar radio_group score_card shadow_text timer tool_tip])
 require_files('standard_ext', %w[hash])
 require_files('games', %w[error_window my_game])
@@ -50,7 +52,7 @@ exit if defined? Ocra
 CLASSES_WITH_TIME_SHADERS = [SlowFloor, SlowSplat, Teleporter, Teleporting]
 CLASSES_WITH_SHADERS = CLASSES_WITH_TIME_SHADERS + [ZedEssenceOutside, GlueFloor]
 
-SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, IntroInside, IntroOutside, Level, OptionsControls, OptionsMultimedia, Pause, MainMenu, ReadySetGo, Teleporting]
+SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, HighScores, IntroInside, IntroOutside, Level, OptionsControls, OptionsMultimedia, Pause, MainMenu, ReadySetGo, Teleporting]
 
 $create_game_with_scene = :main_menu unless defined? $create_game_with_scene # To allow tests not to open a window.
 while $create_game_with_scene

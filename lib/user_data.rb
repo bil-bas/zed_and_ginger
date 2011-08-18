@@ -13,7 +13,24 @@ END
 
   def initialize(user_file, default_file)
     @user_file = user_file
-    @data = File.exists?(@user_file) ? YAML::load_file(@user_file) : {}
+
+    @data = if File.exists?(@user_file)
+      begin
+        YAML::load_file(@user_file)
+      rescue
+        broken_file = "#{@user_file}.broken"
+        begin
+          File.rename(@user_file, broken_file)
+          log.warn { "Failed to load #{@user_file}; renamed as #{broken_file} and cleared settings" }
+        rescue
+        end
+
+        {}
+      end
+    else
+      {}
+    end
+
     @data = YAML::load_file(default_file).deep_merge @data
 
     log.info { "Read and merged user data:\n#{@data}" }
@@ -76,7 +93,7 @@ class UserData < BaseUserData
   DEFAULT_LEVEL_DATA = {
       'high-score' => 0,      # Highest score, whether finished the level or not.
       'high-scorer' => '???', # Name of person getting the high score.
-      'finished' => false,    # Has the player ever finished the level?
+      'finished' => [],    # Has the player ever finished the level (list of modes)?
   }
 
   def initialize
@@ -94,16 +111,16 @@ class UserData < BaseUserData
   # High scores, high scorers and level unlocking.
 
   def high_scorer(level)
-    level_data(level, mode)[HIGH_SCORER]
+    level_data(level)[HIGH_SCORER]
   end
 
   def high_score(level)
-    level_data(level, mode)[HIGH_SCORE]
+    level_data(level)[HIGH_SCORE]
   end
 
   def set_high_score(level, player, score)
-    level_data(level, mode)[HIGH_SCORER] = player
-    level_data(level, mode)[HIGH_SCORE] = score
+    level_data(level)[HIGH_SCORER] = player
+    level_data(level)[HIGH_SCORE] = score
     save
   end
 
@@ -119,17 +136,17 @@ class UserData < BaseUserData
         # If the level we are asking for exists and we've completed the previous one.
         Level::LEVEL_NUMBERS.include? level and
             ((@data[GROUP_LEVELS].has_key?(level - 1) and
-              level_data(level - 1, mode)[FINISHED]) or DEVELOPMENT_MODE)
+              level_data(level - 1)[FINISHED].include? mode) or DEVELOPMENT_MODE)
     end
   end
 
   def finished_level?(level)
-    level_data(level, mode)[FINISHED]
+    level_data(level)[FINISHED].include? mode
   end
 
   # Possible to finish a level without having made a high score.
   def finish_level(level)
-    level_data(level, mode)[FINISHED] = true
+    level_data(level)[FINISHED] << mode unless level_data(level)[FINISHED].include? mode
     save
   end
 
@@ -268,16 +285,10 @@ class UserData < BaseUserData
   end
 
   protected
-  def level_data(level, mode)
+  def level_data(level)
     level_data = @data[GROUP_LEVELS]
-    level_data[level] = {} unless level_data.has_key? level
+    level_data[level] = DEFAULT_LEVEL_DATA.dup unless level_data.has_key? level
 
-    level_data = level_data[level]
-
-    level_data[mode] = DEFAULT_LEVEL_DATA.dup unless level_data.has_key? mode
-
-    # TODO: Worry about merging in the DEFAULT_LEVEL_DATA _if_ it adds more fields.
-
-    level_data[mode]
+    level_data[level]
   end
 end

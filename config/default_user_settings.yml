@@ -7,6 +7,8 @@
 # when anything changes.
 #===========================================================================
 ---
+version: 0.3.0
+
 levels: {} # Generated as needed.
 
 graphics:

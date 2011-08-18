@@ -62,6 +62,7 @@ class GuiScene < GameScene
       @control_under_cursor.unhover
       @control_under_cursor = nil
       @control_under_cursor_at = nil
+      @@tool_tip.string = ''
     end
 
     super *args

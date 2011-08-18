@@ -126,8 +126,16 @@ class MainMenu < GuiScene
 
     y += gui_controls.last.height + BUTTON_SPACING
 
+    # High scores.
+    gui_controls << Button.new("High scores", at: [RIGHT_EDGE, y], size: FONT_SIZE, shortcut: :s,
+                                 auto_center: [1, 0], tip: "View online high-scores") do
+      push_scene :high_scores
+    end
+
+    y += gui_controls.last.height + BUTTON_SPACING
+
     # User settings - controls.
-    gui_controls << Button.new("Settings", at: [RIGHT_EDGE, y], size: FONT_SIZE,
+    gui_controls << Button.new("Options", at: [RIGHT_EDGE, y], size: FONT_SIZE,
                                  auto_center: [1, 0], tip: "Change sound and graphics settings") do
       push_scene :options_multimedia
     end

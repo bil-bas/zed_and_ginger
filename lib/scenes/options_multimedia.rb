@@ -14,7 +14,7 @@ class OptionsMultimedia < GuiScene
 
     y = 0
 
-    gui_controls << ShadowText.new("Settings", at: [TITLE_X, y], size: HEADING_SIZE)
+    gui_controls << ShadowText.new("Options", at: [TITLE_X, y], size: HEADING_SIZE)
     y += gui_controls.last.height + LINE_SPACING * 3
 
     @play_sound_on_effects = false # Don't play effect sound unless slider moved.

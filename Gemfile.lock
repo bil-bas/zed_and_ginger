@@ -1,7 +1,10 @@
 GEM
   remote: http://gemcutter.org/
   specs:
+    mime-types (1.16)
     ray (0.1.1)
+    rest-client (1.6.3)
+      mime-types (>= 1.16)
 
 PLATFORMS
   ruby
@@ -9,3 +12,4 @@ PLATFORMS
 
 DEPENDENCIES
   ray (~> 0.1.1)
+  rest-client (~> 1.6.3)
