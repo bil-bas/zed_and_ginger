@@ -2,6 +2,9 @@ GEM
   remote: http://gemcutter.org/
   specs:
     mime-types (1.16)
+    r18n-core (0.4.10)
+    r18n-desktop (0.4.10)
+      r18n-core (= 0.4.10)
     ray (0.1.1)
     rest-client (1.6.3)
       mime-types (>= 1.16)
@@ -11,5 +14,6 @@ PLATFORMS
   x86-mingw32
 
 DEPENDENCIES
+  r18n-desktop (~> 0.4.10)
   ray (~> 0.1.1)
   rest-client (~> 1.6.3)

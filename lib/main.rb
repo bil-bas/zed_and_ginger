@@ -3,11 +3,7 @@ t = Time.now
 require 'yaml'
 require 'logger'
 require 'forwardable'
-require 'rest-client'
 require 'json'
-require 'r18n-desktop'
-require 'ray'
-include Ray
 
 begin
   require 'bundler/setup' unless DEVELOPMENT_MODE or defined?(OSX_EXECUTABLE) or ENV['OCRA_EXECUTABLE'] or defined? Ocra
@@ -19,6 +15,11 @@ rescue Exception
   $stderr.puts "Gem dependencies not met. To install:\n  bundle install"
   exit
 end
+
+require 'rest-client'
+require 'r18n-desktop'
+require 'ray'
+include Ray
 
 require_relative 'log'
 
