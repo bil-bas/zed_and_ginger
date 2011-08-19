@@ -142,11 +142,7 @@ class UserData < BaseUserData
     save
   end
 
-  def level_unlocked?(level, options = {})
-    options = {
-        mode: mode,
-    }.merge! options
-
+  def level_unlocked?(level)
     case level
       when DEV_LEVEL     then DEVELOPMENT_MODE
       when INITIAL_LEVEL then true # First (tutorial) level is always unlocked.

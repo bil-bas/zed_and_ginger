@@ -180,7 +180,7 @@ class MainMenu < GuiScene
     end
 
     @level_numbers.each do |i|
-      @level_buttons.button(i.to_s, i,  enabled: user_data.level_unlocked?(i, mode: user_data.mode), tip: t.button.level.tip(i))
+      @level_buttons.button(i.to_s, i, enabled: user_data.level_unlocked?(i), tip: t.button.level.tip(i))
     end
 
     @level_buttons.select current_level
