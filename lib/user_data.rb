@@ -1,29 +1,14 @@
 class BaseUserData
   include Log
 
-  HEADER = <<END
-# =======================================================================
-# ------------------------- User settings file --------------------------
-#
-# WARNING: Editing this file manually may stop the game from starting up,
-#          but, if deleted, the game will create a new data file.
-# =======================================================================
-
-END
-
   def initialize(user_file, default_file)
     @user_file = user_file
 
     @data = if File.exists?(@user_file)
       begin
-        YAML::load_file(@user_file)
+        File.open(@user_file) {|f| Marshal.load(f) }
       rescue
-        broken_file = "#{@user_file}.broken"
-        begin
-          File.rename(@user_file, broken_file)
-          log.warn { "Failed to load #{@user_file}; renamed as #{broken_file} and cleared settings" }
-        rescue
-        end
+        log.warn { "Failed to load #{@user_file}; cleared settings" }
 
         {}
       end
@@ -39,10 +24,7 @@ END
   end
 
   def save
-    File.open(@user_file, "w") do |f|
-      f.puts HEADER
-      YAML.dump @data, f
-    end
+    File.open(@user_file, "w") {|f| Marshal.dump(@data, f) }
 
     log.info { "Saved #{File.basename(@user_file)}" }
   end
@@ -96,7 +78,7 @@ class UserData < BaseUserData
   DEFAULT_LEVEL_DATA = {
       HIGH_SCORE => 0,      # Highest score, whether finished the level or not.
       HIGH_SCORER => '???', # Name of person getting the high score.
-      HIGH_SCORE_TIME => Time.new(0), # Time the score was achieved.
+      HIGH_SCORE_TIME => Time.now,# Time the score was achieved.
       HIGH_SCORE_TEXT => '', # Mutators used to get the score.
       FINISHED => [],    # Has the player ever finished the level (list of modes)?
   }
