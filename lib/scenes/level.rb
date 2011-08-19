@@ -108,6 +108,7 @@ class Level < GameScene
   end
 
   def clean_up
+    super
     if defined? RubyProf
       RubyProf.pause
       log.debug { "Profiling paused" }

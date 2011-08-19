@@ -13,7 +13,6 @@ class GuiScene < GameScene
   LABEL_X = 6
   BUTTON_X = 35
   BOTTOM_BUTTONS_Y = 55
-  TOOL_TIP_DELAY = 0.5
 
   def cursor_shown?; @cursor_shown; end
 
@@ -56,16 +55,24 @@ class GuiScene < GameScene
 
   protected
   def run_scene(*args)
-
-    # Ensure that hovering is removed entering a dialog.
-    if @control_under_cursor
-      @control_under_cursor.unhover
-      @control_under_cursor = nil
-      @control_under_cursor_at = nil
-      @@tool_tip.string = ''
-    end
+    unhover_control
 
     super *args
+  end
+
+  public
+  def clean_up
+    unhover_control
+
+    super
+  end
+
+  protected
+  def unhover_control
+    @control_under_cursor.unhover if @control_under_cursor
+    @control_under_cursor = nil
+    @control_under_cursor_at = nil
+    @@tool_tip.string = ''
   end
 
   public
@@ -77,16 +84,17 @@ class GuiScene < GameScene
         @left_with_cursor_shown = cursor_shown?
 
         self.cursor_shown = false
-
-        @@tool_tip.string = ''
-        @mouse_moved_at = Time.now
-        @control_under_cursor = nil
+        unhover_control
       end
 
       on :mouse_motion do |pos|
-        @@cursor.pos = pos / user_data.scaling
-        @mouse_moved_at = Time.now
-        @@tool_tip.string = ''
+        # Ensure that we ignore events where pos hasn't changed.
+        pos = pos / user_data.scaling
+        if pos != @@cursor.pos
+          @@cursor.pos = pos
+          @mouse_moved_at = Time.now
+          @@tool_tip.string = ''
+        end
       end
 
       on :mouse_hover do |control|
@@ -96,7 +104,7 @@ class GuiScene < GameScene
 
       on :mouse_unhover do |control|
         @mouse_moved_at = Time.now
-        @control_under_cursor = nil
+        unhover_control
       end
     end
 
@@ -109,11 +117,9 @@ class GuiScene < GameScene
   def update
     super
 
-    if @control_under_cursor and (Time.now - @mouse_moved_at > TOOL_TIP_DELAY)
-      if @control_under_cursor.tip
-        @@tool_tip.string = @control_under_cursor.tip
-        @@tool_tip.position = @@cursor.pos + [0, @@cursor.image.height / 2.0]
-      end
+    if @control_under_cursor and (Time.now - @mouse_moved_at > ToolTip::DELAY) and @control_under_cursor.tip
+      @@tool_tip.string = @control_under_cursor.tip
+      @@tool_tip.position = @@cursor.pos + [0, @@cursor.image.height / 2.0]
     end
   end
 

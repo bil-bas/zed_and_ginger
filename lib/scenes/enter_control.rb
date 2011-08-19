@@ -35,6 +35,7 @@ class EnterControl < DialogScene
   end
 
   def clean_up
+    super
     enable_event_group :game_keys
   end
 

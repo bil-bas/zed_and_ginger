@@ -1,7 +1,9 @@
 class ToolTip
   include Registers
+
   TEXT_COLOR = Color.white
-  BACKGROUND_COLOR = Color.new(0, 0, 150)
+  BACKGROUND_COLOR = Color.new(0, 0, 100)
+  DELAY = 0.75
 
   def shown?; not @text.string.empty?; end
 
