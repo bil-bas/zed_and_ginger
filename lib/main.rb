@@ -16,6 +16,8 @@ include Ray
 
 require_relative "games/splash"
 
+background = nil
+
 pre_load_code = lambda {
   require 'yaml'
   require 'logger'
@@ -50,6 +52,12 @@ pre_load_code = lambda {
   require_files('particles', %w[particle_generator])
 
   Log.log.info { "Game files loaded in #{Time.now - t}s" }
+  t = Time.now
+
+  # Do some pre-loading for the main menu, so it isn't blank before it appears!
+  background = Starscape.new
+
+  Log.log.info { "Background created in #{Time.now - t}s" }
 }
 
 Splash.new(File.expand_path("media/images/window_icon.png", EXTRACT_PATH), pre_load_code, size: [256, 256]).run
@@ -65,7 +73,7 @@ SCENE_CLASSES = [Confirm, EnterControl, EnterName, GameOver, HighScores, IntroIn
 $create_game_with_scene = :main_menu unless defined? $create_game_with_scene # To allow tests not to open a window.
 while $create_game_with_scene
   begin
-    game = MyGame.new(R18n.get.t.window.title, SCENE_CLASSES, initial_scene: $create_game_with_scene)
+    game = MyGame.new(R18n.get.t.window.title, SCENE_CLASSES, background, initial_scene: $create_game_with_scene)
     game.run
 
   rescue => exception

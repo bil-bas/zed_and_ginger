@@ -6,7 +6,7 @@ class MyGame < Ray::Game
 
   attr_reader :fps_monitor, :user_data, :online_high_scores
 
-  def initialize(title, scene_classes, options = {})
+  def initialize(title, scene_classes, background, options = {})
     @user_data = UserData.new
     @online_high_scores = OnlineHighScores.new
 
@@ -35,7 +35,7 @@ class MyGame < Ray::Game
 
     scene_classes.each {|s| s.bind(self) }
 
-    scenes << :main_menu
+    push_scene :main_menu, background
 
     if initial_scene != :main_menu
       scenes << initial_scene

@@ -39,12 +39,12 @@ class MainMenu < GuiScene
   ]
 
   public
-  def setup
+  def setup(background)
     started_at = Time.now
 
     super()
 
-    self.background ||= Starscape.new
+    self.background = background
     create_floor
     create_cats
 
