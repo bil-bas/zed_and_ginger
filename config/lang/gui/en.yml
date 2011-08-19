@@ -151,7 +151,7 @@ options_multimedia:
     mute:
       string: Mute
     volume_slider:
-      tip: %1% volume
+      tip: "%1% volume"
 
 # --
 pause:

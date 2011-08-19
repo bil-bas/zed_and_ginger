@@ -1,10 +1,5 @@
 t = Time.now
 
-require 'yaml'
-require 'logger'
-require 'forwardable'
-require 'json'
-
 begin
   require 'bundler/setup' unless DEVELOPMENT_MODE or defined?(OSX_EXECUTABLE) or ENV['OCRA_EXECUTABLE'] or defined? Ocra
 
@@ -16,36 +11,48 @@ rescue Exception
   exit
 end
 
-require 'rest-client'
-require 'r18n-desktop'
 require 'ray'
 include Ray
 
-require_relative 'log'
+require_relative "games/splash"
 
-R18n.from_env File.expand_path('config/lang', EXTRACT_PATH), ''
+pre_load_code = lambda {
+  require 'yaml'
+  require 'logger'
+  require 'forwardable'
+  require 'json'
 
-Log.log.info { "Ruby gems loaded in #{Time.now - t}s" }
+  require 'rest-client'
+  require 'r18n-desktop'
 
-t = Time.now
+  require_relative 'log'
 
-def require_files(dir, files)
-  files.each do |filename|
-    require_relative File.join(dir, filename)
+  R18n.from_env File.expand_path('config/lang', EXTRACT_PATH), ''
+
+  Log.log.info { "Ruby gems loaded in #{Time.now - t}s" }
+
+  t = Time.now
+
+  def require_files(dir, files)
+    files.each do |filename|
+      require_relative File.join(dir, filename)
+    end
   end
-end
 
-GAME_RESOLUTION = Vector2[96, 60] # Resolution of tiles, at least.
+  GAME_RESOLUTION = Vector2[96, 60] # Resolution of tiles, at least.
 
-require_files('mixins', %w[has_status registers])
-require_files('./', %w[log ray_ext maps online_high_scores camera user_data version])
-require_files('scenes', %w[confirm enter_control enter_name game_over high_scores intro_inside intro_outside level options_controls options_multimedia pause main_menu ready_set_go teleporting])
-require_files('gui', %w[button check_button fps_monitor progress_bar radio_group score_card shadow_text timer tool_tip])
-require_files('standard_ext', %w[hash])
-require_files('games', %w[error_window my_game])
-require_files('particles', %w[particle_generator])
+  require_files('mixins', %w[has_status registers])
+  require_files('./', %w[log ray_ext maps online_high_scores camera user_data version])
+  require_files('scenes', %w[confirm enter_control enter_name game_over high_scores intro_inside intro_outside level options_controls options_multimedia pause main_menu ready_set_go teleporting])
+  require_files('gui', %w[button check_button fps_monitor progress_bar radio_group score_card shadow_text timer tool_tip])
+  require_files('standard_ext', %w[hash])
+  require_files('games', %w[error_window my_game splash])
+  require_files('particles', %w[particle_generator])
 
-Log.log.info { "Game files loaded in #{Time.now - t}s" }
+  Log.log.info { "Game files loaded in #{Time.now - t}s" }
+}
+
+Splash.new(File.expand_path("media/images/window_icon.png", EXTRACT_PATH), pre_load_code, size: [256, 256]).run
 
 # After all files are included, we don't need to go further for Ocra.
 exit if defined? Ocra
