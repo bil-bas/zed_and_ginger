@@ -5,7 +5,7 @@ GEM
     r18n-core (0.4.10)
     r18n-desktop (0.4.10)
       r18n-core (= 0.4.10)
-    ray (0.1.1)
+    ray (0.2.0)
     rest-client (1.6.3)
       mime-types (>= 1.16)
 
@@ -15,5 +15,5 @@ PLATFORMS
 
 DEPENDENCIES
   r18n-desktop (~> 0.4.10)
-  ray (~> 0.1.1)
+  ray (~> 0.2.0)
   rest-client (~> 1.6.3)
