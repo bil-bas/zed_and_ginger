@@ -16,6 +16,8 @@ class HighScores < GuiScene
 
   HIGH_SCORES_PER_PAGE = 10
 
+  MAX_HUMAN_TIME = 60*60*24*7 # Max time to show human-readable, rather than regular time format.
+
   def setup
     super()
 
@@ -140,7 +142,7 @@ class HighScores < GuiScene
       high_scores[@score_from...(@score_from + HIGH_SCORES_PER_PAGE)].each_with_index do |score, i|
         @scores[i].string = score.score.to_s.rjust(SCORE_WIDTH)
         @names[i].string = score.name
-        @dates[i].string = R18n.get.l score.time
+        @dates[i].string = R18n.get.l score.time, ((Time.now - score.time) < MAX_HUMAN_TIME) ? :human : nil
         @modes[i].string = R18n.get.t.mutators[score.mode]
       end
     end
@@ -156,7 +158,7 @@ class HighScores < GuiScene
       @positions.last.string = game.online_high_scores.position_for(level, score, time).to_s.rjust(POSITION_WIDTH)
       @scores.last.string = score.to_s.rjust(SCORE_WIDTH)
       @names.last.string = scorer
-      @dates.last.string = R18n.get.l time
+      @dates.last.string = R18n.get.l time, ((Time.now - time) < MAX_HUMAN_TIME) ? :human : nil
       @modes.last.string = R18n.get.t.mutators[mode]
     else
       @positions.last.string = @scores.last.string = @names.last.string = @dates.last.string = @modes.last.string = ''
