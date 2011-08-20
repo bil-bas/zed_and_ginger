@@ -6,14 +6,9 @@ class Status
   class Thrown < DisablingStatus
     SPIN_FREQUENCY = 5.0
     Z_OFFSET = 4
-    SQUASHED_DURATION = 0.25
-
-    # Duration is based on time of flight, not an overall time.
-    def default_duration; Float::INFINITY; end
 
     def setup
-      @start = Time.now
-
+      @start_at = scene.timer.elapsed
       # Prevent immediate landing.
       owner.z = 0.00001 if owner.z == 0
 
@@ -24,6 +19,8 @@ class Status
     end
 
     def update
+      super
+
       if owner.z > 0
         owner.angle = (scene.timer.elapsed * 360 * SPIN_FREQUENCY) % 360
       else
@@ -35,7 +32,7 @@ class Status
       owner.sheet_pos = owner.class::AFTER_THROWN_SPRITE
       owner.angle = 0
       owner.origin = @original_origin
-      owner.apply_status(:squashed, duration: SQUASHED_DURATION)
+      owner.apply_status(:squashed, duration: @expires_at - @start_at)
     end
   end
 end

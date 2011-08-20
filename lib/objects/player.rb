@@ -53,9 +53,9 @@ class Player < DynamicObject
 
   Z_ORDER_SQUASHED = -10
 
-  MAX_SCREEN_MOVE_PER_SECOND = 0.5
+  # Screen is 12 wide (+2 for skew).
   LOOK_BEHIND = FloorTile.width * 0.5
-  MIN_LOOK_AHEAD = FloorTile.width * 6
+  MIN_LOOK_AHEAD = FloorTile.width * 7.5 # Will appear further forward if moved by external force.
   MAX_LOOK_AHEAD = FloorTile.width * 11.5
   LOOK_AHEAD_RANGE = MAX_LOOK_AHEAD - MIN_LOOK_AHEAD
 
@@ -359,7 +359,7 @@ class Player < DynamicObject
     die if scene.hardcore?
 
     apply_status :thrown
-    self.velocity_x, self.velocity_y, self.velocity_z = velocity
+    _, self.velocity_y, self.velocity_z = velocity
   end
 
   public

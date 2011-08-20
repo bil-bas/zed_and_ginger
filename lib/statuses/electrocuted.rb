@@ -16,7 +16,9 @@ class Status
     end
 
     def update
-       owner.z = @original_z + rand() * 3
+      super
+
+      owner.z = @original_z + rand() * 3
 
       if rand() < 0.25
         owner.scene.create_particle([owner.x, owner.y, owner.z + 6], gravity: 0, scale: 2,

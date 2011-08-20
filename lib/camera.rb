@@ -3,8 +3,9 @@ require_relative 'objects/conveyors'
 
 class Camera
   MAX_ZOOM_CHANGE = 0.5 # Most the zoom can change in a second.
-  MAX_X_CHANGE = Player::MAX_SPEED + Conveyor::SPEED # Most the camera's position can change in a second.
- 
+  MAX_X_CHANGE_UP = Player::MAX_SPEED + Conveyor::SPEED # Most the camera's position can change in a second.
+  MAX_X_CHANGE_DOWN = - Conveyor::SPEED
+
   attr_accessor :zoom, :x
 
   def initialize(x, options = {})
@@ -26,8 +27,9 @@ class Camera
 
   def pan_to(desired_x, duration)
     # Prevent rapid shifts as we accelerate or come to a stop.
-    max_x_change = MAX_X_CHANGE * duration
-    @x += [[desired_x - @x, max_x_change].min, -max_x_change].max
+    max_x_change_up = MAX_X_CHANGE_UP * duration
+    max_x_change_down = MAX_X_CHANGE_DOWN * duration
+    @x += [[desired_x - @x, max_x_change_up].min, max_x_change_down].max
   end
 
   def view_for(view)
