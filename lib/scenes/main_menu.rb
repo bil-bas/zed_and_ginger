@@ -89,18 +89,7 @@ class MainMenu < GuiScene
     # Buttons in a column on the right hand side of the screen.
     y = 18
     play_tip = lambda {
-      modes = if user_data.hardcore?
-         if user_data.inversion?
-           " <HC INV>"
-         else
-           " <HC>"
-         end
-      elsif user_data.inversion?
-         " <INV>"
-      else
-         ""
-      end
-
+      modes = " #{R18n.get.t.mutators[user_data.mode.to_s]}"
       t.button.play.tip @level_buttons.value, t.players[@cat_selection.value], modes
     }
     gui_controls << Button.new(t.button.play.string, at: [RIGHT_EDGE, y], size: PLAY_FONT_SIZE, auto_center: [1, 0],

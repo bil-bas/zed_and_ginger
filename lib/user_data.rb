@@ -79,7 +79,7 @@ class UserData < BaseUserData
       HIGH_SCORE => 0,      # Highest score, whether finished the level or not.
       HIGH_SCORER => '???', # Name of person getting the high score.
       HIGH_SCORE_TIME => Time.now,# Time the score was achieved.
-      HIGH_SCORE_TEXT => '', # Mutators used to get the score.
+      HIGH_SCORE_TEXT => "normal", # Mutators used to get the score.
       FINISHED => [],    # Has the player ever finished the level (list of modes)?
   }
 
@@ -111,8 +111,12 @@ class UserData < BaseUserData
     level_data(level)[HIGH_SCORE_TIME]
   end
 
-  def high_score_text(level)
-    level_data(level)[HIGH_SCORE_TEXT]
+  def high_score_mode(level)
+    if level_data(level)[HIGH_SCORE_TEXT].empty?
+      :normal
+    else
+      level_data(level)[HIGH_SCORE_TEXT].to_sym
+    end
   end
 
   def set_high_score(level, player, score, text)

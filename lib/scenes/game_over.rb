@@ -115,19 +115,9 @@ end
     if score > previous_scene.high_score or game.online_high_scores.high_score?(level, score)
       run_scene :enter_name, self do |name|
         if name
-         text = if previous_scene.hardcore?
-            if previous_scene.inversion?
-              "<HC INV>"
-            else
-              "<HC>"
-            end
-          elsif previous_scene.inversion?
-            "<INV>"
-          end
-
           # Record local high score. Just one is stored.
           if score > previous_scene.high_score
-            user_data.set_high_score(level, name, score, text)
+            user_data.set_high_score(level, name, score, user_data.mode)
             previous_scene.update_high_score
           end
 
@@ -135,7 +125,7 @@ end
           if game.online_high_scores.high_score?(level, score)
             t = Time.now
 
-            score_accepted = game.online_high_scores.add_score(level, name, score, text)
+            score_accepted = game.online_high_scores.add_score(level, name, score, user_data.mode)
             log.info do
               if score_accepted
                 "Posted online high-score: #{name} scored #{score} on level #{level} at position #{score_accepted.position}"

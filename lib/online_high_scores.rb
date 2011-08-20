@@ -1,11 +1,16 @@
 require 'time'
 
 class OnlineHighScores
-  URL = "http://zed_and_ginger_00:cazoo_of_solid_gold@www.gamercv.com/games/$/high_scores.json"
+  include Log
 
-  NUM_SCORES_STORED = 10
+  URL = 'http://www.gamercv.com/games/$/high_scores.json'
+  USER, PASSWORD = 'zed_and_ginger_00', 'cazoo_of_solid_gold'
+
+  NUM_SCORES_STORED = 100 # There are actually 100 on the server, but just show the top 10.
   REFRESH_AFTER = 30 # Refresh high scores every so often.
+  TIMEOUT = 2
 
+  # Each level is mapped to the rest-client resource.
   LEVELS = {
       1 => 15,
       2 => 16,
@@ -17,6 +22,10 @@ class OnlineHighScores
       8 => 22,
       9 => 23,
   }
+
+  LEVELS.each_pair do |k, v|
+    LEVELS[k] = RestClient::Resource.new(URL.sub('$', v.to_s), user: USER, password: PASSWORD, timeout: TIMEOUT)
+  end
 
   class NetworkError < IOError
   end
@@ -30,7 +39,7 @@ class OnlineHighScores
     def score; @data['score']; end
     def position; @data['position']; end
     def time; @time ||= Time.parse(@data['created_at']); end
-    def text; @data['text'] || ''; end
+    def mode; (@data['text'].nil? or @data['text'].empty?) ? :normal : @data['text'].to_sym; end
   end
 
   def initialize
@@ -40,14 +49,19 @@ class OnlineHighScores
 
   public
   def [](level)
+    raise ArgumentError, "No such level as #{level.inspect}" unless LEVELS.has_key? level
+
     begin
       unless @cached_scores.has_key? level and (Time.now - @scores_cached_at[level] < REFRESH_AFTER)
-        @cached_scores[level] = JSON.parse(RestClient.get(url(level))).map {|d| HighScore.new(d) }
+        t = Time.now
+        level_data = LEVELS[level].get
+        @cached_scores[level] = JSON.parse(level_data).map {|d| HighScore.new(d) }
+        log.info { "Downloaded #{@cached_scores[level].size} high scores for level #{level} in #{Time.now - t}s [#{level_data.size} bytes]" }
         @scores_cached_at[level] = Time.now
       end
 
       @cached_scores[level]
-    rescue RestClient::ResourceNotFound, JSON::ParserError
+    rescue RestClient::ResourceNotFound, JSON::ParserError, Errno::ETIMEDOUT, RestClient::RequestTimeout
       raise OnlineHighScores::NetworkError
     end
   end
@@ -62,15 +76,27 @@ class OnlineHighScores
   end
 
   public
-  # Returns position of score (or nil if it didn't get on the table).
-  def add_score(level, name, score, text)
-    return nil unless high_score? level, score
+  # Returns position that a score would have on the table.
+  def position_for(level, score, time)
+    self[level].each_with_index do |high_score, i|
+      if score > high_score.score
+        return "#{i + 0.5}"
+      elsif score == high_score.score
+        return "#{i + 1}"
+      end
+    end
 
+    return ">#{self[level].size}"
+  end
+
+  public
+  # Returns position of score (or nil if it didn't get on the table).
+  def add_score(level, name, score, mode)
     begin
-      data = RestClient.post url(level), high_score: { name: name, score: score, text: text }
+      data = LEVELS[level].post high_score: { name: name, score: score, text: mode }
       HighScore.new(data)
 
-    rescue RestClient::ResourceNotFound, JSON::ParserError
+    rescue RestClient::ResourceNotFound, JSON::ParserError, Errno::ETIMEDOUT, RestClient::RequestTimeout
       raise OnlineHighScores::NetworkError
 
     rescue RestClient::Forbidden # Score wouldn't get on the table, so was refused.
@@ -80,7 +106,4 @@ class OnlineHighScores
       @cached_scores.delete level # Force reloading of the whole level scores.
     end
   end
-
-  protected
-  def url(level); URL.sub('$', LEVELS[level].to_s); end
 end

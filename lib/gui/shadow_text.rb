@@ -20,7 +20,7 @@ class ShadowText
   end
 
   def string=(string)
-    @main.string = @shadow.string = string
+    @main.string = @shadow.string = string.to_s
   end
 
   def draw_on(window)
