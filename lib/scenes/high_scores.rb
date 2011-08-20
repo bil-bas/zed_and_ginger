@@ -84,7 +84,8 @@ class HighScores < GuiScene
     x = 90
     options = { auto_center: [1, 0], size: SCORE_SIZE, shortcut: nil }
 
-    @last_button = Button.new(">>", options.merge(at: [x, y], enabled: @score_from < OnlineHighScores::NUM_SCORES_STORED)) do
+    @last_button = Button.new(">>", options.merge(at: [x, y], enabled: @score_from < OnlineHighScores::NUM_SCORES_STORED,
+                              tip: t.button.last.tip(HIGH_SCORES_PER_PAGE))) do
       @score_from = OnlineHighScores::NUM_SCORES_STORED - HIGH_SCORES_PER_PAGE
       update_scores
     end
@@ -92,7 +93,8 @@ class HighScores < GuiScene
 
     x -= gui_controls.last.width + LINE_SPACING
 
-    @next_button = Button.new(">", options.merge(at: [x, y], enabled: @score_from < OnlineHighScores::NUM_SCORES_STORED)) do
+    @next_button = Button.new(">", options.merge(at: [x, y], enabled: @score_from < OnlineHighScores::NUM_SCORES_STORED,
+                              tip: t.button.next.tip(HIGH_SCORES_PER_PAGE))) do
       @score_from += 10
       update_scores
     end
@@ -100,7 +102,12 @@ class HighScores < GuiScene
 
     x -= gui_controls.last.width + LINE_SPACING
 
-    @previous_button = Button.new("<", options.merge(at: [x, y], enabled: @score_from > 0)) do
+    @nav_range = ShadowText.new(" 0- 10", options.merge(at: [x, y], color: LABEL_COLOR))
+    gui_controls << @nav_range
+    x -= gui_controls.last.width + LINE_SPACING
+
+    @previous_button = Button.new("<", options.merge(at: [x, y], enabled: @score_from > 0,
+                                  tip: t.button.previous.tip(HIGH_SCORES_PER_PAGE))) do
       @score_from -= 10
       update_scores
     end
@@ -108,7 +115,8 @@ class HighScores < GuiScene
 
     x -= gui_controls.last.width + LINE_SPACING
 
-    @first_button = Button.new("<<", options.merge(at: [x, y], enabled: @score_from > 0)) do
+    @first_button = Button.new("<<", options.merge(at: [x, y], enabled: @score_from > 0,
+                               tip: t.button.first.tip(HIGH_SCORES_PER_PAGE))) do
       @score_from = 0
       update_scores
     end
@@ -166,6 +174,7 @@ class HighScores < GuiScene
 
     @next_button.enabled = @last_button.enabled = @score_from < (OnlineHighScores::NUM_SCORES_STORED - HIGH_SCORES_PER_PAGE)
     @previous_button.enabled = @first_button.enabled = @score_from > 0
+    @nav_range.string = "#{@score_from.to_s.rjust(2)}-#{(@score_from + HIGH_SCORES_PER_PAGE).to_s.rjust(3)}"
   end
 
   def update

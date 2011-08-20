@@ -64,6 +64,14 @@ high_scores:
     back: *back_button
     level:
       tip: Scores for level %1
+    first:
+      tip: First %1 scores
+    previous:
+      tip: Previous %1 scores
+    next:
+      tip: Next %1 scores
+    last:
+      tip: Last %1 scores
 
 intro_inside:
   label:
