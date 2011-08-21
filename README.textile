@@ -14,9 +14,11 @@ Created using Ruby and the Ray gem.
 License: GPL v3
 Author: Bil Bas (http://spooner.github.com) (bil dot bagpuss {at} gmail.com)
 
+
 h2. How to run the game
 
 * Windows: <pre>zed_and_ginger.exe</pre>.
+
 
 h2. How to play the game
 
@@ -24,6 +26,28 @@ h2. How to play the game
 * Player 2 (Ginger) - Arrows and Enter/Return to jump.
 
 Keys can be configured in-game, in Controls.
+
+
+h2. Scoring
+
+The 100 best scores for each level are stored online. The game also stores your personal best score, so that you can
+still advance your score if playing offline (and so you don't have to compete directly with others if you are terrible
+at the game, like the author is).
+
+Scores for each level are readable online at "GAMERCV":http://gamercv.com/gamers/9-spooner
+
+h3. During a level
+
+* Each tile crossed: 50 points
+* Hyper-speed pill eaten: 500 points
+* Giant ratoid chased (touched it): 250 points
+* Giant ratoid eaten (landed on it): 1000 points + 1 second of extra time
+
+h3. After completing a level
+
+* Remaining time: 2000 points per second
+* Hardcore mode: + 20%
+* Inversion mode: + 20%
 
 
 h2. Compatibility
