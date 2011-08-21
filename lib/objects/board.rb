@@ -50,7 +50,7 @@ class Board < DynamicObject
 
     # Force the player to move at a minimum speed if riding.
     if @ridden_by
-      @ridden_by.velocity_x = 32 if @ridden_by.velocity_x < 32
+      @ridden_by.velocity_x = Player::MAX_SPEED / 2 if @ridden_by.velocity_x < 32
     end
 
     super

@@ -2,7 +2,7 @@ require_relative "game_object"
 
 class Mine < GameObject
   ANIMATION_DURATION = 1
-  EXPLOSION_FORCE = 120 # Speed upwards.
+  EXPLOSION_FORCE = 150 # Speed upwards.
 
   EXPLODED_SPRITE = [3, 0]
 

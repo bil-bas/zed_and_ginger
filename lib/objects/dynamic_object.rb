@@ -5,7 +5,7 @@ class DynamicObject < GameObject
   # Earth gravity, assuming an 8-pixel square tile is 0.25m square. Objects are a bit smaller, since they are at 75%.
   # This means the cats are about 19cm tall, which is smallish even for a cat, but this fits in with the "required"
   # jump distances :D
-  GRAVITY = 32.0 * -9.81
+  GRAVITY = 45.0 * -9.81
 
   MAX_HEIGHT_FOR_SHADOW = 50.0
   BASE_SHADOW_SCALE = 0.05

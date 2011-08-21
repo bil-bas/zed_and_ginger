@@ -52,7 +52,7 @@ class LaserBeam < GameObject
 
   def collide?(other)
     other_z = other.z
-    other_z > z - 8 and other_z < z - 2 and super(other)
+    other_z > z - 8 and other_z < z - 1 and super(other)
   end
 
   def update

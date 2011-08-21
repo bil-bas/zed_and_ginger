@@ -11,10 +11,10 @@ class Player < DynamicObject
   ACCELERATION = 100.0
   DECELERATION = -100.0
   MIN_SPEED = 0.0
-  MAX_SPEED = 64.0
+  MAX_SPEED = 60.0
   VERTICAL_SPEED = 25.0
   MIN_RUN_VELOCITY = 1000.0 # Above this, run animation; below walk.
-  JUMP_SPEED = 50 # Z-speed of jumping.
+  JUMP_SPEED = 65 # Z-speed of jumping.
 
   RIDING_OFFSET_X = -2 # Move ridden object back, since we have our origin far forward.
   SQUASH_OFFSET_Y = 3 # Distance moved when squashed.
@@ -323,9 +323,17 @@ class Player < DynamicObject
 
   protected
   def update_physics
-    if DEVELOPMENT_MODE and z > 0 and frame_number % 2 == 0
-      scene.create_particle([x, y, z], gravity: 0, scale: 0.5, color: Color.red, fade_duration: 4)
-      log.debug { "#{self} apex height: #{z}" } if @velocity_z < +5 and @velocity_z > -5
+    if DEVELOPMENT_MODE
+      if z > 0
+        @jumped_x ||= x
+        scene.create_particle([x, y, z], gravity: 0, scale: 0.5, color: Color.red, fade_duration: 4)
+        log.debug { "#{self} apex height: #{z}" } if @velocity_z < +5 and @velocity_z > -5
+      elsif z == 0
+        if @jumped_x
+          log.debug { "Jumped for #{x - @jumped_x} pixels" }
+          @jumped_x = nil
+        end
+      end
     end
 
     self.position += effective_velocity * frame_time

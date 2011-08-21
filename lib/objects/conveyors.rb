@@ -1,7 +1,7 @@
 require_relative 'game_object'
 
 class Conveyor < GameObject
-  SPEED = 32.0 # Pixels/second
+  SPEED = 30.0 # Pixels/second
   IMAGE = image_path("conveyor.png")
 
   def to_rect; Rect.new(*(@position - [4, 3]), 8, 6) end
