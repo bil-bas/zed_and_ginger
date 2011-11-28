@@ -68,6 +68,8 @@ class OnlineHighScores
 
   public
   def high_score?(level, score)
+    return false if level == 0 # Don't record high scores for test level.
+
     begin
       self[level].size < NUM_SCORES_STORED or score > self[level].last.score
     rescue NetworkError
