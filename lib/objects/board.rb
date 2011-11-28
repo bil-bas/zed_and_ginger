@@ -3,6 +3,7 @@ require_relative "dynamic_object"
 class Board < DynamicObject
   ANIMATION_DURATION = 0.5
   DROPPED_SPEED = 40
+  MIN_SPEED = Player::MAX_SPEED / 2
 
   def to_rect; Rect.new(*(@position - [4, 1]), 8, 2) end
 
@@ -50,7 +51,7 @@ class Board < DynamicObject
 
     # Force the player to move at a minimum speed if riding.
     if @ridden_by
-      @ridden_by.velocity_x = Player::MAX_SPEED / 2 if @ridden_by.velocity_x < 32
+      @ridden_by.velocity_x = MIN_SPEED if @ridden_by.velocity_x < MIN_SPEED
     end
 
     super
