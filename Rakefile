@@ -1,3 +1,5 @@
+Config = RbConfig if defined? RbConfig
+
 require 'rake/clean'
 require 'redcloth'
 
