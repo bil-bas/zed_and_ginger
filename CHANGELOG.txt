@@ -5,6 +5,7 @@
 
 --- v0.4.0 (unreleased)
 
+  * Stopped lasers from moving, since they forced the player to stop and destroyed the flow of the game. Now you can jump over low beams and walk under high beams.
   * Added glue on the floor (prevents jumping).
   * Added hyper-speed pill (increases run-speed, but forces you to run as fast as you can).
   * Hover-board now imposes a minimum speed.
@@ -15,6 +16,7 @@
   * Reduced speed of the really fast camera panning when you die.
   * Merged high-scores for each level (get bonus for inversion/hardcore, rather than storing separate scores).
   * Added online high scores for each level.
+  * Fixed: Player can move at a different speed to the animation of the conveyor it is moving on.
   * Fixed: Time remaining added to score after death in Hardcore mode.
   * Fixed: Time remaining added at much to great a rate after completion of a course.
 
