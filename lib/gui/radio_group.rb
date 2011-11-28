@@ -25,8 +25,6 @@ class RadioGroup
 
     @buttons = []
     @disabled_buttons = []
-
-    super(scene)
   end
 
   def value; @selected_button.data; end

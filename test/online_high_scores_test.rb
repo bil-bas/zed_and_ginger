@@ -2,7 +2,7 @@ context OnlineHighScores do
   setup { OnlineHighScores.new }
 
   context "[]" do
-    asserts("fails on bad level number") { topic[999] }.raises OnlineHighScores::ArgumentError
+    asserts("fails on bad level number") { topic[999] }.raises ArgumentError
     asserts("contains only HighScore objects") { topic[1].all? {|h| h.is_a? OnlineHighScores::HighScore } }
     asserts("contains correct number of scores") { topic[1] }.size OnlineHighScores::NUM_SCORES_STORED
   end

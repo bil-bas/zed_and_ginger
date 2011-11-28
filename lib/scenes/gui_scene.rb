@@ -27,7 +27,7 @@ class GuiScene < GameScene
     unless defined? @@cursor
       cursor_image = image(image_path("cursor.png"))
       @@cursor = sprite cursor_image, scale: [0.5, 0.5]
-      @@tool_tip = ToolTip.new self
+      @@tool_tip = ToolTip.new
     end
 
     @@cursor.pos = mouse_pos / user_data.scaling

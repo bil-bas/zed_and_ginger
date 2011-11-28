@@ -7,14 +7,12 @@ class ToolTip
 
   def shown?; not @text.string.empty?; end
 
-  def initialize(scene, options = {})
+  def initialize(options = {})
     options = {
         font_size: 3.5,
         text_color: TEXT_COLOR,
         background_color: BACKGROUND_COLOR,
     }.merge! options
-
-    super(scene)
 
     @text = Text.new '', size: options[:font_size], color: options[:text_color]
     @background = Polygon.rectangle(Rect.new(0, 0, 1, 1), options[:background_color])
