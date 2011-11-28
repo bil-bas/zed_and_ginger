@@ -3,14 +3,12 @@ require_relative 'game_object'
 class LaserBeam < GameObject
   MIN_Z = 3.0
   MAX_Z = 21.0
-  Z_DIFFERENCE = 24 # Moves from 0..24 at linear speed, but limited at 3..21 (stops at the ends)
-  SPEED = 10.0
 
   SPARK_COLOR = Color.new(255, 255, 0, 150)
 
   def to_rect; Rect.new(*(@position - [0.05, 3]), 0.1, 6) end
   def z_order; super - 3; end # So it appear behind the player.
-  def phase_shift; 0; end
+  def height; 3; end
 
   def z=(z)
     @sprite.matrix = nil
@@ -34,9 +32,11 @@ class LaserBeam < GameObject
     @glow.sheet_pos = [1, 0]
     @glow.blend_mode = :add
 
+    self.z = height
+
     # Add an groove/eye if we are in the position nearest the wall.
     if tile.grid_position.y == 0
-      @laser_eye = sprite image_path("laser_eye.png"), at: [position.x, 0]
+      @laser_eye = sprite image_path("laser_eye.png"), at: [position.x, -z]
       @laser_eye.origin = @laser_eye.image.size / 2
 
       @groove_front = sprite image_path("laser_groove.png"), at: [position.x, 0]
@@ -56,13 +56,6 @@ class LaserBeam < GameObject
   end
 
   def update
-    # Can't use an animation, since we want all animations to synchronize (even if not animated).
-    z_offset = ((scene.timer.elapsed * SPEED) + phase_shift) % (Z_DIFFERENCE * 2) # 0..(2*height)
-    z_offset = Z_DIFFERENCE * 2 - z_offset if z_offset > Z_DIFFERENCE
-    self.z = [[z_offset, MIN_Z].max, MAX_Z].min
-
-    @laser_eye.y = -self.z if @laser_eye
-
     scene.players.each do |player|
       player.burn if player.can_be_hurt? and collide? player
     end
@@ -97,7 +90,8 @@ class LaserBeam < GameObject
   end
 end
 
+# Will cut you in half unless you are on the ground.
 class LaserBeamShifted < LaserBeam
-  def phase_shift; Z_DIFFERENCE; end
+  def height; 9; end
 end
 
