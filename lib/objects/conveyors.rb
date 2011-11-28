@@ -13,23 +13,17 @@ class Conveyor < GameObject
     @scroll_rect = Rect.new(0, 0, *@sprite.image.size)
 
     init_sprite
+
+    tile.push_velocity = direction * SPEED
   end
 
-  def collide?(other)
-    other.z == 0 and other.pos.inside? self and not other.riding?
-  end
+  def collide?; false; end # Never actually touched, but asks the tile underneath it to do the pushing.
 
   def z_order
     Player::Z_ORDER_SQUASHED - 1
   end
 
   def update
-    scene.players.each do |player|
-      if collide? player
-        player.pos += direction * SPEED * frame_time
-      end
-    end
-
     @scroll_rect.y = scene.timer.elapsed * SPEED
     @sprite.sub_rect = @scroll_rect
   end

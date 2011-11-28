@@ -23,7 +23,7 @@ class SlowFloor < FloorTile
     end
   end
 
-  def speed; 0.25; end
+  def speed_multiplier; 0.25; end
 
   def initialize(grid_position, offset)
     super([2, 0], grid_position, offset)

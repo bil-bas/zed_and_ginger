@@ -4,7 +4,6 @@ class Status
   # Speeds up the player, but forces them to run.
   class HyperSpeed < Status
     SPEED_FACTOR = 1.5
-    ACCELERATION = 300
 
     def default_duration; 3; end
 
@@ -13,7 +12,8 @@ class Status
       @sound.volume = 30 * (scene.user_data.effects_volume / 50.0)
       @sound.play
 
-      @speed = Player::MAX_SPEED * SPEED_FACTOR
+      owner.max_speed = owner.class::MAX_SPEED * SPEED_FACTOR
+      owner.acceleration_forced = true
     end
 
     def reapply(options = {})
@@ -22,10 +22,9 @@ class Status
     end
 
     def update
-      if owner.ok? and not owner.disabled? :controls
-        # Make sure the player goes FAST!
-        owner.velocity_x = [owner.velocity_x + ACCELERATION * frame_time, @speed].min if owner.velocity_x < @speed
+      super
 
+      if owner.ok? and not owner.disabled? :controls
         # Create a blurry trail behind the player.
         time = scene.timer.elapsed
         color = Color.from_hsv(360 - ((time * 250) % 360), 1.0, 1.0)
@@ -36,6 +35,12 @@ class Status
       else
         owner.remove_status type
       end
-   end
+    end
+
+    def clean_up
+      super
+      owner.acceleration_forced = false
+      owner.max_speed = owner.class::MAX_SPEED
+    end
   end
 end

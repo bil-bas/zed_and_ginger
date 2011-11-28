@@ -46,7 +46,7 @@ class Spring < GameObject
         player.z += 0.000001 # Just so we only collide with ONE spring.
         player.velocity_z = JUMP_Z_SPEED
         @bounce_sound.play
-        player.speed_modifier = JUMP_SPEED_MODIFIER
+        player.speed_multiplier *= JUMP_SPEED_MODIFIER
         @activated = true
         break
       end

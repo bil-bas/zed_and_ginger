@@ -62,7 +62,7 @@ class Player < DynamicObject
   NAMES = [:zed, :ginger]
 
   attr_reader :name
-  attr_accessor :speed_modifier
+  attr_accessor :max_speed, :speed_multiplier
 
   def shadow_width; 1.2; end
   def shadow_height; 0.6; end
@@ -94,6 +94,10 @@ class Player < DynamicObject
     @velocity.x = velocity
   end
 
+  def push_velocity=(velocity); @push_velocity = velocity.to_vector2; end
+  def acceleration_forced?; @acceleration_forced; end
+  def acceleration_forced=(forced); @acceleration_forced = forced; end
+
   def to_s; "Player##{@name}"; end
 
   public
@@ -118,8 +122,11 @@ class Player < DynamicObject
     @sprite.scale *= 0.75
     @riding_on = nil
     @state = :ok
-    @speed_modifier = 1.0
+    @speed_multiplier = 1.0
     @score = 0
+
+    @push_velocity = Vector2[0, 0] # Pushed by conveyor, for example.
+    @max_speed = MAX_SPEED
 
     @sounds = {}
     [:died, :jump].each do |sound|
@@ -153,7 +160,7 @@ class Player < DynamicObject
 
   protected
   def effective_velocity
-    @velocity * @speed_modifier
+    @velocity * @speed_multiplier + @push_velocity
   end
 
   protected
@@ -252,7 +259,15 @@ class Player < DynamicObject
     else
       case @state
         when :ok
-          @speed_modifier = @tile.speed if @tile and z == 0 and not riding?
+          if @tile
+            if z > 0
+              @push_velocity = Vector2[0, 0]
+              @speed_multiplier = 1.0 if riding?
+            elsif
+              @speed_multiplier = @tile.speed_multiplier
+              @push_velocity = @tile.push_velocity
+            end
+          end
 
           update_controls  unless disabled? :controls
           update_physics   unless disabled? :physics
@@ -279,7 +294,7 @@ class Player < DynamicObject
     elsif z == 0
       # Sitting, running or walking.
       vel = effective_velocity.length
-      if vel == 0
+      if @velocity == [0, 0] # Could be being pushed.
         @player_animations[:sitting].update
       elsif vel >= MIN_RUN_VELOCITY
         @player_animations[:running].duration = (100 - vel) / 20.0
@@ -312,12 +327,12 @@ class Player < DynamicObject
     end
 
     # Accelerate and decelerate.
-    if holding? @controls[:left]
+    if acceleration_forced? or holding? @controls[:right]
+      @velocity.x += ACCELERATION * frame_time
+      @velocity.x = [@velocity.x, @max_speed].min
+    elsif holding? @controls[:left]
       @velocity.x += DECELERATION * frame_time
       @velocity.x = [@velocity.x, MIN_SPEED].max
-    elsif holding? @controls[:right]
-      @velocity.x += ACCELERATION * frame_time
-      @velocity.x = [@velocity.x, MAX_SPEED].min
     end 
   end
 
