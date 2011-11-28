@@ -14,10 +14,15 @@ Created using Ruby and the Ray gem.
 License: GPL v3
 Author: Bil Bas (http://spooner.github.com) (bil dot bagpuss {at} gmail.com)
 
+h2. Requirements
+
+  * Since the game is implemented in a high level language, Ruby, it is significantly more CPU-bound than GPU-bound. That said, it should run well on a 1.5GHz machine and might be playable on slower machines.
+  * The game uses OpenGL shaders and so must be run with a graphics card that at least supports shaders (A card that supports Shader Model 2.0 should be fine; I don't use any new features).
+  * Game is known not to work with Intel integrated graphics (Anything better than that should really work :D).
 
 h2. Running the game
 
-Runs in a 768x480 window by default, but can be resized or run in native resolution (full-screen).
+Runs in a 768x480 window by default, but can be resized (larger or smaller) or run at native resolution (full-screen).
 
 h3. _Windows_
 
@@ -25,6 +30,8 @@ h3. _Windows_
     <pre>    zed_and_ginger.exe</pre>
 
 h3. _OS X_
+
+Run from source:
 
    * Ruby 1.9.2 or higher
    * Ensure that GLEW and libsndfile are installed:
@@ -38,6 +45,8 @@ h3. _OS X_
      <pre>    ruby bin\zed_and_ginger.rbw</pre>
 
 h3. _Linux_
+
+Run from source:
 
    * Ruby 1.9.2 or higher
    * Ensure that GLEW, libsndfile, Freetype, Xlib, OpenAL and OpenGL are installed:
@@ -104,7 +113,7 @@ h2. Tools used
 
 h2. Credits
 
-* Thanks for Mon-ouie for making the Ray library and generally putting up with me asking dumb questions about it.
+* Many thanks to Mon-ouie for making the Ray library and generally putting up with me asking dumb questions about it.
 * Thanks to kyrylo for helping debug the Linux port.
 * Thanks to BlueScope, eigenbom, Fowl (& sister), Ippa, jlnr, Mon-ouie, Peter Cakebread (& family) and SiliconEidolon for play-testing and comments.
 
