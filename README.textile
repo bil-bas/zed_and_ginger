@@ -105,6 +105,7 @@ h2. Tools used
 h2. Credits
 
 * Thanks for Mon-ouie for making the Ray library and generally putting up with me asking dumb questions about it.
+* Thanks to kyrylo for helping debug the Linux port.
 * Thanks to BlueScope, eigenbom, Fowl (& sister), Ippa, jlnr, Mon-ouie, Peter Cakebread (& family) and SiliconEidolon for play-testing and comments.
 
 
