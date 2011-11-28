@@ -1,3 +1,8 @@
+if __FILE__ == $0
+  $stderr.puts "Error: Run via bin/zed_and_ginger.rbw"
+  exit
+end
+
 t = Time.now
 
 begin
