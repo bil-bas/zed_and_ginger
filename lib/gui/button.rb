@@ -116,6 +116,7 @@ class Button
 
   def enabled=(enabled)
     @enabled = enabled
+    raise_event :mouse_unhover, self if under_mouse? and not enabled # Ensure that if we have issued a tool-tip, it is cleared.
     @under_mouse = false unless @enabled
     update_contents
     @enabled
