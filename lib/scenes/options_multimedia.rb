@@ -50,7 +50,7 @@ class OptionsMultimedia < GuiScene
     x += gui_controls.last.width + LINE_SPACING
 
     unless user_data.fullscreen?
-      gui_controls << Button.new(t.button.decrease_size.string, at: [x, y], size: ITEM_SIZE, tip: t.button.increase_size.tip) do
+      gui_controls << Button.new(t.button.increase_size.string, at: [x, y], size: ITEM_SIZE, tip: t.button.increase_size.tip) do
         scale_up
       end
     end
