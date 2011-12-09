@@ -260,7 +260,7 @@ class Player < DynamicObject
       case @state
         when :ok
           if @tile
-            if z > 0
+            if z > 0 or riding?
               @push_velocity = Vector2[0, 0]
               @speed_multiplier = 1.0 if riding?
             elsif
