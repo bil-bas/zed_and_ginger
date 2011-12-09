@@ -3,7 +3,7 @@
        CHANGELOG
 ========================
 
---- v0.4.0 (unreleased)
+--- v0.4.0 (2011-12-09)
 
   * Stopped lasers from moving, since they forced the player to stop and destroyed the flow of the game. Now you can jump over low beams and walk under high beams.
   * Added glue on the floor (prevents jumping).
@@ -11,7 +11,7 @@
   * Hover-board now imposes a minimum speed.
   * Added venus fly traps.
   * Added 5th level (The Garden).
-  * More clearly showed keyboard shortcuts for buttons (shortcuts have always been there, but most people didn't think of using them).
+  * More clearly showed keyboard shortcuts for buttons by highlighting the key required (shortcuts have always been there, but most people didn't think of using them).
   * Added tool-tips.
   * Reduced speed of the really fast camera panning when you die.
   * Merged high-scores for each level (get bonus for inversion/hardcore, rather than storing separate scores).
