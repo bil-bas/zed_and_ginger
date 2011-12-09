@@ -50,7 +50,11 @@ Run from source:
 
    * Ruby 1.9.2 or higher
    * Ensure that GLEW, libsndfile, Freetype, Xlib, OpenAL and OpenGL are installed:
-     <pre>    pacman -S glew libsndfile freetype2 openal # Archlinux</pre>
+     - Kubuntu (Should work for Ubuntu and Debian variants):
+     <pre>      sudo apt-get install libglew1.6-dev libsndfile1-dev libfreetype6-dev libopenal-dev</pre>
+     - Archlinux:
+     <pre>      sudo pacman -S glew libsndfile freetype2 openal</pre>
+
    * Install bundler Ruby gem:
      <pre>    sudo gem install bundler</pre>
    * Install Ruby gem dependencies from within the <i>zed_and_ginger</i> directory:
