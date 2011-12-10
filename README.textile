@@ -12,6 +12,7 @@ A single-player game of a cat running along a corridor in a space station just f
 Created using Ruby and the Ray gem.
 
 License: GPL v3
+Website: http://spooner.github.com/games/zed_and_ginger
 Author: Bil Bas (http://spooner.github.com) (bil dot bagpuss {at} gmail.com)
 
 h2. Requirements

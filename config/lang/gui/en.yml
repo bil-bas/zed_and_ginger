@@ -9,9 +9,6 @@ skip: &skip_label
 window:
   title: Zed and Ginger
 
-error_window:
-  title: Zed and Ginger - Error
-
 # General
 mutators:
   normal: <Normal>

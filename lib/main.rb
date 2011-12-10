@@ -34,7 +34,7 @@ pre_load_code = lambda {
 
   require_relative 'log'
 
-  R18n.from_env File.expand_path('config/lang', EXTRACT_PATH), ''
+  R18n.from_env File.expand_path('config/lang', EXTRACT_PATH), 'en'
 
   Log.log.info { "Ruby gems loaded in #{Time.now - t}s" }
 
@@ -84,6 +84,6 @@ while $create_game_with_scene
   rescue => exception
     game.window.close if game
 
-    ErrorWindow.new(R18n.get.t.error_window.title, exception, size: [640, 480]).run
+    ErrorWindow.new("Zed and Ginger - Error", exception, size: [640, 480]).run
   end
 end
